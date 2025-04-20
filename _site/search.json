@@ -26,5 +26,19 @@
     "title": "Hands-on Exercise 1",
     "section": "Plotting a simple bar chart",
     "text": "Plotting a simple bar chart\nWe plot the distribution of the RACE variable using ggplot2.\n\nggplot(data = exam_data, aes(x = RACE)) +\n  geom_bar(fill = \"steelblue\") +\n  theme_minimal() +\n  labs(title = \"Number of Students by Race\",\n       x = \"Race\",\n       y = \"Count\")"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "ISSS608-VAA",
+    "section": "",
+    "text": "Welcome to ISSS608 Visual Analytics and Application homepage. In this website, you will find my coursework prepared for this course."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site\nMaterials & exercises for course “Visual Analytics and Application”."
   }
 ]

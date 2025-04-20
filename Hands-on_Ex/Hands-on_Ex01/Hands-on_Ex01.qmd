@@ -1,0 +1,41 @@
+---
+title: "Hands-on Exercise 1"
+author: "Hao Liu"
+format: html
+---
+
+## Get Started
+
+### Install and load required R packages
+
+We use `library(tidyverse)` to load the collection of tidyverse packages, which includes `readr`, `ggplot2`, and others.
+
+```{r}
+pacman::p_load(tidyverse)
+```
+
+------------------------------------------------------------------------
+
+## Import the data
+
+We read the CSV file containing exam data. Make sure the file is located in the `data/` folder.
+
+```{r}
+exam_data <- read_csv("data/Exam_data.csv")
+head(exam_data)
+```
+
+------------------------------------------------------------------------
+
+## Plotting a simple bar chart
+
+We plot the distribution of the `RACE` variable using `ggplot2`.
+
+```{r}
+ggplot(data = exam_data, aes(x = RACE)) +
+  geom_bar(fill = "steelblue") +
+  theme_minimal() +
+  labs(title = "Number of Students by Race",
+       x = "Race",
+       y = "Count")
+```

@@ -1,0 +1,153 @@
+---
+title: "Hands-on Exercise 2"
+author: "Hao Liu"
+format: html
+---
+
+```{=html}
+<style>
+.plot-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  padding: 1rem;
+  margin-bottom: 2rem;
+}
+</style>
+```
+
+## Get Started
+
+Install and load required packages:
+
+```{r}
+pacman::p_load(tidyverse, RColorBrewer)
+```
+
+------------------------------------------------------------------------
+
+## Import Data
+
+```{r}
+exam_data <- read_csv("Exam_data.csv") %>%
+  mutate(Total = ENGLISH + MATHS + SCIENCE)
+head(exam_data)
+```
+
+------------------------------------------------------------------------
+
+## Visualizations
+
+::::::: columns
+:::: {.column width="50%"}
+::: plot-card
+**Histogram: Distribution of Total Scores**
+
+```{r}
+ggplot(exam_data, aes(x = Total)) +
+  geom_histogram(bins = 30, fill = "skyblue", color = "white", alpha = 0.7) +
+  geom_density(aes(y = ..count..), color = "darkblue", size = 1) +
+  theme_minimal(base_size = 14) +
+  labs(title = "Distribution of Total Scores", x = "Total Score", y = "Count") +
+  theme(panel.grid.minor = element_blank())
+```
+:::
+:::::::
+
+:::: {.column width="50%"}
+::: plot-card
+**Bar Chart: Average Total Score by Class**
+
+```{r}
+avg_class <- exam_data %>%
+  group_by(CLASS) %>%
+  summarise(Average = mean(Total)) %>%
+  arrange(CLASS)
+
+ggplot(avg_class, aes(x = CLASS, y = Average, fill = CLASS)) +
+  geom_col(show.legend = FALSE) +
+  theme_minimal(base_size = 14) +
+  labs(title = "Average Total Score by Class", x = "Class", y = "Average Total Score") +
+  theme(panel.grid.minor = element_blank(), axis.text.x = element_text(angle = 0))
+```
+:::
+:::::::
+
+:::: columns
+:::: {.column width="50%"}
+::: plot-card
+**Heatmap: Correlation of Subject Scores**
+
+```{r}
+corr_mat <- exam_data %>%
+  select(ENGLISH, MATHS, SCIENCE) %>%
+  cor()
+corr_long <- as.data.frame(as.table(corr_mat))
+
+ggplot(corr_long, aes(x = Var1, y = Var2, fill = Freq)) +
+  geom_tile() +
+  geom_text(aes(label = round(Freq, 2)), size = 4) +
+  scale_fill_gradient2(low = "blue", mid = "white", high = "red", midpoint = 0) +
+  theme_minimal(base_size = 14) +
+  labs(title = "Correlation Matrix of Subject Scores", x = NULL, y = NULL) +
+  theme(panel.grid = element_blank())
+```
+:::
+::::
+
+:::: {.column width="50%"}
+::: plot-card
+**Bar Chart: Average Total Score by Race**
+
+```{r}
+avg_race <- exam_data %>%
+  group_by(RACE) %>%
+  summarise(Average = mean(Total)) %>%
+  arrange(Average)
+
+ggplot(avg_race, aes(x = reorder(RACE, Average), y = Average, fill = RACE)) +
+  geom_col(show.legend = FALSE) +
+  coord_flip() +
+  theme_minimal(base_size = 14) +
+  labs(title = "Average Total Score by Race", x = NULL, y = "Average Total Score") +
+  theme(panel.grid.minor = element_blank())
+```
+:::
+::::
+
+:::: columns
+:::: {.column width="50%"}
+::: plot-card
+Heatmap: Average Total Score by Race and Gender
+
+avg_rg <- exam_data %>%
+  group_by(RACE, GENDER) %>%
+  summarise(Average = mean(Total), .groups = 'drop')
+
+# Average Total Score by Race and Gender
+```{r}
+# Calculate average total score for each Race-Gender combination
+avg_rg <- exam_data %>%
+  group_by(RACE, GENDER) %>%
+  summarise(Average = mean(Total), .groups = 'drop')
+
+# Create a grouped bar chart
+ggplot(avg_rg, aes(x = RACE, y = Average, fill = GENDER)) +
+  geom_col(position = position_dodge(width = 0.8)) +
+  scale_fill_brewer(palette = "Set1") +
+  theme_minimal(base_size = 14) +
+  labs(
+    title = "Average Total Score by Race and Gender",
+    x = "Race",
+    y = "Average Total Score",
+    fill = "Gender"
+  ) +
+  theme(panel.grid.minor = element_blank())
+```
+:::
+::::
+
+------------------------------------------------------------------------
+
+© 2025 Hao Liu
+

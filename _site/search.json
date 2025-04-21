@@ -7,13 +7,6 @@
     "text": "Welcome to ISSS608 Visual Analytics and Application homepage. In this website, you will find my coursework prepared for this course."
   },
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "About this site\nMaterials & exercises for course “Visual Analytics and Application”."
-  },
-  {
     "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html",
     "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html",
     "title": "Hands-on Exercise 1",
@@ -28,48 +21,6 @@
     "text": "Install and load required packages:\n\npacman::p_load(tidyverse, RColorBrewer)"
   },
   {
-    "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#import-the-data",
-    "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#import-the-data",
-    "title": "Hands-on Exercise 1",
-    "section": "Import the data",
-    "text": "Import the data\nWe read the CSV file containing exam data. Make sure the file is located in the data/ folder.\n\nexam_data &lt;- read_csv(\"data/Exam_data.csv\")\n\nRows: 322 Columns: 7-- Column specification --------------------------------------------------------\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\ni Use `spec()` to retrieve the full column specification for this data.\ni Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\nhead(exam_data)\n\n# A tibble: 6 x 7\n  ID         CLASS GENDER RACE    ENGLISH MATHS SCIENCE\n  &lt;chr&gt;      &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;\n1 Student321 3I    Male   Malay        21     9      15\n2 Student305 3I    Female Malay        24    22      16\n3 Student289 3H    Male   Chinese      26    16      16\n4 Student227 3F    Male   Chinese      27    77      31\n5 Student318 3I    Male   Malay        27    11      25\n6 Student306 3I    Female Malay        31    16      16"
-  },
-  {
-    "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#plotting-a-simple-bar-chart",
-    "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#plotting-a-simple-bar-chart",
-    "title": "Hands-on Exercise 1",
-    "section": "Plotting a simple bar chart",
-    "text": "Plotting a simple bar chart\nDistribution of the RACE variable:\n\nggplot(data = exam_data, aes(x = RACE)) +\n  geom_bar(fill = \"steelblue\") +\n  theme_minimal() +\n  labs(title = \"Number of Students by Race\",\n       x = \"Race\",\n       y = \"Count\")"
-  },
-  {
-    "objectID": "index.html#course-sections",
-    "href": "index.html#course-sections",
-    "title": "ISSS608-VAA",
-    "section": "Course Sections",
-    "text": "Course Sections\n\nHands-on Exercises\n\n\nIn-Class Exercises\n\n\nTake-Home Exercises"
-  },
-  {
-    "objectID": "index.html#overview",
-    "href": "index.html#overview",
-    "title": "ISSS608-VAA",
-    "section": "",
-    "text": "Questions or feedback? Feel free to open an issue on the GitHub repo."
-  },
-  {
-    "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#additional-plots",
-    "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#additional-plots",
-    "title": "Hands-on Exercise 1",
-    "section": "Additional Plots",
-    "text": "Additional Plots\n\nHistogram of English Scores\n\nggplot(exam_data, aes(x = ENGLISH)) +\n  geom_histogram(bins = 20, fill = \"forestgreen\", color = \"white\") +\n  theme_minimal() +\n  labs(title = \"Distribution of English Scores\",\n       x = \"English Score\",\n       y = \"Frequency\")\n\n\n\n\n\n\n\n\n\n\nScatterplot: Maths vs Science\n\nggplot(exam_data, aes(x = MATHS, y = SCIENCE, color = GENDER)) +\n  geom_point(alpha = 0.7, size = 2) +\n  theme_minimal() +\n  labs(title = \"Maths vs Science Scores by Gender\",\n       x = \"Maths Score\",\n       y = \"Science Score\")"
-  },
-  {
-    "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#summary",
-    "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#summary",
-    "title": "Hands-on Exercise 1",
-    "section": "Summary",
-    "text": "Summary\n\nBoxplot shows variation in maths scores across racial groups.\nDensity plot highlights the distribution shape of science performance.\n\n© 2025 Hao Liu"
-  },
-  {
     "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#import-data",
     "href": "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html#import-data",
     "title": "Hands-on Exercise 1",
@@ -82,6 +33,13 @@
     "title": "Hands-on Exercise 1",
     "section": "Visualizations",
     "text": "Visualizations\nBelow are all the key plots for the exam dataset, each wrapped in a styled card and arranged responsively.\n\n\n\nBar Chart: Students by Race\n\nggplot(exam_data, aes(x = RACE)) +\n  geom_bar(fill = \"steelblue\") +\n  theme_minimal(base_size = 14) +\n  labs(title = \"Students by Race\", x = NULL, y = \"Count\") +\n  theme(panel.grid.minor = element_blank())\n\n\n\n\n\n\n\n\n\n\n\nScore Distributions by Subject\n\n# Reshape to long format for faceted histograms\nexam_long &lt;- exam_data %&gt;%\n  pivot_longer(cols = c(ENGLISH, MATHS, SCIENCE), names_to = \"Subject\", values_to = \"Score\")\n\nggplot(exam_long, aes(x = Score, fill = Subject)) +\n  geom_histogram(bins = 20, color = \"white\", alpha = 0.7) +\n  facet_wrap(~ Subject, scales = \"free\") +\n  theme_minimal(base_size = 14) +\n  labs(title = \"Score Distributions by Subject\", x = \"Score\", y = \"Frequency\") +\n  theme(legend.position = \"none\", panel.grid.minor = element_blank())\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nScatterplot: Maths vs Science by Gender\n\nggplot(exam_data, aes(x = MATHS, y = SCIENCE, color = GENDER)) +\n  geom_point(alpha = 0.8, size = 2) +\n  geom_smooth(method = \"lm\", se = TRUE, linetype = \"dashed\") +\n  scale_color_brewer(palette = \"Set1\") +\n  theme_minimal(base_size = 14) +\n  labs(\n    title = \"Maths vs Science Scores by Gender\",\n    subtitle = \"Scatterplot with linear trend lines\",\n    x = \"Maths Score\",\n    y = \"Science Score\"\n  ) +\n  theme(legend.position = \"bottom\", panel.grid.minor = element_blank())\n\n`geom_smooth()` using formula 'y ~ x'\n\n\n\n\n\n\n\n\n\n\n\n\nBoxplot: Maths Scores by Race\n\nggplot(exam_data, aes(x = RACE, y = MATHS, fill = RACE)) +\n  geom_boxplot(outlier.shape = NA, alpha = 0.6) +\n  geom_jitter(width = 0.2, alpha = 0.5, size = 1) +\n  scale_fill_brewer(palette = \"Pastel2\") +\n  theme_minimal(base_size = 14) +\n  labs(\n    title = \"Maths Scores by Race\",\n    subtitle = \"Boxplot with overlaid points\",\n    x = NULL,\n    y = \"Maths Score\"\n  ) +\n  theme(axis.text.x = element_text(angle = 45, hjust = 1), legend.position = \"none\")\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDensity Plot: Science Scores\n\nggplot(exam_data, aes(x = SCIENCE)) +\n  geom_density(fill = \"orchid\", alpha = 0.6) +\n  theme_minimal(base_size = 14) +\n  labs(title = \"Science Score Density\", x = \"Science Score\", y = \"Density\") +\n  theme(panel.grid.minor = element_blank())\n\n\n\n\n\n\n\n\n\n\n\n\n© 2025 Hao Liu"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site\nMaterials & exercises for course “Visual Analytics and Application”."
   },
   {
     "objectID": "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html",

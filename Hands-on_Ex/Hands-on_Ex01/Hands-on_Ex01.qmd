@@ -4,6 +4,7 @@ author: "Hao Liu"
 format: html
 ---
 
+```{=html}
 <style>
 .plot-card {
   background: #fff;
@@ -13,6 +14,7 @@ format: html
   margin-bottom: 2rem;
 }
 </style>
+```
 
 ## Get Started
 
@@ -22,7 +24,7 @@ Install and load required packages:
 pacman::p_load(tidyverse, RColorBrewer)
 ```
 
----
+------------------------------------------------------------------------
 
 ## Import Data
 
@@ -31,16 +33,15 @@ exam_data <- read_csv("data/Exam_data.csv")
 head(exam_data)
 ```
 
----
+------------------------------------------------------------------------
 
 ## Visualizations
 
 Below are all the key plots for the exam dataset, each wrapped in a styled card and arranged responsively.
 
-::: {.columns}
-
-::: {.column width="50%"}
-<div class="plot-card">
+::::::: columns
+:::: {.column width="50%"}
+::: plot-card
 **Bar Chart: Students by Race**
 
 ```{r}
@@ -50,11 +51,11 @@ ggplot(exam_data, aes(x = RACE)) +
   labs(title = "Students by Race", x = NULL, y = "Count") +
   theme(panel.grid.minor = element_blank())
 ```
-</div>
 :::
+::::
 
-::: {.column width="50%"}
-<div class="plot-card">
+:::: {.column width="50%"}
+::: plot-card
 **Score Distributions by Subject**
 
 ```{r}
@@ -69,15 +70,13 @@ ggplot(exam_long, aes(x = Score, fill = Subject)) +
   labs(title = "Score Distributions by Subject", x = "Score", y = "Frequency") +
   theme(legend.position = "none", panel.grid.minor = element_blank())
 ```
-</div>
 :::
+::::
+:::::::
 
-:::
-
-::: {.columns}
-
-::: {.column width="50%"}
-<div class="plot-card">
+::::::: columns
+:::: {.column width="50%"}
+::: plot-card
 **Scatterplot: Maths vs Science by Gender**
 
 ```{r}
@@ -94,11 +93,11 @@ ggplot(exam_data, aes(x = MATHS, y = SCIENCE, color = GENDER)) +
   ) +
   theme(legend.position = "bottom", panel.grid.minor = element_blank())
 ```
-</div>
 :::
+::::
 
-::: {.column width="50%"}
-<div class="plot-card">
+:::: {.column width="50%"}
+::: plot-card
 **Boxplot: Maths Scores by Race**
 
 ```{r}
@@ -115,15 +114,13 @@ ggplot(exam_data, aes(x = RACE, y = MATHS, fill = RACE)) +
   ) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1), legend.position = "none")
 ```
-</div>
 :::
+::::
+:::::::
 
-:::
-
-::: {.columns}
-
-::: {.column width="50%"}
-<div class="plot-card">
+::::: columns
+:::: {.column width="50%"}
+::: plot-card
 **Density Plot: Science Scores**
 
 ```{r}
@@ -133,11 +130,10 @@ ggplot(exam_data, aes(x = SCIENCE)) +
   labs(title = "Science Score Density", x = "Science Score", y = "Density") +
   theme(panel.grid.minor = element_blank())
 ```
-</div>
 :::
+::::
+:::::
 
-:::
-
----
+------------------------------------------------------------------------
 
 © 2025 Hao Liu

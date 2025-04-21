@@ -18,7 +18,7 @@ pacman::p_load(tidyverse)
 
 ## Import the data
 
-We read the CSV file containing exam data. Make sure the file is located in the `data/` folder.
+We read the CSV file containing exam data Make sure the file is located in the `data/` folder.
 
 ```{r}
 exam_data <- read_csv("data/Exam_data.csv")

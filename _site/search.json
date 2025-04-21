@@ -4,7 +4,7 @@
     "href": "index.html",
     "title": "ISSS608-VAA",
     "section": "",
-    "text": "Welcome to ISSS608 Visual Analytics and Application homepage. In this website, you will find my coursework prepared for this course."
+    "text": "Welcome to the ISSS608 course site. Use the sidebar to navigate through hands-on exercises, in-class labs, and take-home assignments.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nQuestions or feedback? Feel free to open an issue on the GitHub repo."
   },
   {
     "objectID": "about.html",
@@ -40,5 +40,19 @@
     "title": "Hands-on Exercise 1",
     "section": "Plotting a simple bar chart",
     "text": "Plotting a simple bar chart\nWe plot the distribution of the RACE variable using ggplot2.\n\nggplot(data = exam_data, aes(x = RACE)) +\n  geom_bar(fill = \"steelblue\") +\n  theme_minimal() +\n  labs(title = \"Number of Students by Race\",\n       x = \"Race\",\n       y = \"Count\")"
+  },
+  {
+    "objectID": "index.html#course-sections",
+    "href": "index.html#course-sections",
+    "title": "ISSS608-VAA",
+    "section": "Course Sections",
+    "text": "Course Sections\n\nHands-on Exercises\n\n\nIn-Class Exercises\n\n\nTake-Home Exercises"
+  },
+  {
+    "objectID": "index.html#overview",
+    "href": "index.html#overview",
+    "title": "ISSS608-VAA",
+    "section": "",
+    "text": "Questions or feedback? Feel free to open an issue on the GitHub repo."
   }
 ]

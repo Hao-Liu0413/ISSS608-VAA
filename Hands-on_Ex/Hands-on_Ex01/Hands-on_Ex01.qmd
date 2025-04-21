@@ -4,38 +4,140 @@ author: "Hao Liu"
 format: html
 ---
 
+<style>
+.plot-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  padding: 1rem;
+  margin-bottom: 2rem;
+}
+</style>
+
 ## Get Started
 
-### Install and load required R packages
-
-We use `library(tidyverse)` to load the collection of tidyverse packages, which includes `readr`, `ggplot2`, and others.
+Install and load required packages:
 
 ```{r}
-pacman::p_load(tidyverse)
+pacman::p_load(tidyverse, RColorBrewer)
 ```
 
-------------------------------------------------------------------------
+---
 
-## Import the data
-
-We read the CSV file containing exam data Make sure the file is located in the `data/` folder.
+## Import Data
 
 ```{r}
 exam_data <- read_csv("data/Exam_data.csv")
 head(exam_data)
 ```
 
-------------------------------------------------------------------------
+---
 
-## Plotting a simple bar chart
+## Visualizations
 
-We plot the distribution of the `RACE` variable using `ggplot2`.
+Below are all the key plots for the exam dataset, each wrapped in a styled card and arranged responsively.
+
+::: {.columns}
+
+::: {.column width="50%"}
+<div class="plot-card">
+**Bar Chart: Students by Race**
 
 ```{r}
-ggplot(data = exam_data, aes(x = RACE)) +
+ggplot(exam_data, aes(x = RACE)) +
   geom_bar(fill = "steelblue") +
-  theme_minimal() +
-  labs(title = "Number of Students by Race",
-       x = "Race",
-       y = "Count")
+  theme_minimal(base_size = 14) +
+  labs(title = "Students by Race", x = NULL, y = "Count") +
+  theme(panel.grid.minor = element_blank())
 ```
+</div>
+:::
+
+::: {.column width="50%"}
+<div class="plot-card">
+**Score Distributions by Subject**
+
+```{r}
+# Reshape to long format for faceted histograms
+exam_long <- exam_data %>%
+  pivot_longer(cols = c(ENGLISH, MATHS, SCIENCE), names_to = "Subject", values_to = "Score")
+
+ggplot(exam_long, aes(x = Score, fill = Subject)) +
+  geom_histogram(bins = 20, color = "white", alpha = 0.7) +
+  facet_wrap(~ Subject, scales = "free") +
+  theme_minimal(base_size = 14) +
+  labs(title = "Score Distributions by Subject", x = "Score", y = "Frequency") +
+  theme(legend.position = "none", panel.grid.minor = element_blank())
+```
+</div>
+:::
+
+:::
+
+::: {.columns}
+
+::: {.column width="50%"}
+<div class="plot-card">
+**Scatterplot: Maths vs Science by Gender**
+
+```{r}
+ggplot(exam_data, aes(x = MATHS, y = SCIENCE, color = GENDER)) +
+  geom_point(alpha = 0.8, size = 2) +
+  geom_smooth(method = "lm", se = TRUE, linetype = "dashed") +
+  scale_color_brewer(palette = "Set1") +
+  theme_minimal(base_size = 14) +
+  labs(
+    title = "Maths vs Science Scores by Gender",
+    subtitle = "Scatterplot with linear trend lines",
+    x = "Maths Score",
+    y = "Science Score"
+  ) +
+  theme(legend.position = "bottom", panel.grid.minor = element_blank())
+```
+</div>
+:::
+
+::: {.column width="50%"}
+<div class="plot-card">
+**Boxplot: Maths Scores by Race**
+
+```{r}
+ggplot(exam_data, aes(x = RACE, y = MATHS, fill = RACE)) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.6) +
+  geom_jitter(width = 0.2, alpha = 0.5, size = 1) +
+  scale_fill_brewer(palette = "Pastel2") +
+  theme_minimal(base_size = 14) +
+  labs(
+    title = "Maths Scores by Race",
+    subtitle = "Boxplot with overlaid points",
+    x = NULL,
+    y = "Maths Score"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), legend.position = "none")
+```
+</div>
+:::
+
+:::
+
+::: {.columns}
+
+::: {.column width="50%"}
+<div class="plot-card">
+**Density Plot: Science Scores**
+
+```{r}
+ggplot(exam_data, aes(x = SCIENCE)) +
+  geom_density(fill = "orchid", alpha = 0.6) +
+  theme_minimal(base_size = 14) +
+  labs(title = "Science Score Density", x = "Science Score", y = "Density") +
+  theme(panel.grid.minor = element_blank())
+```
+</div>
+:::
+
+:::
+
+---
+
+© 2025 Hao Liu

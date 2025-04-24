@@ -108,10 +108,9 @@ We simply replace `geom_text()` by [`geom_text_repel()`](https://ggrepel.slowkow
 
 ### Working with ggrepel
 
-::::: panel-tabset
+:::: panel-tabset
 ## The plot
 
-::: {style="font-size: 1.4em"}
 ```{r}
 #| echo: false
 ggplot(data=exam_data, 
@@ -126,11 +125,9 @@ ggplot(data=exam_data,
                   ylim=c(0,100)) +
   ggtitle("English scores versus Maths scores for Primary 3")
 ```
-:::
 
 ## The code
 
-::: {style="font-size: 1.2em"}
 ```{r}
 #| eval: false
 ggplot(data=exam_data, 
@@ -145,8 +142,25 @@ ggplot(data=exam_data,
                   ylim=c(0,100)) +
   ggtitle("English scores versus Maths scores for Primary 3")
 ```
+
+## Practice ![](image1.jpg){width="20"}
+
+::: {style="font-size: 1.4em"}
+```{r}
+ggplot(data=exam_data, 
+       aes(x= MATHS, 
+           y=SCIENCE)) + # changed the subject
+  geom_point() +
+  geom_smooth(method=lm, 
+              size=0.5) +  
+  geom_label_repel(aes(label = GENDER),  # modified label
+                   fontface = "bold") +
+  coord_cartesian(xlim=c(0,100),
+                  ylim=c(0,100)) +
+  ggtitle("English scores versus Maths scores for Primary 3")
+```
 :::
-:::::
+::::
 
 ## Beyond ggplot2 Themes
 
@@ -169,7 +183,6 @@ ggplot(data=exam_data,
 
 ## The code
 
-::: {style="font-size: 1.4em"}
 ```{r}
 #| eval: false
 ggplot(data=exam_data, 
@@ -179,6 +192,20 @@ ggplot(data=exam_data,
                  color="grey25", 
                  fill="grey90") +
   theme_gray() +
+  ggtitle("Distribution of Maths scores") 
+```
+
+## Practice ![](image1.jpg){width="20"}
+
+::: {style="font-size: 1.4em"}
+```{r}
+ggplot(data=exam_data, 
+             aes(x = SCIENCE)) + # try with other subject
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 color="grey25", 
+                 fill="grey90") +
+  theme_void() + # modified theme
   ggtitle("Distribution of Maths scores") 
 ```
 :::
@@ -209,7 +236,6 @@ ggplot(data=exam_data,
 
 ## The code
 
-::: {style="font-size: 1.4em"}
 ```{r}
 #| eval: false
 ggplot(data=exam_data, 
@@ -220,6 +246,20 @@ ggplot(data=exam_data,
                  fill="grey90") +
   ggtitle("Distribution of Maths scores") +
   theme_economist()
+```
+
+## Practice ![](image1.jpg){width="20"}
+
+::: {style="font-size: 1.4em"}
+```{r}
+ggplot(data=exam_data, 
+             aes(x = ENGLISH)) + # try with other subject
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 color="grey25", 
+                 fill="grey90") +
+  ggtitle("Distribution of Maths scores") +
+  theme_economist_white() # modified theme
 ```
 :::
 ::::
@@ -247,7 +287,6 @@ ggplot(data=exam_data,
 
 ## The code
 
-::: {style="font-size: 1.4em"}
 ```{r}
 #| eval: false
 ggplot(data=exam_data, 
@@ -258,6 +297,20 @@ ggplot(data=exam_data,
                  fill="grey90") +
   ggtitle("Distribution of Maths scores") +
   theme_ipsum()
+```
+
+## Practice ![](image1.jpg){width="20"}
+
+::: {style="font-size: 1.4em"}
+```{r}
+ggplot(data=exam_data, 
+             aes(x = SCIENCE)) + # modified subject
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 color="grey25", 
+                 fill="grey90") +
+  ggtitle("Distribution of Maths scores") +
+  theme_ipsum_rc() #used other theme
 ```
 :::
 ::::
@@ -283,7 +336,6 @@ ggplot(data=exam_data,
 
 ## The code
 
-::: {style="font-size: 1.4em"}
 ```{r}
 #| eval: false
 ggplot(data=exam_data, 
@@ -295,6 +347,22 @@ ggplot(data=exam_data,
   ggtitle("Distribution of Maths scores") +
   theme_ipsum(axis_title_size = 18,
               base_size = 15,
+              grid = "Y")
+```
+
+## Practice ![](image1.jpg){width="20"}
+
+::: {style="font-size: 1.4em"}
+```{r}
+ggplot(data=exam_data, 
+             aes(x = SCIENCE)) + #modified subject
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 color="grey25", 
+                 fill="grey90") +
+  ggtitle("Distribution of Maths scores") +
+  theme_ipsum(axis_title_size = 20, #tries with different size
+              base_size = 20,
               grid = "Y")
 ```
 :::
@@ -445,10 +513,16 @@ p1 + p2
 
 ## The code
 
-::: {style="font-size: 1.4em"}
 ```{r}
 #| eval: false
 p1 + p2
+```
+
+## Practice ![](image1.jpg){width="20"}
+
+::: {style="font-size: 1.4em"}
+```{r}
+p1 + p3 # other plots
 ```
 :::
 ::::
@@ -473,10 +547,16 @@ We can plot more complex composite by using appropriate operators. For example, 
 
 ## The code
 
-::: {style="font-size: 1.4em"}
 ```{r}
 #| eval: false
 (p1 / p2) | p3
+```
+
+## Practice ![](image1.jpg){width="20"}
+
+::: {style="font-size: 1.4em"}
+```{r}
+(p1 / p3) | p2 # different composition
 ```
 :::
 ::::
@@ -500,11 +580,18 @@ In order to identify subplots in text, **patchwork** also provides auto-tagging 
 
 ## The code
 
-::: {style="font-size: 1.4em"}
 ```{r}
 #| eval: false
 ((p1 / p2) | p3) + 
   plot_annotation(tag_levels = 'I')
+```
+
+## Practice ![](image1.jpg){width="20"}
+
+::: {style="font-size: 1.4em"}
+```{r}
+((p1 / p2) | p3) + 
+  plot_annotation(tag_levels = '1') # different tag
 ```
 :::
 ::::
@@ -527,7 +614,6 @@ p3 + inset_element(p2,
 
 ## The code
 
-::: {style="font-size: 1.4em"}
 ```{r}
 #| eval: false
 p3 + inset_element(p2, 
@@ -535,6 +621,17 @@ p3 + inset_element(p2,
                    bottom = 0.7, 
                    right = 0.5, 
                    top = 1)
+```
+
+## Practice ![](image1.jpg){width="20"}
+
+::: {style="font-size: 1.4em"}
+```{r}
+p2 + inset_element(p3, 
+                   left = 0.5, 
+                   bottom = 1, 
+                   right = 0.02, 
+                   top = 0.7) # different position
 ```
 :::
 ::::
@@ -556,11 +653,18 @@ patchwork & theme_economist()
 
 ## The code
 
-::: {style="font-size: 1.4em"}
 ```{r}
 #| eval: false
 patchwork <- (p1 / p2) | p3
 patchwork & theme_economist()
+```
+
+## Practice ![](image1.jpg){width="20"}
+
+::: {style="font-size: 1.4em"}
+```{r}
+patchwork <- (p2 / p1) | p3
+patchwork & theme_dark()
 ```
 :::
 ::::

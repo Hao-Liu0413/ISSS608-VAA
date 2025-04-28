@@ -1,0 +1,304 @@
+---
+title: "Take_Home_Exercise01"
+date: ""
+date-modified: "last-modified"
+format: html
+editor: visual
+execute: 
+  echo: true
+  eval: true
+  warning: false
+  freeze: true
+---
+
+## 1. Overview
+
+This first take-home exercise aims to provide a detailed visualization of Singapore's demographic structure in 2024.
+
+## 2. Data structure
+
+The *Singapore Residents by Planning Area / Subzone, Single Year of Age and Sex, June 2024* dataset, shared by [Department of Statistics, Singapore (DOS)](https://www.singstat.gov.sg/), is composed by 5 main columns:
+
+-   **Planning Area**: Geographic planning areas in Singapore.
+
+-   **Subzone**: Subdivision within each Planning Area.
+
+-   **Age**: Individual ages of residents.
+
+-   **Sex**: Gender of residents (Male, Female).
+
+-   **2024**: Resident population count as of June 2024.
+
+## 3. Data cleaning
+
+### load the neccessary packages
+
+### final dataset production
+The dataset is loaded into environment by eliminating those rows with"Total values" for the reason that it could construct a
+```{r data-cleaning, message=FALSE, warning=FALSE}
+library(matrixStats)
+library(readxl)
+library(dplyr)
+library(stringr)
+library(readr)    # for parse_number
+library(ggplot2)
+library(ggrepel)
+
+# 1. Read in data and drop all “Total” summary rows
+df_clean <- read_excel("respopagesex2024e.xlsx") %>%
+  filter(
+    `Planning Area` != "Total",
+    Subzone         != "Total",
+    Sex             != "Total"
+  ) %>%
+  
+  # 2. Convert population to numeric
+  mutate(
+    Population = as.numeric(`2024`),
+    
+    # 3. Parse Age into a single-year numeric
+    Age_numeric = case_when(
+      str_detect(Age, regex("under",    ignore_case = TRUE)) ~ 0,
+      str_detect(Age, regex("over|and over", ignore_case = TRUE)) ~ parse_number(Age),
+      TRUE ~ as.numeric(Age)
+    )
+  ) %>%
+  
+  # 4. Remove any rows that failed conversion
+  filter(
+    !is.na(Population),
+    !is.na(Age_numeric)
+  )
+
+# 5. Inspect
+glimpse(df_clean)
+head(df_clean, 10)
+```
+
+## Objective and research question definition
+
+### 1. What is the national age–sex structure for 2024?
+
+-   How does the shape of Singapore’s population pyramid look in 2024?
+
+-   Are there notable “bulges” or gaps in certain cohorts?
+
+### 2. How do age distributions differ by planning area (and subzone)?
+
+-   Which areas skew younger (e.g., many children and young adults)?
+
+-   Which areas skew older (a high share of 65+ residents)?
+
+### 3. What spatial patterns emerge in median age and population density?
+
+-   Map median age and density at the planning-area level to highlight “young hubs” vs. “retirement clusters.”
+
+### Visualization Deliverables
+
+| Chart Type | Purpose |
+|------------------------------------|------------------------------------|
+| **Population Pyramid** | Show national age–sex structure (and optionally for selected planning areas). |
+| **Small-multiple Histograms** | Compare age distributions side-by-side for a set of planning areas/subzones. |
+| **Choropleth Map** | Color each planning area by median age, dependency ratio, or total population density. |
+
+## Visualization elaboration (pratical implementation)
+
+### measures definition
+
+We will compute the following key metrics:
+
+-   **Age_numeric**: single-year age parsed from `Age` (e.g. “65 and over” → 65)
+
+-   **Population**: numeric population count from the `2024` column
+
+-   **Youth population**: sum of `Population` for `Age_numeric < 15`
+
+-   **Working-age population**: sum for `15 <= Age_numeric <= 64`
+
+-   **Elderly population**: sum for `Age_numeric >= 65`
+
+-   **Dependency ratio**: `(Youth + Elderly) / WorkingAge`
+
+-   **Sex ratio**: `Males / Females` per age or geography
+
+-   **Median Age**: median of `Age_numeric`, weighted by `Population`
+
+### visualization 1
+
+```{r viz-pyramid-enhanced, fig.width=8, fig.height=6, message=FALSE, warning=FALSE}
+  
+# 1. Build pyramid_df explicitly
+pyramid_df <- df_clean %>%
+  group_by(Sex, Age_numeric) %>%
+  summarise(
+    Pop = sum(Population, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    # make male values negative for the left side of the pyramid
+    PopSigned = if_else(Sex == "Male", -Pop, Pop),
+    PopAbs    = abs(PopSigned)
+  )
+
+# 2. Compute summary stats
+med_age <- weightedMedian(df_clean$Age_numeric, w = df_clean$Population)
+bulge <- pyramid_df %>%
+  group_by(Age_numeric) %>%
+  summarise(Tot = sum(PopAbs), .groups="drop") %>%
+  slice_max(Tot, n=1)
+bulge_age  <- bulge$Age_numeric
+bulge_size <- bulge$Tot
+
+# 3. Plot
+ggplot(pyramid_df, aes(x = Age_numeric, y = PopSigned, fill = Sex)) +
+  geom_col(width = 1, color = "white") +
+  
+  # Median‐age line
+  geom_vline(xintercept = med_age, linetype = "dashed", color = "grey40") +
+  annotate("text",
+           x     = med_age + 2,
+           y     = 0,
+           label = paste0("Median age: ", med_age),
+           angle = 90,
+           vjust = -0.5,
+           size  = 3) +
+  
+  # Bulge annotation
+  geom_segment(aes(x = bulge_age, xend = bulge_age,
+                   y = 0, yend = -bulge_size/2),
+               arrow = arrow(length = unit(0.2, "cm")),
+               colour = "darkred") +
+  annotate("text",
+           x     = bulge_age + 3,
+           y     = -bulge_size/2,
+           label = paste0("Peak cohort:\nAge ", bulge_age),
+           hjust = 0,
+           size  = 3,
+           colour= "darkred") +
+  
+  # Color and scales
+  scale_fill_brewer(palette = "Set2") +
+  scale_y_continuous(labels = abs) +
+  coord_flip() +
+  labs(
+    title    = "Enhanced Singapore Population Pyramid (2024)",
+    subtitle = "Median age & largest cohort annotated",
+    x        = "Age (years)",
+    y        = "Population",
+    fill     = NULL
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "top")
+```
+
+### visualization 2
+
+```{r pa-young-old-bar, fig.width=10, fig.height=6, message=FALSE, warning=FALSE}
+library(dplyr)
+library(ggplot2)
+library(scales)
+library(patchwork)
+library(readr)
+
+# 1. Compute shares by Planning Area
+dep_pa <- df_clean %>%
+  group_by(`Planning Area`) %>%
+  summarise(
+    youth_share   = sum(Population[Age_numeric < 15], na.rm=TRUE) / sum(Population),
+    elderly_share = sum(Population[Age_numeric >= 65], na.rm=TRUE) / sum(Population),
+    .groups = "drop"
+  )
+
+# 2a. Top 10 youngest areas (highest youth_share)
+p_young_pa <- dep_pa %>%
+  slice_max(youth_share, n = 10) %>%
+  mutate(`Planning Area` = reorder(`Planning Area`, youth_share)) %>%
+  ggplot(aes(y = `Planning Area`, x = youth_share)) +
+    geom_col(fill = "#2ca25f") +
+    scale_x_continuous(labels = percent_format(1)) +
+    labs(
+      title = "Top 10 Youngest Planning Areas",
+      x     = "Share under 15",
+      y     = NULL
+    ) +
+    theme_minimal(base_size = 11)
+
+# 2b. Top 10 oldest areas (highest elderly_share)
+p_old_pa <- dep_pa %>%
+  slice_max(elderly_share, n = 10) %>%
+  mutate(`Planning Area` = reorder(`Planning Area`, elderly_share)) %>%
+  ggplot(aes(y = `Planning Area`, x = elderly_share)) +
+    geom_col(fill = "#de2d26") +
+    scale_x_continuous(labels = percent_format(1)) +
+    labs(
+      title = "Top 10 Oldest Planning Areas",
+      x     = "Share 65 and over",
+      y     = NULL
+    ) +
+    theme_minimal(base_size = 11)
+
+# 3. Display side by side
+p_young_pa + p_old_pa
+```
+
+### visualization 3
+
+```{r youth-elderly-enhanced, fig.width=8, fig.height=6, message=FALSE, warning=FALSE}
+
+# 1. Compute metrics
+dep_shares <- df_clean %>%
+  group_by(`Planning Area`) %>%
+  summarise(
+    youth_share   = sum(Population[Age_numeric < 15], na.rm=TRUE) / sum(Population),
+    elderly_share = sum(Population[Age_numeric >= 65], na.rm=TRUE) / sum(Population),
+    total_pop     = sum(Population),
+    median_age    = matrixStats::weightedMedian(Age_numeric, w = Population),
+    .groups       = "drop"
+  )
+
+# 2. National means & correlation
+mean_youth   <- mean(dep_shares$youth_share)
+mean_elderly <- mean(dep_shares$elderly_share)
+corr_val     <- cor(dep_shares$youth_share, dep_shares$elderly_share)
+
+# 3. Plot
+ggplot(dep_shares, aes(
+    x = youth_share,
+    y = elderly_share,
+    size  = total_pop,
+    color = median_age
+  )) +
+  geom_smooth(method = "lm", se = FALSE, color = "grey40", linetype = "dotted") +
+  geom_vline(xintercept = mean_youth,   linetype = "dashed", color = "grey60") +
+  geom_hline(yintercept = mean_elderly, linetype = "dashed", color = "grey60") +
+  geom_point(alpha = 0.8) +
+  geom_text_repel(
+    aes(label = `Planning Area`),
+    size       = 3,
+    max.overlaps = 20
+  ) +
+  scale_x_continuous(labels = percent_format(1)) +
+  scale_y_continuous(labels = percent_format(1)) +
+  scale_size(range = c(2, 10), labels = comma_format(accuracy = 1), name = "Total pop") +
+  scale_color_viridis_c(option = "magma", name = "Median age") +
+  annotate(
+    "text", 
+    x    = 0.30, 
+    y    = 0.20, 
+    label= paste0("r = ", round(corr_val, 2)),
+    size = 4, 
+    color= "black"
+  ) +
+  labs(
+    title    = "Youth vs. Elderly Shares by Planning Area",
+    subtitle = "Bubble size ~ total population; Color ~ median age",
+    x        = "Share of residents under 15",
+    y        = "Share of residents 65 and over"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "right",
+    panel.grid.minor = element_blank()
+  )
+
+```

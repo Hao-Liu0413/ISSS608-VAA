@@ -7,20 +7,26 @@ website:
     left:
       - text: "Hands-on Exercise"
         menu:
-        - text: "Hands-on Exerciese 1"
-          href: "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html"
-        - text: "Hands-on Exerciese 2"
-          href: "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html"
+          - text: "Hands-on Exercise 1"
+            href: "Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html"
+          - text: "Hands-on Exercise 2"
+            href: "Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html"
+          - text: "Hands-on Exercise 3"
+            href: "Hands-on_Ex/Hands-on_Ex03/Hands-on_Ex03.html"
+      - text: "Take-Home Exercise"
+        menu:
+          - text: "Take-Home Exercise 1"
+            href: "Take_Home_Exercise/Take_Home_Exercise01/Take_Home_Exercise01.html"
     right:
-      - text: Home
+      - text: "Home"
         href: index.qmd
-      - text: About
+      - text: "About"
         href: about.qmd
+
 format:
   html:
-    theme: cosmo
+    theme: sandstone
     css: styles.css
     toc: true
 
 editor: visual
-

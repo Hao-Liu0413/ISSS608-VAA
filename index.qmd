@@ -6,8 +6,10 @@ format: html
 Welcome to the **ISSS608 Visual Analytics and Applications** homepage!\
 Below you’ll find links to each of the subsections (chapters, exercises, or projects) I’ve published:
 
--   🔍 [Hands-on_Ex01](Hands-on_Ex\Hands-on_Ex01\Hands-on_Ex01.qmd)
--   📊 [Hands-on_Ex02](Hands-on_Ex\Hands-on_Ex02\Hands-on_Ex02.qmd)
+-   [Hands-on_Ex01](Hands-on_Ex\Hands-on_Ex01\Hands-on_Ex01.qmd)
+-   [Hands-on_Ex02](Hands-on_Ex\Hands-on_Ex02\Hands-on_Ex02.qmd)
+-   [Hands-on_Ex03](Hands-on_Ex\Hands-on_Ex03\Hands-on_Ex03.qmd)
+-   [Take-Home Exercise](Take_Home_Exercise\Take_Home_Exercise01\Take_Home_Exercise01.qmd)
 
 Feel free to click any link to jump straight to that section.\
 Happy exploring!

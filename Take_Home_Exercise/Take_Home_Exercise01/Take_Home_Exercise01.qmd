@@ -13,9 +13,13 @@ execute:
 
 ## 1. Overview
 
-This first take-home exercise aims to provide a detailed visualization of Singapore's demographic structure in 2024.
+This first take-home exercise aims to provide a detailed visualization of Singapore's demographic structure in 2024. Three visual representations will be described in this project.
 
-## 2. Data structure
+### 1.1 Setting the scene
+
+A local online media company that publishes daily content on digital platforms is planning to release an article on demographic structures and distribution of Singapore in 2024.
+
+### 1.2. Data structure
 
 The *Singapore Residents by Planning Area / Subzone, Single Year of Age and Sex, June 2024* dataset, shared by [Department of Statistics, Singapore (DOS)](https://www.singstat.gov.sg/), is composed by 5 main columns:
 
@@ -29,20 +33,59 @@ The *Singapore Residents by Planning Area / Subzone, Single Year of Age and Sex,
 
 -   **2024**: Resident population count as of June 2024.
 
-## 3. Data cleaning
+### 1.3 The Designing Tool
 
-### load the neccessary packages
+The data is processed by using tidyverse family of packages and the data visualization is prepared by using ggplot2 and its extensions.
 
-### final dataset production
-The dataset is loaded into environment by eliminating those rows with"Total values" for the reason that it could construct a
-```{r data-cleaning, message=FALSE, warning=FALSE}
+## 2. Data cleaning
+
+### 2.1 load the neccessary packages
+
+1\.  matrixStats: Provides optimized, vectorized functions for row‐ and column‐wise summaries on matrices.
+
+2\.  readxl: used to import Excel files (.xls and .xlsx) into R data frames without requiring Java or external dependencies.
+
+3\.  dplyr: A grammar of data manipulation.
+
+4\.  stringr: A consistent wrapper around R’s string‐processing functions, built on the {stringi} engine.
+
+5\.  readr: Provide functions for reading flat files (CSV, TSV, FWf).
+
+6\.  ggplot2: Implements the “Grammar of Graphics” for creating complex, multi‐layered visualizations via a coherent API.
+
+7\.  ggrepel: An add‐on to ggplot2 that smartly repels text and label annotations so they do not overlap.
+
+8\. scales: provides a suite of functions for transforming and formatting axis breaks, labels, and legends.
+
+9\. patchwork: used for assembling multiple ggplot2 plots into complex layouts without resorting to low-level grid hacks.
+
+```{r library-loading, message=FALSE, warning=FALSE}
 library(matrixStats)
 library(readxl)
 library(dplyr)
 library(stringr)
-library(readr)    # for parse_number
+library(readr)
 library(ggplot2)
 library(ggrepel)
+library(scales)
+library(patchwork)
+```
+
+### 2.2 data selection and transformation
+
+The dataset is loaded into environment by eliminating those rows with values "Total" for the reason that it could construct a distortion of data analysis at individual-area or individual-age level.
+
+The imported data ('Population') has been converted into numeric format that ensures the following algebraic calculation (sum, average, or counts).
+
+Many values of column 'Age' has been transformed:
+
+1\. “Under x” entries (e.g. “Under 1”) become age 0.
+
+2\. “Over x” or “x and over” (e.g. “65 and over”) are parsed to the base number (65).
+
+Any rows where the population or parsed age turned into NA are removed. This guards against stray text labels or malformed entries that slipped past the earlier filters.
+
+```{r data-cleaning, message=FALSE, warning=FALSE}
 
 # 1. Read in data and drop all “Total” summary rows
 df_clean <- read_excel("respopagesex2024e.xlsx") %>%
@@ -75,21 +118,21 @@ glimpse(df_clean)
 head(df_clean, 10)
 ```
 
-## Objective and research question definition
+## 3 Objective and research question definition
 
-### 1. What is the national age–sex structure for 2024?
+### 3.1 What is the national age–sex structure for 2024?
 
 -   How does the shape of Singapore’s population pyramid look in 2024?
 
 -   Are there notable “bulges” or gaps in certain cohorts?
 
-### 2. How do age distributions differ by planning area (and subzone)?
+### 3.2 How do age distributions differ by planning area (and subzone)?
 
 -   Which areas skew younger (e.g., many children and young adults)?
 
 -   Which areas skew older (a high share of 65+ residents)?
 
-### 3. What spatial patterns emerge in median age and population density?
+### 3.3 What spatial patterns emerge in median age and population density?
 
 -   Map median age and density at the planning-area level to highlight “young hubs” vs. “retirement clusters.”
 
@@ -194,11 +237,7 @@ ggplot(pyramid_df, aes(x = Age_numeric, y = PopSigned, fill = Sex)) +
 ### visualization 2
 
 ```{r pa-young-old-bar, fig.width=10, fig.height=6, message=FALSE, warning=FALSE}
-library(dplyr)
-library(ggplot2)
-library(scales)
-library(patchwork)
-library(readr)
+
 
 # 1. Compute shares by Planning Area
 dep_pa <- df_clean %>%

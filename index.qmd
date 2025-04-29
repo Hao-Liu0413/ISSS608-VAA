@@ -9,7 +9,7 @@ Below you’ll find links to each of the subsections (chapters, exercises, or pr
 -   [Hands-on_Ex01](Hands-on_Ex\Hands-on_Ex01\Hands-on_Ex01.qmd)
 -   [Hands-on_Ex02](Hands-on_Ex\Hands-on_Ex02\Hands-on_Ex02.qmd)
 -   [Hands-on_Ex03](Hands-on_Ex\Hands-on_Ex03\Hands-on_Ex03.qmd)
--   [Hands-on_Ex03_part2](Hands-on_Ex\Hands-on_Ex03\Hands-on_Ex03_part2.qmd)
+-   [Hands-on_Ex03_part2](Hands-on_Ex\Hands-on_Ex03_part2\Hands-on_Ex03_part2.qmd)
 -   [Take-Home Exercise 01](Take_Home_Exercise\Take_Home_Exercise01\Take_Home_Exercise01.qmd)
 
 Feel free to click any link to jump straight to that section.\

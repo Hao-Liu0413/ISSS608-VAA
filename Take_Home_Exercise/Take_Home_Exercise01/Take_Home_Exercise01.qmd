@@ -23,41 +23,33 @@ A local online media company that publishes daily content on digital platforms i
 
 The *Singapore Residents by Planning Area / Subzone, Single Year of Age and Sex, June 2024* dataset, shared by [Department of Statistics, Singapore (DOS)](https://www.singstat.gov.sg/), is composed by 5 main columns:
 
--   **Planning Area**: Geographic planning areas in Singapore.
-
--   **Subzone**: Subdivision within each Planning Area.
-
--   **Age**: Individual ages of residents.
-
--   **Sex**: Gender of residents (Male, Female).
-
--   **2024**: Resident population count as of June 2024.
+| Column | Type | Description | Example |
+|-----------------|-----------------|---------------------|-----------------|
+| Planning Area | Text | One of the 55 official planning areas designated by URA. | Central Area |
+| Subzone | Text | A finer subdivision within each planning area (e.g. neighbourhood or precinct name). | Chinatown |
+| Age | Text | Single-year age categories plus special labels for youngest (“Under 1”) and oldest (“65 and over”, “90 and over”). | Under 1; 27; 65 and over |
+| Sex | Text | Resident gender—exactly two values: “Male” or “Female”. | Female |
+| 2024 | Text→Numeric | Resident count for June 2024. Imported as text (formatting) then cast to numeric for analysis. | “10356” → 10356 |
 
 ### 1.3 The Designing Tool
 
-The data is processed by using tidyverse family of packages and the data visualization is prepared by using ggplot2 and its extensions.
+All data wrangling and visualization in this project leverage the modern **tidyverse** ecosystem plus several purpose-built extensions.
 
 ## 2. Data cleaning
 
-### 2.1 load the neccessary packages
+### 2.1 Load the necessary packages
 
-1\.  matrixStats: Provides optimized, vectorized functions for row‐ and column‐wise summaries on matrices.
-
-2\.  readxl: used to import Excel files (.xls and .xlsx) into R data frames without requiring Java or external dependencies.
-
-3\.  dplyr: A grammar of data manipulation.
-
-4\.  stringr: A consistent wrapper around R’s string‐processing functions, built on the {stringi} engine.
-
-5\.  readr: Provide functions for reading flat files (CSV, TSV, FWf).
-
-6\.  ggplot2: Implements the “Grammar of Graphics” for creating complex, multi‐layered visualizations via a coherent API.
-
-7\.  ggrepel: An add‐on to ggplot2 that smartly repels text and label annotations so they do not overlap.
-
-8\. scales: provides a suite of functions for transforming and formatting axis breaks, labels, and legends.
-
-9\. patchwork: used for assembling multiple ggplot2 plots into complex layouts without resorting to low-level grid hacks.
+| Package | Description |
+|------------------------------|------------------------------------------|
+| matrixStats | Provides optimized, vectorized functions for row‐ and column‐wise summaries on matrices. |
+| readxl | Used to import Excel files (.xls and .xlsx) into R data frames without requiring Java or external dependencies. |
+| dplyr | A grammar of data manipulation. |
+| stringr | A consistent wrapper around R’s string‐processing functions, built on the {stringi} engine. |
+| readr | Provides functions for reading flat files (CSV, TSV, FWf). |
+| ggplot2 | Implements the “Grammar of Graphics” for creating complex, multi‐layered visualizations via a coherent API. |
+| ggrepel | An add‐on to ggplot2 that smartly repels text and label annotations so they do not overlap. |
+| scales | Provides a suite of functions for transforming and formatting axis breaks, labels, and legends. |
+| patchwork | Used for assembling multiple ggplot2 plots into complex layouts without resorting to low‐level grid hacks. |
 
 ```{r library-loading, message=FALSE, warning=FALSE}
 library(matrixStats)
@@ -136,7 +128,7 @@ head(df_clean, 10)
 
 -   Map median age and density at the planning-area level to highlight “young hubs” vs. “retirement clusters.”
 
-### Visualization Deliverables
+### 3.4 Visualization Deliverables
 
 | Chart Type | Purpose |
 |------------------------------------|------------------------------------|
@@ -144,9 +136,9 @@ head(df_clean, 10)
 | **Small-multiple Histograms** | Compare age distributions side-by-side for a set of planning areas/subzones. |
 | **Choropleth Map** | Color each planning area by median age, dependency ratio, or total population density. |
 
-## Visualization elaboration (pratical implementation)
+## 4 Visualization elaboration
 
-### measures definition
+### 4.1 Measures definition
 
 We will compute the following key metrics:
 

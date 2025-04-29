@@ -23,13 +23,19 @@ A local online media company that publishes daily content on digital platforms i
 
 The *Singapore Residents by Planning Area / Subzone, Single Year of Age and Sex, June 2024* dataset, shared by [Department of Statistics, Singapore (DOS)](https://www.singstat.gov.sg/), is composed by 5 main columns:
 
-| Column | Type | Description | Example |
-|-----------------|-----------------|---------------------|-----------------|
-| Planning Area | Text | One of the 55 official planning areas designated by URA. | Central Area |
-| Subzone | Text | A finer subdivision within each planning area (e.g. neighbourhood or precinct name). | Chinatown |
-| Age | Text | Single-year age categories plus special labels for youngest (“Under 1”) and oldest (“65 and over”, “90 and over”). | Under 1; 27; 65 and over |
-| Sex | Text | Resident gender—exactly two values: “Male” or “Female”. | Female |
-| 2024 | Text→Numeric | Resident count for June 2024. Imported as text (formatting) then cast to numeric for analysis. | “10356” → 10356 |
++----------------+----------------+--------------------------------------------------------------------------------------------------------------------+--------------------------+
+| Column         | Type           | Description                                                                                                        | Example                  |
++================+================+====================================================================================================================+==========================+
+| Planning Area  | Text           | One of the 55 official planning areas designated by URA.                                                           | Central Area             |
++----------------+----------------+--------------------------------------------------------------------------------------------------------------------+--------------------------+
+| Subzone        | Text           | A finer subdivision within each planning area (e.g. neighbourhood or precinct name).                               | Chinatown                |
++----------------+----------------+--------------------------------------------------------------------------------------------------------------------+--------------------------+
+| Age            | Text           | Single-year age categories plus special labels for youngest (“Under 1”) and oldest (“65 and over”, “90 and over”). | Under 1; 27; 65 and over |
++----------------+----------------+--------------------------------------------------------------------------------------------------------------------+--------------------------+
+| Sex            | Text           | Resident gender—exactly two values: “Male” or “Female”.                                                            | Female                   |
++----------------+----------------+--------------------------------------------------------------------------------------------------------------------+--------------------------+
+| 2024           | Text→Numeric   | Resident count for June 2024. Imported as text (formatting) then cast to numeric for analysis.                     | “10356” → 10356          |
++----------------+----------------+--------------------------------------------------------------------------------------------------------------------+--------------------------+
 
 ### 1.3 The Designing Tool
 
@@ -39,17 +45,27 @@ All data wrangling and visualization in this project leverage the modern **tidyv
 
 ### 2.1 Load the necessary packages
 
-| Package | Description |
-|------------------------------|------------------------------------------|
-| matrixStats | Provides optimized, vectorized functions for row‐ and column‐wise summaries on matrices. |
-| readxl | Used to import Excel files (.xls and .xlsx) into R data frames without requiring Java or external dependencies. |
-| dplyr | A grammar of data manipulation. |
-| stringr | A consistent wrapper around R’s string‐processing functions, built on the {stringi} engine. |
-| readr | Provides functions for reading flat files (CSV, TSV, FWf). |
-| ggplot2 | Implements the “Grammar of Graphics” for creating complex, multi‐layered visualizations via a coherent API. |
-| ggrepel | An add‐on to ggplot2 that smartly repels text and label annotations so they do not overlap. |
-| scales | Provides a suite of functions for transforming and formatting axis breaks, labels, and legends. |
-| patchwork | Used for assembling multiple ggplot2 plots into complex layouts without resorting to low‐level grid hacks. |
++----------------------------+-----------------------------------------------------------------------------------------------------------------+
+| Package                    | Description                                                                                                     |
++============================+=================================================================================================================+
+| matrixStats                | Provides optimized, vectorized functions for row‐ and column‐wise summaries on matrices.                        |
++----------------------------+-----------------------------------------------------------------------------------------------------------------+
+| readxl                     | Used to import Excel files (.xls and .xlsx) into R data frames without requiring Java or external dependencies. |
++----------------------------+-----------------------------------------------------------------------------------------------------------------+
+| dplyr                      | A grammar of data manipulation.                                                                                 |
++----------------------------+-----------------------------------------------------------------------------------------------------------------+
+| stringr                    | A consistent wrapper around R’s string‐processing functions, built on the {stringi} engine.                     |
++----------------------------+-----------------------------------------------------------------------------------------------------------------+
+| readr                      | Provides functions for reading flat files (CSV, TSV, FWf).                                                      |
++----------------------------+-----------------------------------------------------------------------------------------------------------------+
+| ggplot2                    | Implements the “Grammar of Graphics” for creating complex, multi‐layered visualizations via a coherent API.     |
++----------------------------+-----------------------------------------------------------------------------------------------------------------+
+| ggrepel                    | An add‐on to ggplot2 that smartly repels text and label annotations so they do not overlap.                     |
++----------------------------+-----------------------------------------------------------------------------------------------------------------+
+| scales                     | Provides a suite of functions for transforming and formatting axis breaks, labels, and legends.                 |
++----------------------------+-----------------------------------------------------------------------------------------------------------------+
+| patchwork                  | Used for assembling multiple ggplot2 plots into complex layouts without resorting to low‐level grid hacks.      |
++----------------------------+-----------------------------------------------------------------------------------------------------------------+
 
 ```{r library-loading, message=FALSE, warning=FALSE}
 library(matrixStats)
@@ -112,109 +128,145 @@ head(df_clean, 10)
 
 ## 3 Objective and research question definition
 
-### 3.1 What is the national age–sex structure for 2024?
+### 3.1 National Age–Sex Structure for 2024
 
--   How does the shape of Singapore’s population pyramid look in 2024?
+**Research Questions:**
 
--   Are there notable “bulges” or gaps in certain cohorts?
+-    How does Singapore’s overall population pyramid look in mid-2024?
 
-### 3.2 How do age distributions differ by planning area (and subzone)?
+-    Which age cohorts are unusually large (“bulges”) or small (“gaps”)?
 
--   Which areas skew younger (e.g., many children and young adults)?
+-    Are there sex-specific patterns (e.g. male-heavy vs. female-heavy at certain ages)?
 
--   Which areas skew older (a high share of 65+ residents)?
+**Analytical Approach:**
 
-### 3.3 What spatial patterns emerge in median age and population density?
+1.   **Aggregate** the cleaned dataset by `Age_numeric` and `Sex`, summing `Population`.
 
--   Map median age and density at the planning-area level to highlight “young hubs” vs. “retirement clusters.”
+2.   **Normalize**: express each bar as a percentage of total male or female population to highlight relative bulges.
+
+3.   **Identify Extremes**: compute the top 3 largest cohorts and the smallest (\<1 %) cohorts for annotation.
+
+4.  **Interpret**: link any bulges/gaps to known demographic drivers (e.g. baby-boom years, lower birth cohorts, migration waves).
+
+### 3.2 Age Distributions by Planning Area (and Subzone)
+
+**Research Questions:**
+
+-    Which planning areas have a youthful profile (large share of under-25s)?
+
+-    Which areas are “grey” clusters (e.g. \> 25 % aged 65+)?
+
+-    How do the shapes of these area-level pyramids differ from the national profile?
+
+**Analytical Approach:**
+
+1.   **Stratify**: for each of a selected set of planning areas (or all 55, if feasible), tabulate `Population` by `Age_numeric`.
+
+2.   **Compute Shares**: convert raw counts to percentages within each area.
+
+3.  **Compare**: use small-multiple histograms or ridgeline plots to place each area’s curve alongside the national benchmark.
+
+4.   **Cluster**: optionally cluster areas by their age-distribution vectors (e.g. via k-means) to group “young hubs” vs. “mature suburbs.”
+
+### 3.3 Spatial Patterns: Median Age & Population Density
+
+**Research Questions:**
+
+-    Where are the youngest vs. oldest planning-area populations located?
+
+-    How does median age correlate with population density across areas?
+
+-   Can we spot “retirement clusters” (high median age, low density) vs. “youth clusters” (low median age, high density)?
+
+**Analytical Approach:**
+
+1.   **Compute Metrics** per planning area:
+
+    -    **Median Age**: the 50 th percentile of `Age_numeric` weighted by `Population`.
+
+    -    **Population Density**: total population ÷ land area (km²).
+
+    -    **Dependency Ratio**: (pop 0–14 + pop 65+) ÷ pop 15–64.
+
+2.   **Map**: join these metrics to a Singapore planning-area shapefile.
+
+3.   **Visualize**:
+
+    -    **Choropleth** of median age.
+
+    -   **Bubble overlay** (or secondary choropleth) for density or dependency ratio.
+
+4.   **Analysis**: compute spatial correlations (e.g. Moran’s I) to detect clustering.
 
 ### 3.4 Visualization Deliverables
 
-| Chart Type | Purpose |
-|------------------------------------|------------------------------------|
-| **Population Pyramid** | Show national age–sex structure (and optionally for selected planning areas). |
-| **Small-multiple Histograms** | Compare age distributions side-by-side for a set of planning areas/subzones. |
-| **Choropleth Map** | Color each planning area by median age, dependency ratio, or total population density. |
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| +-------------------------------+-------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------+--------------------------------------------------------------------------------------------------------+ |
+| | Chart Type                    | Purpose                                                                                                           | Data & Metrics                                              | Key Features                                                                                           | |
+| +===============================+===================================================================================================================+=============================================================+========================================================================================================+ |
+| | **Population Pyramid**        | Reveal the national age–sex structure and pinpoint bulges/gaps.                                                   | Age-by-sex population aggregates (counts and % shares).     | Back-to-back bars, cohort annotations, % scale on x-axis.                                              | |
+| +-------------------------------+-------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------+--------------------------------------------------------------------------------------------------------+ |
+| | **Small-multiple Histograms** | Compare the shape of age distributions across selected planning areas (or subzones) against the national profile. | Area-level age shares; national benchmark.                  | Facets or ridgelines, aligned age axis, color-coded by area.                                           | |
+| +-------------------------------+-------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------+--------------------------------------------------------------------------------------------------------+ |
+| | **Choropleth Map**            | Show spatial patterns in median age, dependency ratio, or population density across planning areas.               | Median age; density (pop/km²); dependency ratio (optional). | Multi-layer map: fill = median age; bubble size or opacity = density; interactive tooltips (optional). | |
+| +-------------------------------+-------------------------------------------------------------------------------------------------------------------+-------------------------------------------------------------+--------------------------------------------------------------------------------------------------------+ |
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 ## 4 Visualization elaboration
 
-### 4.1 Measures definition
-
-We will compute the following key metrics:
-
--   **Age_numeric**: single-year age parsed from `Age` (e.g. “65 and over” → 65)
-
--   **Population**: numeric population count from the `2024` column
-
--   **Youth population**: sum of `Population` for `Age_numeric < 15`
-
--   **Working-age population**: sum for `15 <= Age_numeric <= 64`
-
--   **Elderly population**: sum for `Age_numeric >= 65`
-
--   **Dependency ratio**: `(Youth + Elderly) / WorkingAge`
-
--   **Sex ratio**: `Males / Females` per age or geography
-
--   **Median Age**: median of `Age_numeric`, weighted by `Population`
-
-### visualization 1
+### 4.1 Visualization 1 (National Age–Sex Structure for 2024)
 
 ```{r viz-pyramid-enhanced, fig.width=8, fig.height=6, message=FALSE, warning=FALSE}
   
-# 1. Build pyramid_df explicitly
+# 1. Build the pyramid data
 pyramid_df <- df_clean %>%
   group_by(Sex, Age_numeric) %>%
-  summarise(
-    Pop = sum(Population, na.rm = TRUE),
-    .groups = "drop"
-  ) %>%
+  summarise(Pop = sum(Population, na.rm = TRUE), .groups = "drop") %>%
   mutate(
-    # make male values negative for the left side of the pyramid
     PopSigned = if_else(Sex == "Male", -Pop, Pop),
     PopAbs    = abs(PopSigned)
   )
 
-# 2. Compute summary stats
+# 2. Compute median age and the single top “bulge” cohort
 med_age <- weightedMedian(df_clean$Age_numeric, w = df_clean$Population)
-bulge <- pyramid_df %>%
+
+bulge_df <- pyramid_df %>%
   group_by(Age_numeric) %>%
-  summarise(Tot = sum(PopAbs), .groups="drop") %>%
-  slice_max(Tot, n=1)
-bulge_age  <- bulge$Age_numeric
-bulge_size <- bulge$Tot
+  summarise(Total = sum(PopAbs), .groups = "drop") %>%
+  slice_max(Total, n = 1)
 
 # 3. Plot
 ggplot(pyramid_df, aes(x = Age_numeric, y = PopSigned, fill = Sex)) +
   geom_col(width = 1, color = "white") +
   
-  # Median‐age line
+  # median‐age line (becomes horizontal after coord_flip)
   geom_vline(xintercept = med_age, linetype = "dashed", color = "grey40") +
   annotate("text",
            x     = med_age + 2,
            y     = 0,
            label = paste0("Median age: ", med_age),
-           angle = 90,
-           vjust = -0.5,
-           size  = 3) +
+           angle = 90, vjust = -0.5, size = 3) +
   
-  # Bulge annotation
-  geom_segment(aes(x = bulge_age, xend = bulge_age,
-                   y = 0, yend = -bulge_size/2),
-               arrow = arrow(length = unit(0.2, "cm")),
-               colour = "darkred") +
-  annotate("text",
-           x     = bulge_age + 3,
-           y     = -bulge_size/2,
-           label = paste0("Peak cohort:\nAge ", bulge_age),
-           hjust = 0,
-           size  = 3,
-           colour= "darkred") +
+  # bulge arrow + label
+  geom_segment(data = bulge_df,
+               aes(x = Age_numeric, xend = Age_numeric,
+                   y = 0, yend = -Total * 0.6),
+               arrow  = arrow(length = unit(0.2, "cm")),
+               colour = "darkred",
+               inherit.aes = FALSE) +
+  geom_text(data = bulge_df,
+            aes(x = Age_numeric + 2,
+                y = -Total * 0.6,
+                label = paste0("Peak cohort:\nAge ", Age_numeric)),
+            hjust = 0, size = 3, colour = "darkred",
+            inherit.aes = FALSE) +
   
-  # Color and scales
+  # scales, colors, flip
   scale_fill_brewer(palette = "Set2") +
   scale_y_continuous(labels = abs) +
   coord_flip() +
+  
+  # labels & theme
   labs(
     title    = "Enhanced Singapore Population Pyramid (2024)",
     subtitle = "Median age & largest cohort annotated",
@@ -223,10 +275,19 @@ ggplot(pyramid_df, aes(x = Age_numeric, y = PopSigned, fill = Sex)) +
     fill     = NULL
   ) +
   theme_minimal(base_size = 12) +
-  theme(legend.position = "top")
+  theme(
+    legend.position       = "top",
+    panel.grid.major.y    = element_blank()
+  )
 ```
 
-### visualization 2
+::: callout-note
+The 2024 Singapore population pyramid reveals a distinctly “double-bulge” structure and a modest tilt toward an aging profile. The dashed horizontal line marks the overall median age of 42, reflecting that half the population is older than early‐forties. The largest single cohort, annotated at age 35, stands out prominently—likely a millennial “echo” of high-birth years in the late 1980s. A secondary, smaller peak appears around age 55–60, hinting at a post-war baby-boom echo. In contrast, there is a noticeable trough in the very youngest ages (under 5), suggesting declining birth rates in recent years.
+
+Sex differences are also evident: although both sides mirror each other through most working-age groups, the female bars extend further at ages 70+, illustrating higher female longevity. Male and female distributions converge between ages 20–40, indicating balanced labor-force cohorts. Overall, the chart underscores Singapore’s transition to an older population, highlights cohort‐specific “bulges” at 35 and 55, and flags a shrinking base of young children.
+:::
+
+### 4.2 Visualization 2
 
 ```{r pa-young-old-bar, fig.width=10, fig.height=6, message=FALSE, warning=FALSE}
 
@@ -272,7 +333,7 @@ p_old_pa <- dep_pa %>%
 p_young_pa + p_old_pa
 ```
 
-### visualization 3
+### 4.3 Visualization 3
 
 ```{r youth-elderly-enhanced, fig.width=8, fig.height=6, message=FALSE, warning=FALSE}
 

@@ -1,6 +1,7 @@
 ---
 title: "Take_Home_Exercise01"
-date: ""
+author: Hao Liu
+date: "May 2, 2025"
 date-modified: "last-modified"
 format: html
 editor: visual
@@ -13,44 +14,58 @@ execute:
 
 ## 1. Overview
 
-This first take-home exercise aims to provide a detailed visualization of Singapore's demographic structure in 2024. Three visual representations will be described in this project:
+This first take-home project aims to provide a detailed visualization of Singapore's demographic structure in 2024. Three visual representations will be described and implemented in this project:
 
--   **An enhanced population pyramid** that reveals age-sex bulges, gaps, and the median age.
+-   **A population pyramid** shows age-sex bulges, gaps, and the median age.
 
--   **A bar-chart comparison** showing which planning areas are most youth- and elder-skewed.
+-   **A bar-chart comparison** tries to compare population distribution between young and old groups.
 
--   **A bubble scatter** mapping youth vs. elderly shares, with bubble size for population and color for median age.
+-   **A bubble scatter** which maps youth vs. elderly shares, with bubble size for population and color for median age.
 
-Before we dive into those, here is a choropleth map of population density across Singapore’s 55 planning areas, ligheter tan tones indicate low density, while progressively darker reds mark higher density band.
+Before we go deeper into analysis, a simple map can give us a great overview of population density of Singapore, the lighter color indicates a lower population density, which is mainly concentrated in the West and central region, while the darker color marks zones with a higher density, which are mainly in the East Region and central part of the country. Through this project we aim to provide answer for the reason of this density distribution, to undertand why and what is such difference.
 
 ![](The-subzone-residential-population-density-map-of-Singapore-PD-stands-for-population.png)
 
 ::: callout-note
-Source: Spatial super-spreaders and super-susceptibles in human movement networks - Scientific Figure on ResearchGate. Available from: https://www.researchgate.net/figure/The-subzone-residential-population-density-map-of-Singapore-PD-stands-for-population_fig1_346481200 \[accessed 1 May 2025\]
+*Source: Spatial super-spreaders and super-susceptibles in human movement networks - Scientific Figure on ResearchGate. Available from: https://www.researchgate.net/figure/The-subzone-residential-population-density-map-of-Singapore-PD-stands-for-population_fig1_346481200 \[accessed 1 May 2025\]*
 :::
 
 ### 1.1 Setting the scene
 
 A local online media company that publishes daily content on digital platforms is planning to release an article on demographic structures and distribution of Singapore in 2024.
 
+The goal is to transfer useful demographic information to the audience by providing some visual graphics that answer questions such as:
+
+-   **“Where do the youngest and oldest residents live?”**
+
+-   **“How balanced is country's working-age population?”**
+
+-   "**Are Singaporean birthrates falling?”**
+
+**...**
+
+By setting these hypothetical question, we are not only providing a data visualization project, but also aiming to meet some real business needs and contribute to possible Startup companies creation.
+
 ### 1.2. Data structure
 
-The *Singapore Residents by Planning Area / Subzone, Single Year of Age and Sex, June 2024* dataset, shared by [Department of Statistics, Singapore (DOS)](https://www.singstat.gov.sg/), is composed by 5 main columns:
+The dataset is **Singapore Residents by Planning Area / Subzone, Single Year of Age and Sex, June 2024**, which is from the Department of Statistics (DOS). In total, after expanding 55 planning areas and roughly 323 subzones, across 92 age bins (Under 1, 1–89, and “90 and over”), and two sexes, the raw file runs to about **32 000 rows**. Here is a summary of data structure:
 
 | Column | Type | Description | Example |
-|-------------|-------------|---------------------------------|-------------|
+|----------------|----------------|-------------------------|----------------|
 | Planning Area | Text | One of the 55 official planning areas designated by URA. | Central Area |
-| Subzone | Text | A finer subdivision within each planning area (e.g. neighbourhood or precinct name). | Chinatown |
+| Subzone | Text | A finer subdivision within each planning area | Chinatown |
 | Age | Text | Single-year age categories plus special labels for youngest (“Under 1”) and oldest (“65 and over”, “90 and over”). | Under 1; 27; 65 and over |
-| Sex | Text | Resident gender—exactly two values: “Male” or “Female”. | Female |
-| 2024 | Text→Numeric | Resident count for June 2024. Imported as text (formatting) then cast to numeric for analysis. | “10356” → 10356 |
+| Sex | Text | Resident gender | Female |
+| Population | Text→Numeric | Resident count for June 2024. Imported as text (formatting) then cast to numeric for analysis. | “10356” → 10356 |
 
 ## 2. Data cleaning
 
 ### 2.1 Load the necessary packages
 
+Before starting the analysis, we install and load a set of R packages that help our data‐wrangling, text-parsing, and visualization toolkit:
+
 | Package | Description |
-|-----------------|-------------------------------------------------------|
+|-------------------|-----------------------------------------------------|
 | matrixStats | Provides optimized, vectorized functions for row‐ and column‐wise summaries on matrices. |
 | readxl | Used to import Excel files (.xls and .xlsx) into R data frames without requiring Java or external dependencies. |
 | dplyr | A grammar of data manipulation. |
@@ -73,17 +88,17 @@ library(scales)
 library(patchwork)
 ```
 
-### 2.2 Data selection and transformation
+### 2.2 Data cleaning
 
-The data is loaded into environment by eliminating those rows with values "Total" for the reason that it could construct a distortion of data analysis at individual-area or individual-age level. The imported data (column: 'Population') has been converted into numeric format that ensures the following algebraic calculation (sum, average, or counts).
+The data is loaded into environment by eliminating those rows with values "Total" for the reason that it could construct a distortion of data analysis at individual-area or individual-age level. The imported data (column: 'Population') has been converted into numeric format that ensures the future algebraic calculation (sum, average, or counts).
 
 Many values of column 'Age' has been transformed:
 
-1\. “Under x” entries (e.g. “Under 1”) become age 0.
+-   “Under x” entries (e.g. “Under 1”) become age 0.
 
-2\. “Over x” or “x and over” (e.g. “65 and over”) are parsed to the base number (65).
+-   “Over x” or “x and over” (e.g. “65 and over”) are parsed to the base number (65).
 
-Any rows where the population or parsed age turned into NA are removed. This guards against stray text labels or malformed entries that slipped past the earlier filters.
+Any rows where the population or parsed age turned into null values are removed. This guards against stray text labels or malformed entries that slipped past the earlier filters.
 
 ```{r data-cleaning, message=FALSE, warning=FALSE}
 
@@ -113,6 +128,11 @@ df_clean <- read_excel("respopagesex2024e.xlsx") %>%
     !is.na(Age_numeric)
   )
 
+```
+
+After the data cleaning process, we display some rows to check:
+
+```{r data-check, message=FALSE, warning=FALSE}
 # 5. Inspect
 glimpse(df_clean)
 head(df_clean, 10)
@@ -120,59 +140,53 @@ head(df_clean, 10)
 
 ## 3 Objective and research question definition
 
+One of the purpose of data visualization project is to answer specific research question, here we are proposing many possible research question that could be useful in term of demographic analysis of Singapore population.
+
 ### 3.1 National Age–Sex Structure for 2024
 
-**Research Questions:**
+The gender is the key attribute in most of demographic analysis, by focusing on this element, we are trying to formulate the following research questions:
 
 -   What is the male and female age distribution in 2024?
 
--   Which age groups presents unusual trends and what is possible reason of that?
+-   Which male and/or female age groups show unusual trends and what is possible reason of that?
 
--   Are there sex-specific patterns (e.g. male-heavy vs. female-heavy at certain ages)?
+-   Are there gender-specific patterns?
 
 **Analytical Approach:**
 
-1.  Aggregate df_clean by Age_numeric and Sex to sum total residents.
+-   Aggregate cleaned dataset by Age_numeric and Gender to compute total residents.
 
-2.  Sign-flip males negative & females positive (PopSigned) so bars extend left/right.
+-   Transform these into within-sex percentage shares.
 
-3.  Compute Extremes
+-   Identify Extremes: compute weighted median age; select top 3 bulge cohorts and flag tiny cohorts whose share \< 1%.
 
--   Weighted median age (matrixStats::weightedMedian).
-
--   Top 3 bulge cohorts (slice_max()) and all tiny cohorts (\<1% share).
-
-4.  Plot with ggplot2:
-
--   geom_col() for the back-to-back bars.
-
--   geom_vline() + annotate() for median age.
-
--   geom_segment() + geom_text() arrows for bulges; geom_point() + labels for gaps.
-
--   coord_flip(), absolute y-axis labels, and a clean theme.
+-   Visualize with ggplot2: geom_col() for the back-to-back bars; geom_vline() + annotate() for median age; geom_segment() + geom_text() arrows for bulges; geom_point() + labels for gaps; coord_flip(), absolute y-axis labels, and a clean theme.
 
 ### 3.2 Comparing Youth vs. Elderly Shares
 
-**Research Questions:**
+Concentrating on different age groups, we can try to compare the youngest and oldest age groups in different zone of country, which can be quite useful for social impact analysis and provide advice for future policy making.
 
 -   Which planning areas have the highest share of residents under age 15?
 
--   Which planning areas have the highest share of residents aged 65+?
+-   Which planning areas have the highest share of residents over age 65?
 
 **Analytical Approach:**
 
 -   Compute Shares for each Planning Area.
 
+    ***youth_share** = sum(Population\[Age_numeric \< 15\]) / sum(Population)*
+
+    ***elderly_share** = sum(Population\[Age_numeric \>= 65\]) / sum(Population)*
+
 -   Select Top 10 of each metric via slice_max(n=10).
 
 -   Plot horizontally with geom_col(), green bars for under-15, red bars for 65+; format axes with scales::percent_format().
 
--   Compose side-by-side using patchwork::p_young + p_old.
+-   Layout side-by-side via patchwork for direct comparison.
 
 ### 3.3 Spatial Patterns: Median Age & Population Density
 
-**Research Questions:**
+A more complex analysis can be done by combining population age and density, here we are trying to answer these questions:
 
 -   How do youth and elderly shares co-vary across all 55 planning areas?
 
@@ -182,39 +196,25 @@ head(df_clean, 10)
 
 **Analytical Approach:**
 
-1.  Compute Metrics for each Planning Area:
+-   Compute Metrics for each Planning Area: youth_share, elderly_share, total_pop = sum(Population), median_age = weightedMedian(Age_numeric, Population)
 
--   youth_share, elderly_share as above
+-   Global Benchmarks: calculate means and Pearson r.
 
--   total_pop = sum(Population)
-
--   median_age = weightedMedian(Age_numeric, Population)
-
-2.  Global Benchmarks: calculate means and Pearson r.
-
-3.  Plot with ggplot2:
-
--   aes(x = youth_share, y = elderly_share, size = total_pop, color = median_age)
-
--   geom_point() + geom_smooth(method="lm", linetype="dotted")
-
--   geom_vline()/geom_hline() at mean shares
-
--   ggrepel::geom_text_repel() to label areas
-
--   Color scale (viridis_c()), percent axes, and a minimal theme.
+-   Plot with ggplot2: aes(x = youth_share, y = elderly_share, size = total_pop, color = median_age); geom_point() + geom_smooth(method="lm", linetype="dotted"); geom_vline()/geom_hline() at mean shares; ggrepel::geom_text_repel() to label areas; Color scale (viridis_c()), percent axes, and a minimal theme.
 
 ### 3.4 Visualization Deliverables
 
 | deliverable | Research Question(s) | Plot Type | Key Features |
 |------------------|------------------|------------------|------------------|
-| **1. Enhanced Population Pyramid** | 3.1 What does Singapore’s age–sex profile look like in 2024? Which cohorts are bulges (\<1%) or gaps? | Back-to-back bar chart (`geom_col`) | Males left/females right; weighted median line; arrows + labels for top 3 cohorts; points for \<1 % ages |
+| **1. Population Pyramid** | 3.1 What does Singapore’s age–sex profile look like in 2024? Which cohorts are bulges (\<1%) or gaps? | Back-to-back bar chart (`geom_col`) | Males left/females right; weighted median line; arrows + labels for top 3 cohorts; points for \<1 % ages |
 | **2. Top-10 Youth vs. Elderly Bar Charts** | 3.2 Which planning areas have the highest share under 15? Which have the highest share 65 +? | Horizontal bar charts (`geom_col`) | Green bars for under 15; red bars for 65 +; top 10 lists; percent-formatted x-axis; patchwork layout |
 | **3. Youth-Elderly Bubble Scatter** | 3.3 How do youth and elderly shares co-vary across all planning areas? What role does median age play? | Scatter plot with bubbles (`geom_point`) | x = share \< 15; y = share ≥ 65; bubble size = total pop; color = median age; regression line + labels |
 
 ## 4 Visualization elaboration
 
 ### 4.1 Visualization 1 (National Age–Sex Structure for 2024)
+
+To create the pyramid graph, we assign the clean dataset to 'pyramid_df' and group the data by 'Sex' and 'Age_numeric', and for each (Sex,Age_numeric) group, we count the total resident. By using 'mutate' function, we are going to transform raw counts into per-sex percentages, then turns the result into signed and absolute forms for plotting and annotation.
 
 ```{r viz-pyramid-enhanced, fig.width=8, fig.height=6, message=FALSE, warning=FALSE}
   
@@ -229,10 +229,18 @@ pyramid_df <- df_clean %>%
     PopAbs    = abs(PopSigned)
   ) %>%
   ungroup()
+```
 
+We compute also weighted median age by using function 'weightedMedian'
+
+```{r med_age, fig.width=8, fig.height=6, message=FALSE, warning=FALSE}
 # 2. Compute weighted median age
 med_age <- weightedMedian(df_clean$Age_numeric, w=df_clean$Population)
+```
 
+The we annotate the 'top3_cohorts' and 'tiny_cohorts' which identify the the largest age groups and those with population shares under 1%
+
+```{r extremes, fig.width=8, fig.height=6, message=FALSE, warning=FALSE}
 # 3. Identify extremes
 age_totals <- pyramid_df %>%
   group_by(Age_numeric) %>%
@@ -240,6 +248,11 @@ age_totals <- pyramid_df %>%
 
 top3_cohorts  <- age_totals %>% slice_max(Share, n=3)
 tiny_cohorts <- age_totals %>% filter(Share < 0.01)
+```
+
+Through ggplot function, we generated the pyramide plot:
+
+```{r pyramide plot, fig.width=8, fig.height=6, message=FALSE, warning=FALSE}
 
 # 4. Plot as percent pyramid with annotations
 ggplot(pyramid_df, aes(x=Age_numeric, y=PopSigned, fill=Sex)) +
@@ -292,14 +305,22 @@ ggplot(pyramid_df, aes(x=Age_numeric, y=PopSigned, fill=Sex)) +
 ```
 
 ::: callout-note
-The 2024 Singapore population pyramid shows a “double-bulge” pattern and a modest shift toward an older age. The overall median age is 42 and top 3 largest cohorts are age 33,35, and 36, while small blue dots identifies cohorts under 1% of their sex's total.
+**Plot description:**
 
-Sex differences are also evident: although both sides mirror each other through most working-age groups, the female bars extend further at ages 70+, illustrating higher female longevity. Male and female distributions converge between ages 20–40, indicating balanced labor-force cohorts. he chart underscores Singapore’s transition to an older population, highlights cohort‐specific “bulges” at 35 and 55, and flags a shrinking base of young children.
+In 2024, Singapore population shows a kind of “double-bulge” pattern and a overall shift toward an older age group. The median age is 42 and top 3 largest age groups are around 33,35, and 36, while small blue dots identifies groups under 1% of their sex.
+
+Sex differences are also evident: although there is not huge differences between them, the female bars extend further at ages 70+, indicating a higher female longevity. Both gender distributions converge between ages 20–40, that confirms a balanced labor-force cohorts. The chart inspires Singapore’s transition to an older population (as happen in Japan), with age groups “bulges” at 35 and 55, and flags a shrinking base of young children.
 :::
 
 ### 4.2 Visualization 2 (Age Distributions by Planning Area)
 
-```{r pa-young-old-bar, fig.width=10, fig.height=6, message=FALSE, warning=FALSE}
+As mentioned in the analytical approch (3.2 Comparing Youth vs. Elderly Shares), in this pahse, we compute the 'youth_share' and 'elederly_share' by using these formulas:
+
+***youth_share** = sum(Population\[Age_numeric \< 15\]) / sum(Population)*
+
+***elderly_share** = sum(Population\[Age_numeric \>= 65\]) / sum(Population)*
+
+```{r shares-computing, fig.width=10, fig.height=6, message=FALSE, warning=FALSE}
 
 
 # 1. Compute shares by Planning Area
@@ -310,6 +331,12 @@ dep_pa <- df_clean %>%
     elderly_share = sum(Population[Age_numeric >= 65], na.rm=TRUE) / sum(Population),
     .groups = "drop"
   )
+
+```
+
+The we display plots for each share group, and put them together:
+
+```{r pa-young-old-bar, fig.width=10, fig.height=6, message=FALSE, warning=FALSE}
 
 # 2a. Top 10 youngest areas (highest youth_share)
 p_young_pa <- dep_pa %>%
@@ -344,14 +371,26 @@ p_young_pa + p_old_pa
 ```
 
 ::: callout-note
-The first plot identifies Changi and Punggol as the “youngest” area of Singapore in 2024, each with over 22 % of residents under 15. These are newer or rapidly developing districts—Punggol’s waterfront estates, Changi’s airport-linked communities—where young families cluster. Southern Islands and Western Water Catchment also show surprisingly high youth shares, reflecting small but family-oriented populations in those zones. In contrast, Outram leads the “oldest” list at nearly 29 % aged 65 +, closely followed by Ang Mo Kio and Bukit Merah. These mature, inner-city precincts—home to long-established HDB estates and retirement facilities—have proportionally more seniors. Areas like Bedok, Queenstown, and Toa Payoh likewise appear, underscoring how Singapore’s first-generation housing towns still house an aging cohort.
+**Plot description:**
 
-Taken together, these charts pinpoint where childhood services (schools, playgrounds) might be most needed—Punggol, Changi, Tengah—and where eldercare resources (community centers, healthcare) should be prioritized—Outram, Ang Mo Kio, Bukit Merah.
+The first plot identifies Changi and Punggol as the “youngest” area of Singapore in 2024, with over 22 % of residents under 15, followed by Singapore River. Southern Islands and Western Water Catchment show high youth shares as well, indicating small but family-oriented populations in those zones. The second plot identifies Outram as the “oldest” district at nearly 29 % of 65 + age group, followed by Ang Mo Kio and Bukit Merah. These mature, inner-city precincts have proportionally more seniors. Areas like Bedok, Queenstown, and Toa Payoh likewise appear, underscoring how Singapore’s first-generation housing towns still house an aging cohort.
+
+The plot contributes to where childhood services (schools, playgrounds) might be most needed (Punggol, Changi, Tengah) and where eldercare resources (community centers, healthcare) should be prioritized (Outram, Ang Mo Kio, Bukit Merah).
 :::
 
 ### 4.3 Visualization 3 (Spatial Patterns: Median Age & Population Density)
 
-```{r youth-elderly-enhanced, fig.width=8, fig.height=6, message=FALSE, warning=FALSE}
+As done in the previous plot, we have to compute the key metrics for our visualization task by using these formulas:
+
+***youth_share** = sum(Population\[Age_numeric \< 15\]) / sum(Population)*
+
+***elderly_share** = sum(Population\[Age_numeric \>= 65\]) / sum(Population)*
+
+***total_pop** = sum(Population)*
+
+***median_age** = matrixStats::weightedMedian(Age_numeric, w = Population)*
+
+```{r formula computation, fig.width=8, fig.height=6, message=FALSE, warning=FALSE}
 
 # 1. Compute metrics
 dep_shares <- df_clean %>%
@@ -363,6 +402,21 @@ dep_shares <- df_clean %>%
     median_age    = matrixStats::weightedMedian(Age_numeric, w = Population),
     .groups       = "drop"
   )
+```
+
+The we compute the average proportion of residents under 15 and over 65 across the 55 planning areas, and the Pearson correlation between each area’s youth share and elderly share.
+
+```{r National means & correlation, fig.width=8, fig.height=6, message=FALSE, warning=FALSE}
+
+# 2. National means & correlation
+mean_youth   <- mean(dep_shares$youth_share)
+mean_elderly <- mean(dep_shares$elderly_share)
+corr_val     <- cor(dep_shares$youth_share, dep_shares$elderly_share)
+```
+
+The final plot is the following:
+
+```{r youth-elderly-enhanced, fig.width=8, fig.height=6, message=FALSE, warning=FALSE}
 
 # 2. National means & correlation
 mean_youth   <- mean(dep_shares$youth_share)
@@ -412,7 +466,15 @@ ggplot(dep_shares, aes(
 ```
 
 ::: callout-note
-On the x-axis, **Punggol**, **Changi**, and **Southern Islands** lie far right, indicating 20–30 % of residents under 15. On the y-axis, **Outram**, **Rochor**, and **Ang Mo Kio** sit near 25–30 % aged 65 +, marking them as “retirement clusters.” The vertical and horizontal dashed lines show national average shares (\~13 % youth, \~17 % elderly), and the dotted regression line (r ≈ –0.07) confirms almost no linear trade-off between youth and senior populations.
+**Plot description:**
 
-Bubble **size** reveals population volume—Punggol’s large dot highlights its sizable young cohort—while the **magma** color scale shifts from purple (younger median age) to yellow (older median age). Overall, this visualization pinpoints true “youth hubs” and “elder hubs” at a glance, enriched by population and age-structure context.
+On the x-axis ('Shares of residents under 15'), Punggol, Changi, and Southern Islands lie far right as confirmed in the visualization 2, indicating 20–30 % of residents under 15. On the y-axis ('Share of residents 65 and over'), Outram, Rochor, and Ang Mo Kio sit near 25–30 % aged 65 +, marking them as “retirement clusters.” The vertical and horizontal dashed lines show national average shares (\~13 % youth, \~17 % elderly), and the dotted regression line (r ≈ –0.07) confirms almost no linear trade-off between youth and senior population, means that changes in youth shares do not reliably predict changes in elderly shares.
+
+Punggol’s large dot highlights its sizable young population, while Outram has a small portion of residents but the highest percentage of “retirement clusters”. This visualization indicates true “youth hubs” and “elder hubs” at a glance, enriched by population and age-structure context.
 :::
+
+### 4.4 Conclusion
+
+The pyramid plot shows that Singapore's population reveals a clear shift toward an older population, and a higher longevity of female resident compared to male groups. By examining the planning ares data, Changi and Punggol are unmistakable "youth hubs" (as confirmed in visualization 2,3), whereas Outram, Ang Mo Kio and Bugit Merah stand out as "retirement clusters".
+
+An interesting part is shown in the visualization 3, which confirms that extreme concentrations of children and seniors seldom overlap and most districts clustering near the national average. Likewise, the correlation indicator (r = -0.07) indicates there is no significant correlation between two groups, changes in youth shares will not affect elderly population. Most of area are in the middle position rather than being an outlier of the data.

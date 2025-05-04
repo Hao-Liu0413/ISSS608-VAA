@@ -240,7 +240,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">May 3, 2025</p>
+      <p class="date-modified">May 4, 2025</p>
     </div>
   </div>
     
@@ -259,7 +259,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p><strong>A bar-chart comparison</strong> tries to compare population distribution between young and old groups.</p></li>
 <li><p><strong>A bubble scatter</strong> which maps youth vs.&nbsp;elderly shares, with bubble size for population and color for median age.</p></li>
 </ul>
-<p>Before we go deeper into analysis, a simple map can give us a great overview of population density of Singapore, the lighter color indicates a lower population density, which is mainly concentrated in the West and central region, while the darker color marks zones with a higher density, which are mainly in the East Region and central part of the country. Through this project we aim to provide answer for the reason of this density distribution, to undertand why and what is such difference.</p>
+<p>Before we go deeper into analysis, a simple map can give us a great overview of population density of Singapore, the lighter color indicates a lower population density, which is mainly concentrated in the West and central region, while the darker color marks zones with a higher density, which are mainly in the East Region and central part of the country. Through this project we aim to provide useful information of Singapore’s population distribution and to understand the eventual divergence between different gender and/or age groups.</p>
 <p><img src="The-subzone-residential-population-density-map-of-Singapore-PD-stands-for-population.png" class="img-fluid"></p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -284,7 +284,7 @@ Note
 <li><p>“<strong>Are Singaporean birthrates falling?”</strong></p></li>
 </ul>
 <p><strong>…</strong></p>
-<p>By setting these hypothetical question, we are not only providing a data visualization project, but also aiming to meet some real business needs and contribute to possible Startup companies creation.</p>
+<p>By setting these hypothetical question, we are not only providing a data visualization project, but also aiming to meet some real business needs and contribute to possible accademic research.</p>
 </section>
 <section id="data-structure" class="level3">
 <h3 class="anchored" data-anchor-id="data-structure">1.2. Data structure</h3>
@@ -585,7 +585,7 @@ $ Age_numeric     &lt;dbl&gt; 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8,
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
 <span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We compute also weighted median age by using function ‘weightedMedian’</p>
+<p>We compute also weighted median age by using function ‘weightedMedian’:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Compute weighted median age</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>med_age <span class="ot">&lt;-</span> <span class="fu">weightedMedian</span>(df_clean<span class="sc">$</span>Age_numeric, <span class="at">w=</span>df_clean<span class="sc">$</span>Population)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -640,14 +640,14 @@ Note
 </div>
 <div class="callout-body-container callout-body">
 <p><strong>Plot description:</strong></p>
-<p>In 2024, Singapore population shows a kind of “double-bulge” pattern and a overall shift toward an older age group. The median age is 42 and top 3 largest age groups are around 33,35, and 36.</p>
+<p>In 2024, Singapore population shows a kind of “double-bulge” pattern and an overall shift toward an older age group. The median age is 42 and top 3 largest age groups are around 33,35, and 36.</p>
 <p>Sex differences are also evident: although there is not huge differences between them, the female bars extend further at ages 70+, indicating a higher female longevity. Both gender distributions converge between ages 20–40, that confirms a balanced labor-force cohorts. The chart inspires Singapore’s transition to an older population (as happen in Japan), with age groups “bulges” at 35 and 55, and flags a shrinking base of young children.</p>
 </div>
 </div>
 </section>
 <section id="visualization-2-age-distributions-by-planning-area" class="level3">
 <h3 class="anchored" data-anchor-id="visualization-2-age-distributions-by-planning-area">4.2 Visualization 2 (Age Distributions by Planning Area)</h3>
-<p>As mentioned in the analytical approch (3.2 Comparing Youth vs.&nbsp;Elderly Shares), in this pahse, we compute the ‘youth_share’ and ‘elederly_share’ by using these formulas:</p>
+<p>As mentioned in the analytical approch (3.2 Comparing Youth vs.&nbsp;Elderly Shares), in this phase, we compute the ‘youth_share’ and ‘elederly_share’ by using these formulas:</p>
 <p><em><strong>youth_share</strong> = sum(Population[Age_numeric &lt; 15]) / sum(Population)</em></p>
 <p><em><strong>elderly_share</strong> = sum(Population[Age_numeric &gt;= 65]) / sum(Population)</em></p>
 <div class="cell">

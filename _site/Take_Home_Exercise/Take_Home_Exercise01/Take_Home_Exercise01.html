@@ -311,10 +311,10 @@ Note
 <p>The dataset is <strong>Singapore Residents by Planning Area / Subzone, Single Year of Age and Sex, June 2024</strong>, which is from the Department of Statistics (DOS). In total, after expanding 55 planning areas and roughly 323 subzones, across 92 age bins (Under 1, 1–89, and “90 and over”), and two sexes, the raw file runs to about <strong>32 000 rows</strong>. Here is a summary of data structure:</p>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 21%">
-<col style="width: 21%">
-<col style="width: 34%">
-<col style="width: 21%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -366,8 +366,8 @@ Note
 <p>Before starting the analysis, we install and load a set of R packages that help our data‐wrangling, text-parsing, and visualization toolkit:</p>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 26%">
-<col style="width: 73%">
+<col style="width: 50%">
+<col style="width: 50%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -469,29 +469,29 @@ Note
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 37,243
 Columns: 7
-$ `Planning Area` &lt;chr&gt; "Ang Mo Kio", "Ang Mo Kio", "Ang Mo Kio", "Ang Mo Kio"~
-$ Subzone         &lt;chr&gt; "Ang Mo Kio Town Centre", "Ang Mo Kio Town Centre", "A~
-$ Age             &lt;chr&gt; "0", "0", "1", "1", "2", "2", "3", "3", "4", "4", "5",~
-$ Sex             &lt;chr&gt; "Males", "Females", "Males", "Females", "Males", "Fema~
-$ `2024`          &lt;chr&gt; "10", "10", "10", "10", "10", "10", "10", "10", "30", ~
-$ Population      &lt;dbl&gt; 10, 10, 10, 10, 10, 10, 10, 10, 30, 10, 20, 10, 20, 30~
-$ Age_numeric     &lt;dbl&gt; 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, ~</code></pre>
+$ `Planning Area` &lt;chr&gt; "Ang Mo Kio", "Ang Mo Kio", "Ang Mo Kio", "Ang Mo Kio"…
+$ Subzone         &lt;chr&gt; "Ang Mo Kio Town Centre", "Ang Mo Kio Town Centre", "A…
+$ Age             &lt;chr&gt; "0", "0", "1", "1", "2", "2", "3", "3", "4", "4", "5",…
+$ Sex             &lt;chr&gt; "Males", "Females", "Males", "Females", "Males", "Fema…
+$ `2024`          &lt;chr&gt; "10", "10", "10", "10", "10", "10", "10", "10", "30", …
+$ Population      &lt;dbl&gt; 10, 10, 10, 10, 10, 10, 10, 10, 30, 10, 20, 10, 20, 30…
+$ Age_numeric     &lt;dbl&gt; 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, …</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df_clean, <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 10 x 7
+<pre><code># A tibble: 10 × 7
    `Planning Area` Subzone             Age   Sex   `2024` Population Age_numeric
    &lt;chr&gt;           &lt;chr&gt;               &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;       &lt;dbl&gt;       &lt;dbl&gt;
- 1 Ang Mo Kio      Ang Mo Kio Town Ce~ 0     Males 10             10           0
- 2 Ang Mo Kio      Ang Mo Kio Town Ce~ 0     Fema~ 10             10           0
- 3 Ang Mo Kio      Ang Mo Kio Town Ce~ 1     Males 10             10           1
- 4 Ang Mo Kio      Ang Mo Kio Town Ce~ 1     Fema~ 10             10           1
- 5 Ang Mo Kio      Ang Mo Kio Town Ce~ 2     Males 10             10           2
- 6 Ang Mo Kio      Ang Mo Kio Town Ce~ 2     Fema~ 10             10           2
- 7 Ang Mo Kio      Ang Mo Kio Town Ce~ 3     Males 10             10           3
- 8 Ang Mo Kio      Ang Mo Kio Town Ce~ 3     Fema~ 10             10           3
- 9 Ang Mo Kio      Ang Mo Kio Town Ce~ 4     Males 30             30           4
-10 Ang Mo Kio      Ang Mo Kio Town Ce~ 4     Fema~ 10             10           4</code></pre>
+ 1 Ang Mo Kio      Ang Mo Kio Town Ce… 0     Males 10             10           0
+ 2 Ang Mo Kio      Ang Mo Kio Town Ce… 0     Fema… 10             10           0
+ 3 Ang Mo Kio      Ang Mo Kio Town Ce… 1     Males 10             10           1
+ 4 Ang Mo Kio      Ang Mo Kio Town Ce… 1     Fema… 10             10           1
+ 5 Ang Mo Kio      Ang Mo Kio Town Ce… 2     Males 10             10           2
+ 6 Ang Mo Kio      Ang Mo Kio Town Ce… 2     Fema… 10             10           2
+ 7 Ang Mo Kio      Ang Mo Kio Town Ce… 3     Males 10             10           3
+ 8 Ang Mo Kio      Ang Mo Kio Town Ce… 3     Fema… 10             10           3
+ 9 Ang Mo Kio      Ang Mo Kio Town Ce… 4     Males 30             30           4
+10 Ang Mo Kio      Ang Mo Kio Town Ce… 4     Fema… 10             10           4</code></pre>
 </div>
 </div>
 </section>

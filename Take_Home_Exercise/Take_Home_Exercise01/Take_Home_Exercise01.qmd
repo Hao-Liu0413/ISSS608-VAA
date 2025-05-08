@@ -51,7 +51,7 @@ By setting these hypothetical question, we are not only providing a data visuali
 The dataset is **Singapore Residents by Planning Area / Subzone, Single Year of Age and Sex, June 2024**, which is from the Department of Statistics (DOS). In total, after expanding 55 planning areas and roughly 323 subzones, across 92 age bins (Under 1, 1–89, and “90 and over”), and two sexes, the raw file runs to about **32 000 rows**. Here is a summary of data structure:
 
 | Column | Type | Description | Example |
-|----------------|----------------|-------------------------|----------------|
+|------------------|------------------|------------------|------------------|
 | Planning Area | Text | One of the 55 official planning areas designated by URA. | Central Area |
 | Subzone | Text | A finer subdivision within each planning area | Chinatown |
 | Age | Text | Single-year age categories plus special labels for youngest (“Under 1”) and oldest (“65 and over”, “90 and over”). | Under 1; 27; 65 and over |
@@ -65,7 +65,7 @@ The dataset is **Singapore Residents by Planning Area / Subzone, Single Year of 
 Before starting the analysis, we install and load a set of R packages that help our data‐wrangling, text-parsing, and visualization toolkit:
 
 | Package | Description |
-|-------------------|-----------------------------------------------------|
+|------------------------------------|------------------------------------|
 | matrixStats | Provides optimized, vectorized functions for row‐ and column‐wise summaries on matrices. |
 | readxl | Used to import Excel files (.xls and .xlsx) into R data frames without requiring Java or external dependencies. |
 | dplyr | A grammar of data manipulation. |

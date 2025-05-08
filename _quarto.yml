@@ -21,10 +21,14 @@ website:
             href: "Hands-on_Ex/Hands-on_Ex04_part2/Hands-on_Ex04_part2.html"
           - text: "Hands-on Exercise 4 part3"
             href: "Hands-on_Ex/Hands-on_Ex04_part3/Hands-on_Ex04_part3.html"
+          - text: "Hands-on Exercise 4 part4"
+            href: "Hands-on_Ex/Hands-on_Ex04_part4/Hands-on_Ex04_part4.html"
       - text: "Take-Home Exercise"
         menu:
           - text: "Take-Home Exercise 1"
             href: "Take_Home_Exercise/Take_Home_Exercise01/Take_Home_Exercise01.html"
+          - text: "Take-Home Exercise 1 part2"
+            href: "Take_Home_Exercise/Take_Home_Exercise01_part2/Take_Home_Exercise01_part2.html"
     right:
       - text: "Home"
         href: index.qmd

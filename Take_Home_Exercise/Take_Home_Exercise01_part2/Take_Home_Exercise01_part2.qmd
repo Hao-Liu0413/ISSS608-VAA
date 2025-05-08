@@ -1,0 +1,137 @@
+---
+title: "Take_Home_Exercise01_part2"
+author: Hao Liu
+date: "May 8, 2025"
+date-modified: "last-modified"
+format: html
+editor: visual
+execute: 
+  echo: true
+  eval: true
+  warning: false
+  freeze: true
+---
+
+## Part 2: Comment on classmate submission (author: FU YILIN)
+
+### Original Visualization
+
+::: callout-note
+website link:
+
+*https://isss608-ay2025t2.netlify.app/take-home_ex/take-home_ex01/take-home_ex01*
+:::
+
+```{r}
+pacman::p_load(tidyverse, ggplot2, dplyr, forcats, ggthemes, patchwork, knitr, gt)
+```
+
+```{r}
+data <- read_csv("respopagesex2024.csv") %>%
+  mutate(Age = ifelse(Age == "90_and_Over", "95", Age),
+         Age = as.numeric(Age)) %>%
+  drop_na(Age)
+```
+
+```{r}
+sum(duplicated(data))
+```
+
+```{r}
+data[duplicated(data), ]
+```
+
+```{r}
+grouped <- data %>%
+  select(PA, SZ) %>%
+  distinct() %>%
+  arrange(PA, SZ) %>%
+  group_by(PA) %>%
+  summarise(Subzones = paste(SZ, collapse = ", "))
+
+grouped %>%
+  gt() %>%
+  tab_header(
+    title = "Planning Areas and Their Subzones"
+  )
+```
+
+```{r}
+pyramid_data <- data %>%
+  group_by(Age, Sex) %>%
+  summarise(Pop = sum(Pop), .groups = "drop") %>%
+  mutate(Pop = if_else(Sex == "Males", -Pop, Pop))
+
+pyramid_plot <- ggplot(pyramid_data, aes(x = Age, y = Pop, fill = Sex)) +
+  geom_bar(stat = "identity", width = 1) +
+  coord_flip() +
+  scale_y_continuous(labels = abs) +
+  labs(title = "Singapore Resident Population Pyramid (2024)",
+       x = "Age", y = "Population") +
+  theme_minimal()
+
+pyramid_plot
+```
+
+::: callout-note
+Good design principles
+
+1.  Symmetric layout: The chart clearly shows the population pyramid with a symmetrical and intuitive view of population distribution by sex and age.
+
+2.  Clean typography and grid: The distinct colors to represent females and males respectively, allows the viewers to clearly identify the different groups.
+
+3.  Clear labeling: The chart title, axis labels, and legend are all self‐explanatory.
+:::
+
+### Areas of improvement
+
+1.  Inadequate Axis Scale and Labels: The x-axis labels are difficult to read and interpret accurately. The scale could benefit from clearer labeling or formatting, such as using shorter units.
+
+2.  Lack of Age Grouping and Axis Detail: Age is listed individually (1–100), making the visualization overly granular and cluttered. Grouping ages into bins would streamline the visualization and improve readability.
+
+3.  Percentage on each single class: Adding percentage annotations within each age group to offer additional context.
+
+```{r}
+library(dplyr)
+library(ggplot2)
+
+# Prepare data with age groups and percentage
+pyramid_data <- data %>%
+  mutate(AgeGroup = cut(Age,
+                        breaks = seq(0, 100, 5),
+                        include.lowest = TRUE,
+                        right = FALSE,
+                        labels = paste(seq(0, 95, 5), seq(4, 99, 5), sep = "-"))) %>%
+  group_by(AgeGroup, Sex) %>%
+  summarise(Pop = sum(Pop), .groups = "drop") %>%
+  group_by(AgeGroup) %>%
+  mutate(TotalGroupPop = sum(Pop),
+         Percentage = round((Pop / TotalGroupPop) * 100, 1),
+         Pop = if_else(Sex == "Males", -Pop, Pop))
+
+# Reorder age groups
+pyramid_data$AgeGroup <- factor(pyramid_data$AgeGroup, 
+                                levels = rev(unique(pyramid_data$AgeGroup)))
+
+# Plotting with percentages only and adjusted positions
+ggplot(pyramid_data, aes(x = AgeGroup, y = Pop, fill = Sex)) +
+  geom_bar(stat = "identity", width = 0.9) +
+  coord_flip() +
+  scale_y_continuous(labels = function(x) paste0(abs(x / 1000), "K")) +
+  labs(title = "Singapore Resident Population Pyramid (2024)",
+       subtitle = "Population grouped in 5-year intervals, percentages show sex distribution within groups",
+       x = "Age Group",
+       y = "Population (Thousands)",
+       fill = "Sex") +
+  theme_minimal() +
+  theme(plot.title = element_text(size = 15, face = "bold"),
+        plot.subtitle = element_text(size = 11),
+        axis.text = element_text(size = 9),
+        legend.position = "bottom") +
+  scale_fill_manual(values = c("Males" = "#00BFC4", "Females" = "#F8766D")) +
+  geom_text(aes(label = paste0(Percentage, "%"),
+                hjust = if_else(Sex == "Males", 1.1, -0.1)),
+            size = 2,
+            color = "black")
+
+```

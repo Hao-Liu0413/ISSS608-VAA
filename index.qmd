@@ -14,6 +14,7 @@ Below you’ll find links to each of the subsections (chapters, exercises, or pr
 -   [Hands-on_Ex04](Hands-on_Ex\Hands-on_Ex04\Hands-on_Ex04.qmd)
 -   [Hands-on_Ex04_part2](Hands-on_Ex\Hands-on_Ex04_part2\Hands-on_Ex04_part2.qmd)
 -   [Hands-on_Ex04_part3](Hands-on_Ex\Hands-on_Ex04_part3\Hands-on_Ex04_part3.qmd)
+-   [Hands-on_Ex04_part4](Hands-on_Ex\Hands-on_Ex04_part4\Hands-on_Ex04_part4.qmd)
 
 Feel free to click any link to jump straight to that section.\
 Happy exploring!

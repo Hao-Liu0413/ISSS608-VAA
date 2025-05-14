@@ -6,6 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Hao Liu">
 
 <title>Take_Home_Exercise02 – ISSS608-VAA</title>
 <style>
@@ -19,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -66,6 +101,24 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<link href="../../site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+
+<script src="../../site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+
+<script src="../../site_libs/plotly-binding-4.10.4/plotly.js"></script>
+
+<script src="../../site_libs/typedarray-0.1/typedarray.min.js"></script>
+
+<script src="../../site_libs/jquery-3.5.1/jquery.min.js"></script>
+
+<link href="../../site_libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet">
+
+<script src="../../site_libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
+
+<link href="../../site_libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet">
+
+<script src="../../site_libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
+
 
 
 <link rel="stylesheet" href="styles.css">
@@ -167,8 +220,29 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">1 Overview</a>
+  <ul class="collapse">
+  <li><a href="#background" id="toc-background" class="nav-link" data-scroll-target="#background">1.1 Background</a></li>
+  <li><a href="#task-and-question" id="toc-task-and-question" class="nav-link" data-scroll-target="#task-and-question">1.2 Task and Question</a></li>
+  </ul></li>
+  <li><a href="#data-description" id="toc-data-description" class="nav-link" data-scroll-target="#data-description">2 Data description</a>
+  <ul class="collapse">
+  <li><a href="#load-packages" id="toc-load-packages" class="nav-link" data-scroll-target="#load-packages">2.1 Load packages</a></li>
+  <li><a href="#data-structure" id="toc-data-structure" class="nav-link" data-scroll-target="#data-structure">2.2 Data structure</a>
+  <ul class="collapse">
+  <li><a href="#data-loading" id="toc-data-loading" class="nav-link" data-scroll-target="#data-loading">2.2.1 Data loading</a></li>
+  <li><a href="#basic-information-generation" id="toc-basic-information-generation" class="nav-link" data-scroll-target="#basic-information-generation">2.2.2 Basic information generation</a></li>
+  <li><a href="#other-information" id="toc-other-information" class="nav-link" data-scroll-target="#other-information">2.2.3 Other information</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#task-1" id="toc-task-1" class="nav-link" data-scroll-target="#task-1">Task 1</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -182,8 +256,20 @@ ul.task-list li input[type="checkbox"] {
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Hao Liu </p>
+          </div>
+  </div>
     
   
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">May 14, 2025</p>
+    </div>
+  </div>
     
   </div>
   
@@ -192,8 +278,417 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<section id="overview" class="level1">
+<h1>1 Overview</h1>
+<section id="background" class="level2">
+<h2 class="anchored" data-anchor-id="background">1.1 Background</h2>
+<p>One of music’s biggest superstars is Oceanus native Sailor Shift. From humble beginnings, Sailor has grown in popularity and now enjoys fans around the world. Sailor started her career on the island nation of Oceanus which can be clearly seen in her early work, she started in the genre of “Oceanus Folk”. While Sailor has moved away from the traditional Oceanus style, the Oceanus Folk has made a name for itself in the musical world. The popularity of this music is one of the factors driving an increase in tourism to a quiet island nation that used to be known for fishing.</p>
+<p>In 2023, Sailor Shift joined the Ivy Echoes – an all-female Oceanus Folk band consisting of Sailor (vocalist), Maya Jensen (vocalist), Lila “Lilly” Hartman (guitarist), Jade Thompson (drummer), and Sophie Ramirez (bassist). They played together at venues throughout Oceanus but had broken up to pursue their individual careers by 2026. Sailor’s breakthrough came in 2028 when one of her singles went viral, launched to the top of the global charts (something no other Oceanus Folk song had ever done). Since then, she has only continued to grow in popularity worldwide.</p>
+<p>Sailor has released a new album almost every year since her big break, and each has done better than the last. Although she has remained primarily a solo artist, she has also frequently collaborated with other established artists, especially in the Indie Pop and Indie Folk genres. She herself has branched out musically over the years but regularly returns to the Oceanus Folk genre — even as the genre’s influence on the rest of the music world has spread even more.</p>
+<p>Sailor has always been passionate about two things: (1) spreading Oceanus Folk, and (2) helping lesser-known artists break into music. Because of those goals, she’s particularly famous for her frequent collaborations.</p>
+<p>Additionally, because of Sailor’s success, more attention began to be paid over the years to her previous bandmates. All 4 have continued in the music industry—Maya as an independent vocalist, Lilly and Jade as instrumentalists in other bands, and Sophie as a music producer for a major record label. In various ways, all of them have contributed to the increased influence of Oceanus folk, resulting in a new generation of up-and-coming Oceanus Folk artists seeking to make a name for themselves in the music industry.</p>
+<p>Now, as Sailor returns to Oceanus in 2040, a local journalist – Silas Reed – is writing a piece titled Oceanus Folk: Then-and-Now that aims to trace the rise of Sailor and the influence of Oceanus Folk on the rest of the music world. He has collected a large dataset of musical artists, producers, albums, songs, and influences and organized it into a knowledge graph. Your task is to help Silas create beautiful and informative visualizations of this data and uncover new and interesting information about Sailor’s past, her rise to stardom, and her influence.</p>
+</section>
+<section id="task-and-question" class="level2">
+<h2 class="anchored" data-anchor-id="task-and-question">1.2 Task and Question</h2>
+<ol type="1">
+<li>Design and develop visualizations and visual analytic tools that will allow Silas to explore and understand the profile of Sailor Shift’s career</li>
+</ol>
+<p>a.Who has she been most influenced by over time?</p>
+<p>b.Who has she collaborated with and directly or indirectly influenced?</p>
+<p>c.How has she influenced collaborators of the broader Oceanus Folk community?</p>
+<ol start="2" type="1">
+<li>Develop visualizations that illustrate how the influence of Oceanus Folk has spread through the musical world.</li>
+</ol>
+<p>a.Was this influence intermittent or did it have a gradual rise?</p>
+<p>b.What genres and top artists have been most influenced by Oceanus Folk?</p>
+<p>c.On the converse, how has Oceanus Folk changed with the rise of Sailor Shift? From which genres does it draw most of its contemporary inspiration?</p>
+<ol start="3" type="1">
+<li>Use your visualizations to develop a profile of what it means to be a rising star in the music industry.</li>
+</ol>
+<p>a.Visualize the careers of three artists. Compare and contrast their rise in popularity and influence.</p>
+<p>b.Using this characterization, give three predictions of who the next Oceanus Folk stars with be over the next five years.</p>
+</section>
+</section>
+<section id="data-description" class="level1">
+<h1>2 Data description</h1>
+<section id="load-packages" class="level2">
+<h2 class="anchored" data-anchor-id="load-packages">2.1 Load packages</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Install required packages if you haven’t already
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>install.packages(c( “tidyverse”, # data wrangling &amp; ggplot2 “jsonlite”, # JSON import “igraph”, # core graph algorithms “tidygraph”, # dplyr‐style graph manipulation “ggraph”, # ggplot2‐style graph plotting “lubridate”, # date parsing “scales”, # axis formatting “visNetwork”, # interactive network viz “plotly” # interactive plots ))</p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load libraries</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(jsonlite)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraph)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidygraph)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggraph)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(visNetwork)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plotly)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraph)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Package</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>tidyverse</strong></td>
+<td>A meta-package that loads a suite of core data-science tools: ggplot2 for plotting; dplyr for data manipulation; tidyr for reshaping; readr for fast import; purrr for functional programming; stringr for string operations; and more.</td>
+</tr>
+<tr class="even">
+<td><strong>jsonlite</strong></td>
+<td>High-performance JSON parser/generator. Use <code>fromJSON()</code> to read nested JSON into R lists or tibbles, and <code>toJSON()</code> to write R objects back to JSON.</td>
+</tr>
+<tr class="odd">
+<td><strong>igraph</strong></td>
+<td>Core graph/network library offering algorithms for shortest paths, centrality, community detection, edge/node operations, and more.</td>
+</tr>
+<tr class="even">
+<td><strong>tidygraph</strong></td>
+<td>“Tidy” interface to igraph: lets you manipulate graphs with dplyr-style verbs (<code>activate()</code>, <code>filter()</code>, <code>mutate()</code>) while preserving graph structure.</td>
+</tr>
+<tr class="odd">
+<td><strong>ggraph</strong></td>
+<td>ggplot2 extension for graph plotting. Supports force-directed, circular, tree, Sankey layouts, and mapping node/edge aesthetics (size, color, shape) in a declarative grammar.</td>
+</tr>
+<tr class="even">
+<td><strong>lubridate</strong></td>
+<td>Simplifies date-time parsing and arithmetic: use <code>ymd()</code>, <code>ymd_hms()</code>, extract components (year, month), handle time zones, and perform date math with intuitive functions.</td>
+</tr>
+<tr class="odd">
+<td><strong>scales</strong></td>
+<td>Formatting helpers for ggplot2 axes and legends: turn numbers into percentages, millions/k, format dates, control breaks and labels.</td>
+</tr>
+<tr class="even">
+<td><strong>visNetwork</strong></td>
+<td>HTML-widget wrapping vis.js for interactive networks: pan, zoom, drag nodes, tooltips, and dynamic styling. Embeddable in RMarkdown or Shiny.</td>
+</tr>
+<tr class="odd">
+<td><strong>plotly</strong></td>
+<td>Converts ggplot2 (or raw plotly) graphs into interactive web plots with hover tooltips, zooming, 3D support, and legend toggling—ideal for exploratory analysis.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="data-structure" class="level2">
+<h2 class="anchored" data-anchor-id="data-structure">2.2 Data structure</h2>
+<section id="data-loading" class="level3">
+<h3 class="anchored" data-anchor-id="data-loading">2.2.1 Data loading</h3>
+<p>The first step is to load the dataset into our environment and have a quick check of it:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Read in the graph JSON (flatten nested lists into columns)</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>graph_data <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(<span class="st">"MC1_graph.json"</span>, <span class="at">flatten =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Quick check</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(graph_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>List of 5
+ $ directed  : logi TRUE
+ $ multigraph: logi TRUE
+ $ graph     :List of 2
+  ..$ node_default: Named list()
+  ..$ edge_default: Named list()
+ $ nodes     :'data.frame': 17412 obs. of  10 variables:
+  ..$ Node Type     : chr [1:17412] "Song" "Person" "Person" "Person" ...
+  ..$ name          : chr [1:17412] "Breaking These Chains" "Carlos Duffy" "Min Qin" "Xiuying Xie" ...
+  ..$ single        : logi [1:17412] TRUE NA NA NA NA FALSE ...
+  ..$ release_date  : chr [1:17412] "2017" NA NA NA ...
+  ..$ genre         : chr [1:17412] "Oceanus Folk" NA NA NA ...
+  ..$ notable       : logi [1:17412] TRUE NA NA NA NA TRUE ...
+  ..$ id            : int [1:17412] 0 1 2 3 4 5 6 7 8 9 ...
+  ..$ written_date  : chr [1:17412] NA NA NA NA ...
+  ..$ stage_name    : chr [1:17412] NA NA NA NA ...
+  ..$ notoriety_date: chr [1:17412] NA NA NA NA ...
+ $ links     :'data.frame': 37857 obs. of  4 variables:
+  ..$ Edge Type: chr [1:37857] "InterpolatesFrom" "RecordedBy" "PerformerOf" "ComposerOf" ...
+  ..$ source   : int [1:37857] 0 0 1 1 2 2 3 5 5 5 ...
+  ..$ target   : int [1:37857] 1841 4 0 16180 0 16180 0 5088 14332 11677 ...
+  ..$ key      : int [1:37857] 0 0 0 0 0 0 0 0 0 0 ...</code></pre>
+</div>
+</div>
+</section>
+<section id="basic-information-generation" class="level3">
+<h3 class="anchored" data-anchor-id="basic-information-generation">2.2.2 Basic information generation</h3>
+<ol type="1">
+<li>Total nodes and total egdes:</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>nodes_df <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(graph_data<span class="sc">$</span>nodes)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>edges_df <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(graph_data<span class="sc">$</span>links)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Total nodes: "</span>, <span class="fu">nrow</span>(nodes_df), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Total nodes:  17412 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Total edges: "</span>, <span class="fu">nrow</span>(edges_df), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Total edges:  37857 </code></pre>
+</div>
+</div>
+<ol start="2" type="1">
+<li>Nodes and Edges type:</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Count nodes by type</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>node_type_counts <span class="ot">&lt;-</span> nodes_df <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(<span class="st">`</span><span class="at">Node Type</span><span class="st">`</span>, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(node_type_counts)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 2
+  `Node Type`      n
+  &lt;chr&gt;        &lt;int&gt;
+1 Person       11361
+2 Song          3615
+3 RecordLabel   1217
+4 Album          996
+5 MusicalGroup   223</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Count edges by relationship</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>edge_type_counts <span class="ot">&lt;-</span> edges_df <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(<span class="st">`</span><span class="at">Edge Type</span><span class="st">`</span>, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(edge_type_counts)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 12 × 2
+   `Edge Type`            n
+   &lt;chr&gt;              &lt;int&gt;
+ 1 PerformerOf        13587
+ 2 RecordedBy          3798
+ 3 ComposerOf          3290
+ 4 ProducerOf          3209
+ 5 DistributedBy       3013
+ 6 LyricistOf          2985
+ 7 InStyleOf           2289
+ 8 InterpolatesFrom    1574
+ 9 LyricalReferenceTo  1496
+10 CoverOf             1429
+11 DirectlySamples      619
+12 MemberOf             568</code></pre>
+</div>
+</div>
+<p>Let’s make a simple plot to see the distribution of nodes and edges:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>node_counts <span class="ot">&lt;-</span> nodes_df <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(<span class="st">`</span><span class="at">Node Type</span><span class="st">`</span>, <span class="at">name =</span> <span class="st">"count_nodes"</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>edge_counts <span class="ot">&lt;-</span> edges_df <span class="sc">%&gt;%</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(<span class="st">`</span><span class="at">Edge Type</span><span class="st">`</span>, <span class="at">name =</span> <span class="st">"count_edges"</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Base ggplots with larger text</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>plot1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(node_counts, <span class="fu">aes</span>(</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">reorder</span>(<span class="st">`</span><span class="at">Node Type</span><span class="st">`</span>, <span class="sc">-</span>count_nodes),</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> count_nodes</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">+</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Counts by Type"</span>,</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">x     =</span> <span class="st">"Node Type"</span>,</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">y     =</span> <span class="st">"Count"</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">16</span>)</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>plot2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(edge_counts, <span class="fu">aes</span>(</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">reorder</span>(<span class="st">`</span><span class="at">Edge Type</span><span class="st">`</span>, <span class="sc">-</span>count_edges),</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> count_edges</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">+</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"forestgreen"</span>) <span class="sc">+</span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Counts by Type"</span>,</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">x     =</span> <span class="st">"Edge Type"</span>,</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">y     =</span> <span class="st">"Count"</span></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">16</span>)</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) OR Interactive via Plotly</span></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a><span class="fu">subplot</span>(plot1, plot2, <span class="at">nrows =</span> <span class="dv">2</span>, <span class="at">shareX =</span> <span class="cn">FALSE</span>, <span class="at">titleY =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layout</span>(</span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">xaxis =</span> <span class="fu">list</span>(</span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>      <span class="at">title      =</span> <span class="st">""</span>,      <span class="co"># remove x-axis title</span></span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>      <span class="at">tickangle  =</span> <span class="sc">-</span><span class="dv">45</span>,</span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>      <span class="at">tickfont   =</span> <span class="fu">list</span>(<span class="at">size =</span> <span class="dv">8</span>),</span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>      <span class="at">automargin =</span> <span class="cn">TRUE</span></span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">xaxis2 =</span> <span class="fu">list</span>(</span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>      <span class="at">title      =</span> <span class="st">""</span>,      <span class="co"># remove x-axis title on second plot</span></span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a>      <span class="at">tickangle  =</span> <span class="sc">-</span><span class="dv">45</span>,</span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a>      <span class="at">tickfont   =</span> <span class="fu">list</span>(<span class="at">size =</span> <span class="dv">8</span>),</span>
+<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a>      <span class="at">automargin =</span> <span class="cn">TRUE</span></span>
+<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">yaxis =</span> <span class="fu">list</span>(</span>
+<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">""</span>            <span class="co"># remove y-axis title</span></span>
+<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">yaxis2 =</span> <span class="fu">list</span>(</span>
+<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">""</span>            <span class="co"># remove y-axis title on second plot</span></span>
+<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">margin =</span> <span class="fu">list</span>(<span class="at">b =</span> <span class="dv">100</span>)</span>
+<span id="cb12-55"><a href="#cb12-55" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="plotly html-widget html-fill-item" id="htmlwidget-05b08a5ce88cfebdb4ec" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-05b08a5ce88cfebdb4ec">{"x":{"data":[{"orientation":"v","width":[0.90000000000000036,0.90000000000000036,0.89999999999999991,0.90000000000000036,0.90000000000000013],"base":[0,0,0,0,0],"x":[4,5,1,3,2],"y":[996,223,11361,1217,3615],"text":["reorder(`Node Type`, -count_nodes): Album<br />count_nodes:   996","reorder(`Node Type`, -count_nodes): MusicalGroup<br />count_nodes:   223","reorder(`Node Type`, -count_nodes): Person<br />count_nodes: 11361","reorder(`Node Type`, -count_nodes): RecordLabel<br />count_nodes:  1217","reorder(`Node Type`, -count_nodes): Song<br />count_nodes:  3615"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(70,130,180,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"orientation":"v","width":[0.90000000000000036,0.89999999999999858,0.89999999999999858,0.90000000000000036,0.90000000000000036,0.89999999999999947,0.89999999999999858,0.90000000000000036,0.89999999999999858,0.89999999999999991,0.90000000000000036,0.90000000000000013],"base":[0,0,0,0,0,0,0,0,0,0,0,0],"x":[3,10,11,5,7,8,9,6,12,1,4,2],"y":[3290,1429,619,3013,2289,1574,1496,2985,568,13587,3209,3798],"text":["reorder(`Edge Type`, -count_edges): ComposerOf<br />count_edges:  3290","reorder(`Edge Type`, -count_edges): CoverOf<br />count_edges:  1429","reorder(`Edge Type`, -count_edges): DirectlySamples<br />count_edges:   619","reorder(`Edge Type`, -count_edges): DistributedBy<br />count_edges:  3013","reorder(`Edge Type`, -count_edges): InStyleOf<br />count_edges:  2289","reorder(`Edge Type`, -count_edges): InterpolatesFrom<br />count_edges:  1574","reorder(`Edge Type`, -count_edges): LyricalReferenceTo<br />count_edges:  1496","reorder(`Edge Type`, -count_edges): LyricistOf<br />count_edges:  2985","reorder(`Edge Type`, -count_edges): MemberOf<br />count_edges:   568","reorder(`Edge Type`, -count_edges): PerformerOf<br />count_edges: 13587","reorder(`Edge Type`, -count_edges): ProducerOf<br />count_edges:  3209","reorder(`Edge Type`, -count_edges): RecordedBy<br />count_edges:  3798"],"type":"bar","textposition":"none","marker":{"autocolorscale":false,"color":"rgba(34,139,34,1)","line":{"width":1.8897637795275593,"color":"transparent"}},"showlegend":false,"xaxis":"x2","yaxis":"y2","hoverinfo":"text","frame":null}],"layout":{"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.40000000000000002,5.5999999999999996],"tickmode":"array","ticktext":["Person","Song","RecordLabel","Album","MusicalGroup"],"tickvals":[1,2,3,4,5],"categoryorder":"array","categoryarray":["Person","Song","RecordLabel","Album","MusicalGroup"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":5.3134080531340802,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":8},"tickangle":-45,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.96607419147892382,"zeroline":false,"anchor":"y","hoverformat":".2f","title":""},"xaxis2":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.40000000000000002,12.6],"tickmode":"array","ticktext":["PerformerOf","RecordedBy","ComposerOf","ProducerOf","DistributedBy","LyricistOf","InStyleOf","InterpolatesFrom","LyricalReferenceTo","CoverOf","DirectlySamples","MemberOf"],"tickvals":[1,2,3,4.0000000000000009,5,6,7.0000000000000009,8,9,10,11,12],"categoryorder":"array","categoryarray":["PerformerOf","RecordedBy","ComposerOf","ProducerOf","DistributedBy","LyricistOf","InStyleOf","InterpolatesFrom","LyricalReferenceTo","CoverOf","DirectlySamples","MemberOf"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":5.3134080531340802,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":8},"tickangle":-45,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.96607419147892382,"zeroline":false,"anchor":"y2","hoverformat":".2f","title":""},"yaxis2":{"domain":[0,0.47999999999999998],"automargin":true,"type":"linear","autorange":false,"range":[-679.35000000000002,14266.35],"tickmode":"array","ticktext":["0","5000","10000"],"tickvals":[0,5000,10000],"categoryorder":"array","categoryarray":["0","5000","10000"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":5.3134080531340802,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":17.002905770029059},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.96607419147892382,"zeroline":false,"anchor":"x2","title":"","hoverformat":".2f"},"yaxis":{"domain":[0.52000000000000002,1],"automargin":true,"type":"linear","autorange":false,"range":[-568.05000000000007,11929.049999999999],"tickmode":"array","ticktext":["0","3000","6000","9000"],"tickvals":[0,2999.9999999999995,6000,9000],"categoryorder":"array","categoryarray":["0","3000","6000","9000"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":5.3134080531340802,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":17.002905770029059},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.96607419147892382,"zeroline":false,"anchor":"x","title":"","hoverformat":".2f"},"annotations":[],"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0.52000000000000002,"y1":1},{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":0.47999999999999998}],"images":[],"margin":{"t":56.381901203819012,"r":10.62681610626816,"b":100,"l":79.701120797011214},"font":{"color":"rgba(0,0,0,1)","family":"","size":21.253632212536321},"title":{"text":"Counts by Type","font":{"color":"rgba(0,0,0,1)","family":"","size":25.504358655043593},"x":0,"xref":"paper"},"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":17.002905770029056}},"hovermode":"closest","barmode":"relative"},"attrs":{"cc44fa220ca":{"x":{},"y":{},"type":"bar"},"cc44ba05d1a":{"x":{},"y":{},"type":"bar"}},"source":"A","config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"subplot":true,"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="other-information" class="level3">
+<h3 class="anchored" data-anchor-id="other-information">2.2.3 Other information</h3>
+<ol type="1">
+<li>We are going to explore other information:</li>
+</ol>
+<ul>
+<li>How many distinct genres?</li>
+<li>How many “notable” nodes?</li>
+<li>Distribution of release years for Songs</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>nodes_df <span class="sc">%&gt;%</span> </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(genre) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">n_genres =</span> n) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+  n_genres
+     &lt;int&gt;
+1       27</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>nodes_df <span class="sc">%&gt;%</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(notable) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 2
+  notable     n
+  &lt;lgl&gt;   &lt;int&gt;
+1 FALSE     314
+2 TRUE     4297
+3 NA      12801</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>nodes_df <span class="sc">%&gt;%</span> </span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="st">`</span><span class="at">Node Type</span><span class="st">`</span> <span class="sc">==</span> <span class="st">"Song"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(release_date, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">10</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 2
+   release_date     n
+   &lt;chr&gt;        &lt;int&gt;
+ 1 2023           332
+ 2 2020           265
+ 3 2026           258
+ 4 2017           243
+ 5 2013           227
+ 6 2029           205
+ 7 2010           152
+ 8 2027           152
+ 9 2024           141
+10 2028           131</code></pre>
+</div>
+</div>
+<ol start="2" type="1">
+<li>Generate then a graph to have an overview of nodes centrality:</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 8. Build an igraph for basic centrality</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   – Prepare vertex IDs as character</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>nodes2 <span class="ot">&lt;-</span> nodes_df <span class="sc">%&gt;%</span> </span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">id_chr   =</span> <span class="fu">as.character</span>(id),</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">label    =</span> name) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id_chr, label, <span class="fu">everything</span>(), <span class="sc">-</span>name, <span class="sc">-</span>id)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co">#   – Prepare edges with from/to</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>edges2 <span class="ot">&lt;-</span> edges_df <span class="sc">%&gt;%</span> </span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">from =</span> <span class="fu">as.character</span>(source),</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>         <span class="at">to   =</span> <span class="fu">as.character</span>(target)) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(from, to, <span class="fu">everything</span>(), <span class="sc">-</span>source, <span class="sc">-</span>target, <span class="sc">-</span>key)</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">graph_from_data_frame</span>(<span class="at">d =</span> edges2, <span class="at">vertices =</span> nodes2, <span class="at">directed =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 9. Compute and show top 20 nodes by total degree</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>deg_tbl <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">label        =</span> <span class="fu">V</span>(g)<span class="sc">$</span>label,</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">type         =</span> <span class="fu">V</span>(g)<span class="sc">$</span><span class="st">`</span><span class="at">Node.Type</span><span class="st">`</span>,</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">degree_in    =</span> <span class="fu">degree</span>(g, <span class="at">mode =</span> <span class="st">"in"</span>),</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">degree_out   =</span> <span class="fu">degree</span>(g, <span class="at">mode =</span> <span class="st">"out"</span>),</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">degree_total =</span> <span class="fu">degree</span>(g, <span class="at">mode =</span> <span class="st">"all"</span>)</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>deg_top20 <span class="ot">&lt;-</span> deg_tbl <span class="sc">%&gt;%</span></span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(degree_total)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">20</span>)</span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_ly</span>(</span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> deg_top20,</span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">x    =</span> <span class="sc">~</span><span class="fu">reorder</span>(label, <span class="sc">-</span>degree_total),   <span class="co"># note the minus!</span></span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">y    =</span> <span class="sc">~</span>degree_total,</span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">'bar'</span>,</span>
+<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">text =</span> <span class="sc">~</span><span class="fu">paste0</span>(</span>
+<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Total: "</span>, degree_total, <span class="st">"&lt;br&gt;"</span>,</span>
+<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a>    <span class="st">"In: "</span>,    degree_in,    <span class="st">"&lt;br&gt;"</span>,</span>
+<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Out: "</span>,   degree_out</span>
+<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a>  <span class="at">hoverinfo =</span> <span class="st">'text'</span>,</span>
+<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a>  <span class="at">marker    =</span> <span class="fu">list</span>(<span class="at">color =</span> <span class="st">'steelblue'</span>)</span>
+<span id="cb19-41"><a href="#cb19-41" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb19-42"><a href="#cb19-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layout</span>(</span>
+<span id="cb19-43"><a href="#cb19-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Top 10 Nodes by Total Degree"</span>,</span>
+<span id="cb19-44"><a href="#cb19-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">xaxis =</span> <span class="fu">list</span>(</span>
+<span id="cb19-45"><a href="#cb19-45" aria-hidden="true" tabindex="-1"></a>      <span class="at">title     =</span> <span class="st">"Node"</span>,</span>
+<span id="cb19-46"><a href="#cb19-46" aria-hidden="true" tabindex="-1"></a>      <span class="at">tickangle =</span> <span class="sc">-</span><span class="dv">45</span></span>
+<span id="cb19-47"><a href="#cb19-47" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb19-48"><a href="#cb19-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">yaxis =</span> <span class="fu">list</span>(<span class="at">title =</span> <span class="st">"Degree"</span>),</span>
+<span id="cb19-49"><a href="#cb19-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">margin =</span> <span class="fu">list</span>(<span class="at">b =</span> <span class="dv">120</span>)</span>
+<span id="cb19-50"><a href="#cb19-50" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="plotly html-widget html-fill-item" id="htmlwidget-2f381d1f784366520be6" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-2f381d1f784366520be6">{"x":{"visdat":{"cc45eee3065":["function () ","plotlyVisDat"]},"cur_data":"cc45eee3065","attrs":{"cc45eee3065":{"x":{},"y":{},"text":{},"hoverinfo":"text","marker":{"color":"steelblue"},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"}},"layout":{"margin":{"b":120,"l":60,"t":25,"r":10},"title":"Top 10 Nodes by Total Degree","xaxis":{"domain":[0,1],"automargin":true,"title":"Node","tickangle":-45,"type":"category","categoryorder":"array","categoryarray":["Echo Chamber Records","Kamiogawa Rhythms","Whispers of Finality","Ripples and Whispers","99Ascent","Mucambo Groove","Mercy's Endless Tide","Collective Harmony","Colline-Cascade Studios","Adra Amplify","Requiem for a Fading Self","Adriatic Resonance","Sailor Shift","Echo Vault Records","Rising From the Shadows","Golden Hour Reverie","Alta Cascata","When Pigs Fly","Altopiano Records","Suffering's Embrace"]},"yaxis":{"domain":[0,1],"automargin":true,"title":"Degree"},"hovermode":"closest","showlegend":false},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":["Echo Chamber Records","Kamiogawa Rhythms","Whispers of Finality","Ripples and Whispers","99Ascent","Mucambo Groove","Mercy's Endless Tide","Collective Harmony","Colline-Cascade Studios","Adra Amplify","Requiem for a Fading Self","Adriatic Resonance","Sailor Shift","Echo Vault Records","Rising From the Shadows","Golden Hour Reverie","Alta Cascata","When Pigs Fly","Altopiano Records","Suffering's Embrace"],"y":[224,157,153,150,98,96,83,74,71,69,62,60,60,58,58,57,55,55,54,54],"text":["Total: 224<br>In: 224<br>Out: 0","Total: 157<br>In: 157<br>Out: 0","Total: 153<br>In: 151<br>Out: 2","Total: 150<br>In: 148<br>Out: 2","Total: 98<br>In: 98<br>Out: 0","Total: 96<br>In: 96<br>Out: 0","Total: 83<br>In: 80<br>Out: 3","Total: 74<br>In: 74<br>Out: 0","Total: 71<br>In: 71<br>Out: 0","Total: 69<br>In: 69<br>Out: 0","Total: 62<br>In: 37<br>Out: 25","Total: 60<br>In: 60<br>Out: 0","Total: 60<br>In: 8<br>Out: 52","Total: 58<br>In: 58<br>Out: 0","Total: 58<br>In: 20<br>Out: 38","Total: 57<br>In: 55<br>Out: 2","Total: 55<br>In: 55<br>Out: 0","Total: 55<br>In: 50<br>Out: 5","Total: 54<br>In: 54<br>Out: 0","Total: 54<br>In: 51<br>Out: 3"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text"],"marker":{"color":"steelblue","line":{"color":"rgba(31,119,180,1)"}},"type":"bar","error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="task-1" class="level1">
+<h1>Task 1</h1>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Design and develop visualizations and visual analytic tools that will allow Silas to explore and understand the profile of Sailor Shift’s career</p>
+<ol type="a">
+<li><p>Who has she been most influenced by over time?</p></li>
+<li><p>Who has she collaborated with and directly or indirectly influenced?</p></li>
+<li><p>How has she influenced collaborators of the broader Oceanus Folk community?</p></li>
+</ol>
+</div>
+</div>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

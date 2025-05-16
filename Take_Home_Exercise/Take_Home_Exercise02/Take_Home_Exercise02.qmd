@@ -284,7 +284,7 @@ plot_ly(
   )
 ```
 
-# Task 1
+# 3 Task 1
 
 ::: callout-note
 Design and develop visualizations and visual analytic tools that will allow Silas to explore and understand the profile of Sailor Shift’s career
@@ -294,6 +294,287 @@ Design and develop visualizations and visual analytic tools that will allow Sila
   b. Who has she collaborated with and directly or indirectly influenced?
 
   c. How has she influenced collaborators of the broader Oceanus Folk community?
+:::
+
+## 3.1 Task 1 (a)
+
+Firstly, We are going to identify any edges where a given Artist derives from or cites another Artist:
+
+```{r edge_type_counts, message=FALSE, warning=FALSE}
+
+edge_type_counts <- edges2 %>%
+  count(`Edge Type`, sort = TRUE)
+
+print(edge_type_counts)
+
+```
+
+```{r task 1 a, message=FALSE, warning=FALSE}
+
+# 1. Define your influence‐proxy edge‐types & Sailor’s ID
+influence_edge_types <- c(
+		
+"InStyleOf",		
+"InterpolatesFrom",		
+"LyricalReferenceTo",		
+"CoverOf"	
+)
+
+sailor_id <- nodes2 %>% filter(label=="Sailor Shift") %>% pull(id_chr)
+
+# 2. Find the unique influencer IDs
+in_edges <- edges2 %>%
+  filter(`Edge Type` %in% influence_edge_types, to == sailor_id)
+infl_ids <- unique(in_edges$from)
+
+# 3. For each influencer, grab all their song‐related edges
+song_edge_types <- c("PerformerOf", "ComposerOf", "RecordedBy")
+infl_songs <- edges2 %>%
+  filter(`Edge Type` %in% song_edge_types, from %in% infl_ids) %>%
+  transmute(influencer_id = from, song_id = to)
+
+# 4. Join to song nodes to get release_date and extract year
+infl_song_dates <- infl_songs %>%
+  left_join(
+    nodes2 %>% filter(`Node Type`=="Song") %>% select(id_chr, release_date),
+    by = c("song_id" = "id_chr")
+  ) %>%
+  filter(!is.na(release_date)) %>%
+  mutate(year = as.integer(substr(release_date, 1, 4)))
+
+# 5. Determine each influencer’s earliest song year
+infl_dates <- infl_song_dates %>%
+  group_by(influencer_id) %>%
+  summarize(first_year = min(year), .groups="drop") %>%
+  left_join(
+    nodes2 %>% select(id_chr, label),
+    by = c("influencer_id" = "id_chr")
+  )
+
+# 6. Build a summary per year (new + cumulative) and list names
+influencers_by_year <- infl_dates %>%
+  group_by(first_year) %>%
+  summarize(
+    new_count   = n(),
+    influ_names = paste(label, collapse = "<br>"),
+    .groups     = "drop"
+  ) %>%
+  rename(year = first_year) %>%
+  arrange(year) %>%
+  mutate(cumulative = cumsum(new_count))
+
+# 7. Interactive Plotly chart
+plot_ly(influencers_by_year, x=~year) %>%
+  add_bars(
+    y            = ~new_count,
+    name         = "New Influencers",
+    marker       = list(color="#69b3a2"),
+    hoverinfo    = "text",
+    text         = ~paste0(
+                     "<b>Year:</b> ", year,
+                     "<br><b>New:</b> ", new_count,
+                     "<br><b>Who:</b><br>", influ_names
+                   ),
+    textposition = "none"    # ← hide the labels on the bars
+  ) %>%
+  add_lines(
+    y         = ~cumulative,
+    name      = "Cumulative",
+    line      = list(color="#404080", width=3),
+    hoverinfo = "none"
+  ) %>%
+  layout(
+    title     = list(text="Sailor Shift: Influencers Over Time"),
+    xaxis     = list(title="Year"),
+    yaxis     = list(title="Count"),
+    hovermode = "closest"
+  )
+```
+::: callout-note
+
+:::
+
+##3.2 Task 1 (b)
+
+```{r task 1 b, message=FALSE, warning=FALSE}
+
+# 1) Define proxies
+collab_proxies    <- c("PerformerOf","ComposerOf","ProducerOf","RecordedBy")
+influence_proxies <- c("InStyleOf","InterpolatesFrom","LyricalReferenceTo","CoverOf")
+
+# 2) Sailor’s node ID
+sailor_id <- nodes2 %>% filter(label=="Sailor Shift") %>% pull(id_chr)
+
+# 3) Direct collaborators
+sailor_songs <- edges2 %>%
+  filter(`Edge Type`=="PerformerOf", from==sailor_id) %>%
+  pull(to)
+
+direct_ids <- edges2 %>%
+  filter(`Edge Type` %in% collab_proxies, to %in% sailor_songs, from!=sailor_id) %>%
+  pull(from) %>% unique()
+
+# 4) Indirect influence targets
+indirect_ids <- edges2 %>%
+  filter(`Edge Type` %in% influence_proxies, from %in% direct_ids) %>%
+  pull(to) %>% unique()
+
+# 5) Nodes
+nodes_vis <- nodes2 %>%
+  filter(id_chr %in% c(sailor_id, direct_ids, indirect_ids)) %>%
+  mutate(
+    id    = id_chr,
+    group = case_when(
+      id_chr == sailor_id    ~ "Sailor Shift",
+      id_chr %in% direct_ids ~ "Direct Collaborator",
+      TRUE                   ~ "Indirect Influence"
+    ),
+    title = paste0("<b>", label, "</b><br>Role: ", group)
+  ) %>%
+  select(id, label, title, group)
+
+# 6a) Collaborations: no static label, but title for hover
+edges_collab <- tibble(
+  from  = direct_ids,
+  to    = sailor_id,
+  arrows= "",
+  color = "darkgreen",
+  title = "Collaborated With"   # hover text only
+)
+
+# 6b) Indirect influences: arrowed, hover title
+edges_infl <- edges2 %>%
+  filter(`Edge Type` %in% influence_proxies,
+         from %in% direct_ids,
+         to   %in% indirect_ids) %>%
+  transmute(
+    from,
+    to,
+    arrows = "to",
+    color  = "darkorange",
+    title  = `Edge Type`
+  )
+
+edges_vis <- bind_rows(edges_collab, edges_infl)
+
+# 7) Render
+visNetwork(nodes_vis, edges_vis, height="600px", width="100%") %>%
+  visNodes(shape="dot", size=20, font=list(size=16)) %>%
+  visEdges(smooth=FALSE) %>%
+  visOptions(
+    highlightNearest = list(enabled=TRUE, degree=1, hover=TRUE),
+    nodesIdSelection = TRUE
+  ) %>%
+  visLegend(useGroups=TRUE, position="right", main="Role") %>%
+  visLayout(improvedLayout=TRUE) %>%
+  visPhysics(stabilization=TRUE)
+```
+::: callout-note
+
+:::
+
+## 3.3 Task 1 (c)
+
+```{r task 1 c, message=FALSE, warning=FALSE}
+# 1. Proxies
+collab_proxies    <- c("PerformerOf","ComposerOf","ProducerOf","RecordedBy")
+influence_proxies <- c("InStyleOf","InterpolatesFrom","LyricalReferenceTo","CoverOf")
+
+# 2. Sailor’s ID
+sailor_id   <- nodes2 %>% filter(label=="Sailor Shift") %>% pull(id_chr)
+
+# 3. Her direct collaborators (anyone on her songs)
+sailor_songs  <- edges2 %>% filter(`Edge Type`=="PerformerOf", from==sailor_id) %>% pull(to)
+direct_ids    <- edges2 %>%
+  filter(`Edge Type` %in% collab_proxies, to %in% sailor_songs, from!=sailor_id) %>%
+  pull(from) %>% unique()
+
+# 4. Oceanus Folk community
+folk_ids <- nodes2 %>% 
+  filter(genre=="Oceanus Folk", `Node Type`=="Person") %>%
+  pull(id_chr)
+
+# 5. Influence edges into the community
+#    – Direct from Sailor
+dir_infl <- edges2 %>%
+  filter(`Edge Type` %in% influence_proxies,
+         from == sailor_id,
+         to   %in% folk_ids)
+#    – Indirect via her collaborators
+indir_infl <- edges2 %>%
+  filter(`Edge Type` %in% influence_proxies,
+         from %in% direct_ids,
+         to   %in% folk_ids)
+
+# 6. Build node frame
+nodes_vis <- nodes2 %>%
+  filter(id_chr %in% c(sailor_id, direct_ids, folk_ids)) %>%
+  mutate(
+    id    = id_chr,
+    group = case_when(
+      id_chr == sailor_id      ~ "Sailor Shift",
+      id_chr %in% direct_ids   ~ "Collaborator",
+      id_chr %in% folk_ids     ~ "Oceanus Folk Artist"
+    ),
+    title = paste0("<b>", label, "</b><br>Role: ", group)
+  ) %>%
+  select(id, label, title, group)
+
+# 7. Build edge frame
+edges_vis <- bind_rows(
+  # collaborations: Sailor ↔ collaborator
+  tibble(
+    from   = direct_ids,
+    to     = sailor_id,
+    arrows = "",
+    color  = "darkgreen",
+    title  = "Collaborated With"
+  ),
+  # direct influence: Sailor → folk
+  dir_infl %>% transmute(
+    from   = from, to = to,
+    arrows = "to", color = "darkorange",
+    title  = paste0("Influence: ", `Edge Type`)
+  ),
+  # indirect influence: collaborator → folk
+  indir_infl %>% transmute(
+    from   = from, to = to,
+    arrows = "to", color = "orange",
+    title  = paste0("Via Collaborator: ", `Edge Type`)
+  )
+)
+
+# 8. Render
+visNetwork(nodes_vis, edges_vis, height="600px", width="100%") %>%
+  visNodes(shape="dot", size=20, font=list(size=16)) %>%
+  visEdges(smooth=FALSE) %>%
+  visOptions(
+    highlightNearest = list(enabled=TRUE, degree=1, hover=TRUE),
+    nodesIdSelection = TRUE
+  ) %>%
+  visLegend(
+    main    = "Node Types",
+    useGroups = TRUE,
+    position  = "right"
+  ) %>%
+  visLayout(improvedLayout=TRUE) %>%
+  visPhysics(stabilization=TRUE)
+```
+
+::: callout-note
+
+:::
+
+# Task 2
+
+::: callout-note
+Develop visualizations that illustrate how the influence of Oceanus Folk has spread through the musical world.
+
+  a. Was this influence intermittent or did it have a gradual rise?
+
+  b. What genres and top artists have been most influenced by Oceanus Folk?
+
+  c. On the converse, how has Oceanus Folk changed with the rise of Sailor Shift? From which genres does it draw most of its contemporary inspiration?
 :::
 
 

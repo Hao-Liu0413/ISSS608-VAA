@@ -34,7 +34,7 @@ website:
       - text: "In class Exercise"
         menu:
           - text: "In class Exercise 3"
-            href: "Take_Home_Exercise/Take_Home_Exercise01_part2/In_class_exercise_3.html"
+            href: "Take_Home_Exercise/Take_Home_Exercise02/In_class_exercise_3.html"
       
     right:
       - text: "Home"

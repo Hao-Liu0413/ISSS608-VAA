@@ -84,6 +84,7 @@ library(visNetwork)
 library(plotly)
 library(igraph)
 library(patchwork)
+library(smartEDA)
 ```
 
 | **Package** | **Description** |
@@ -565,7 +566,7 @@ visNetwork(nodes_vis, edges_vis, height="600px", width="100%") %>%
 
 :::
 
-# Task 2
+# 4 Task 2
 
 ::: callout-note
 Develop visualizations that illustrate how the influence of Oceanus Folk has spread through the musical world.
@@ -576,5 +577,8 @@ Develop visualizations that illustrate how the influence of Oceanus Folk has spr
 
   c. On the converse, how has Oceanus Folk changed with the rise of Sailor Shift? From which genres does it draw most of its contemporary inspiration?
 :::
+
+## 4.1 Task 2 (a)
+
 
 

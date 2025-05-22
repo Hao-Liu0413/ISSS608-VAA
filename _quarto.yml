@@ -33,6 +33,9 @@ website:
             href: "Take_Home_Exercise/Take_Home_Exercise01/Take_Home_Exercise01.html"
           - text: "Take-Home Exercise 1 part2"
             href: "Take_Home_Exercise/Take_Home_Exercise01_part2/Take_Home_Exercise01_part2.html"
+          - text: "Take-Home Exercise 2"
+            href: "Take_Home_Exercise/Take_Home_Exercise02/Take_Home_Exercise02.html"
+            
       - text: "In class Exercise"
         menu:
           - text: "In class Exercise 3"

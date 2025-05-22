@@ -19,6 +19,8 @@ Below you’ll find links to each of the subsections (chapters, exercises, or pr
 -   [Hands-on_Ex05](Hands-on_Ex\Hands-on_Ex05\Hands-on_Ex05.qmd)
 -   [In class exercise 3](Take_Home_Exercise\Take_Home_Exercise02\In_class_exercise_3.qmd)
 -   [Hands-on_Ex06](Hands-on_Ex\Hands-on_Ex06\Hands-on_Ex06.qmd)
+-   [Take-Home Exercise 02](Take_Home_Exercise\Take_Home_Exercise02\Take_Home_Exercise02.qmd)
+
 
 Feel free to click any link to jump straight to that section.\
 Happy exploring!

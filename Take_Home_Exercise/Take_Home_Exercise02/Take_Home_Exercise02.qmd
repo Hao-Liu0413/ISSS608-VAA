@@ -1,7 +1,7 @@
 ---
 title: "Take_Home_Exercise02"
 author: Hao Liu
-date: ""
+date: "22 May, 2025"
 date-modified: "last-modified"
 format: html
 editor: visual
@@ -484,9 +484,17 @@ Over time, Sailor Shift’s influences evolved from stylistic inspirations to mo
 b.  Who has she collaborated with and directly or indirectly influenced?
 :::
 
-```{r task1.3_network, message=FALSE, warning=FALSE}
+As required by the question above, we begin by defining collaborators, direct influences, and indirect influences based on the following assumptions:
 
-# 3) Collaborators
+  - Collaborators: Individuals who contributed to Sailor Shift’s songs in any of the following roles — Performer, Composer, Lyricist, Producer, or Recording Engineer. These are identified through the edge types: "PerformerOf", "ComposerOf", "LyricistOf", "ProducerOf", and "RecordedBy".
+
+  - Direct influences: Artists who have been directly influenced by Sailor Shift through specific stylistic or content-based relationships. These are captured using the edge types: "InStyleOf", "InterpolatesFrom", "LyricalReferenceTo", "DirectlySamples", and "CoverOf".
+
+  - Indirect influences: Artists whose songs were influenced by works that were themselves directly influenced by Sailor Shift. This represents a two-hop influence chain, where Sailor’s impact propagates through intermediate songs.
+
+```{r task 2.1, message=FALSE, warning=FALSE}
+
+# Collaborators
 collab_types  <- c("PerformerOf","ComposerOf","LyricistOf","ProducerOf","RecordedBy")
 collab_ids    <- edges %>%
   filter(`Edge Type` %in% collab_types, target %in% sailor_songs) %>%
@@ -495,7 +503,7 @@ collaborators <- nodes %>%
   filter(id %in% collab_ids, `Node Type`=="Person") %>%
   pull(name)
 
-# 4) Direct influences
+# Direct influences
 influence_types   <- c("InStyleOf","InterpolatesFrom","LyricalReferenceTo","DirectlySamples","CoverOf")
 direct_song_ids   <- unique(c(
   edges %>% filter(`Edge Type` %in% influence_types, source %in% sailor_songs) %>% pull(target),
@@ -508,7 +516,7 @@ direct_influenced <- nodes %>%
   filter(id %in% direct_ids, `Node Type`=="Person") %>% 
   pull(name)
 
-# 5) Indirect influences (two‐hop), with orphan fallback
+# 5) Indirect influences (two‐hop)
 # a) find all two‐hop song links
 second_edges <- edges %>%
   filter(`Edge Type` %in% influence_types, target %in% direct_song_ids) %>%
@@ -547,7 +555,16 @@ indirect_links <- second_edges %>%
 
 indirect_influenced <- unique(indirect_links$indirect_perf_name)
 
-# 6) Build nodes_df
+collaborators
+direct_influenced
+indirect_influenced
+```
+
+Then we construct nodes and edges dataframe, and link influences nodes to Sailor:
+
+```{r task 2.2, message=FALSE, warning=FALSE}
+
+# Build nodes_df
 labels <- c("Sailor Shift", collaborators, direct_influenced, indirect_influenced)
 groups <- c(
   "Sailor Shift",
@@ -562,7 +579,7 @@ nodes_df <- data.frame(
   stringsAsFactors = FALSE
 )
 
-# 7) Build edges_df
+# Build edges_df
 edge_list <- list()
 
 # collaboration → Sailor Shift
@@ -597,7 +614,14 @@ if(nrow(indirect_links)>0) {
 
 edges_df <- bind_rows(edge_list)
 
-# 8) Assign edge colors + titles
+edges_df
+```
+
+We plot then an interactive graph to see all the relationship:
+
+```{r task 2.3, message=FALSE, warning=FALSE}
+
+# Assign edge colors + titles
 rel_colors <- c(
   "Collaboration"             = "#1f78b4",
   "Direct Influence"          = "#33a02c",
@@ -611,7 +635,7 @@ edges_df <- edges_df %>%
     value = 2
   )
 
-# 9) Render
+# Render
 visNetwork(nodes_df, edges_df, height="600px", width="100%") %>%
   visNodes(shape="dot", size=20, font=list(size=14)) %>%
   visEdges(arrows="to", smooth=FALSE) %>%
@@ -631,15 +655,20 @@ visNetwork(nodes_df, edges_df, height="600px", width="100%") %>%
 ```
 
 ::: callout-note
+
+As shown in the graph produced, Sailor Shift collaborated lots of artists in various roles, including performance, composition, and production. She has directly influenced a substantial group of artists through stylistic, lyrical, and musical relationships, by extending even further indirectly, propagating through intermediate songs and artists, forming a robust second layer of musical reach. An amount of "orphan" nodes appeared in the influence map, where the intermediate link is missing, yet the stylistic footprint of Sailor’s work remains evident. This confirms her central role and far-reaching impact within the musical ecosystem.
+
 :::
 
 ## 3.3 Task 1 (c)
 
+::: callout-note
+c.  How has she influenced collaborators of the broader Oceanus Folk community?
+:::
 
-```{r task1.4_oceanus_network_final, message=FALSE, warning=FALSE}
+We are going to identify all the collaborators based on the Oceanus Folk songs:
+```{r task 3.1, message=FALSE, warning=FALSE}
 
-# Load the JSON graph data
-graph_data <- fromJSON("MC1_graph.json")
 # Nodes and Edges to dataframes
 nodes_df <- as_tibble(graph_data$nodes)
 edges_df <- as_tibble(graph_data$links)
@@ -665,6 +694,16 @@ oceanus_collaborators <- edges_df %>%
   pull(source) %>%
   unique()
 
+oceanus_collaborators
+```
+
+Now we wanna identify which collaborators in the Oceanus Folk community have been directly or indirectly influenced by Sailor Shift.
+  - Direct: Sailor's first-level influence targets – songs, people, etc.
+  - Indirect: These are indirectly influenced entities — Sailor influenced X, and X influenced Y.
+  - Collaborators:  These are collaborators Sailor directly influenced within the Oceanus Folk genre.
+
+```{r task 3.2, message=FALSE, warning=FALSE}
+
 # Sailor Shift's direct connections through all edges
 direct_connections <- edges_df %>% 
   filter(source == sailor_shift_id) %>% 
@@ -682,7 +721,6 @@ indirect_connections <- edges_df %>%
 
 # Indirect influenced collaborators
 indirect_influenced_collabs <- intersect(oceanus_collaborators, indirect_connections)
-
 all_influenced_collabs <- union(direct_influenced_collabs, indirect_influenced_collabs)
 
 # Collaborator names explicitly
@@ -690,7 +728,15 @@ collab_names <- nodes_df %>%
   filter(id %in% all_influenced_collabs) %>% 
   pull(name)
 
-print(collab_names)
+direct_influenced_collabs
+indirect_influenced_collabs
+all_influenced_collabs
+collab_names
+
+```
+Now we generate the interactive plot to see the overall connection:
+
+```{r task 3.3, message=FALSE, warning=FALSE}
 
 # Nodes involved: Sailor Shift + influenced collaborators
 visual_nodes <- nodes_df %>% 
@@ -725,3 +771,10 @@ visNetwork(visual_nodes, visual_edges, width = "100%", height = "600px") %>%
   visPhysics(stabilization = TRUE)
 
 ```
+
+
+::: callout-note
+
+The graph clearly shows that Sailor Shift has influenced several collaborators within the broader Oceanus Folk community through specific artistic relationships such as Lyrical Reference, Direct Sampling, and Stylistic Inspiration. Artists like Ivy Echos, The Saltwater Weavers, and Drowned Harbor reflect her creative impact, suggesting that Sailor's work helped shape the stylistic and thematic landscape of the genre. "Parallel Memories" is part of the Oceanus Folk genre, but it plays no role in the Sailor Shift influence network based on available data.
+
+:::

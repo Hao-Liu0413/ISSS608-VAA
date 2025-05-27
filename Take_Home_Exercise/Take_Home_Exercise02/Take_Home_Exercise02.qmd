@@ -1,7 +1,7 @@
 ---
 title: "Take_Home_Exercise02"
 author: Hao Liu
-date: "22 May, 2025"
+date: "27 May, 2025"
 date-modified: "last-modified"
 format: html
 editor: visual
@@ -32,19 +32,19 @@ Now, as Sailor returns to Oceanus in 2040, a local journalist – Silas Reed –
 
 1.  Design and develop visualizations and visual analytic tools that will allow Silas to explore and understand the profile of Sailor Shift’s career
 
-a.Who has she been most influenced by over time?
+a\. Who has she been most influenced by over time?
 
-b.Who has she collaborated with and directly or indirectly influenced?
+b\. Who has she collaborated with and directly or indirectly influenced?
 
-c.How has she influenced collaborators of the broader Oceanus Folk community?
+c\. How has she influenced collaborators of the broader Oceanus Folk community?
 
 2.  Develop visualizations that illustrate how the influence of Oceanus Folk has spread through the musical world.
 
-a.Was this influence intermittent or did it have a gradual rise?
+a\. Was this influence intermittent or did it have a gradual rise?
 
-b.What genres and top artists have been most influenced by Oceanus Folk?
+b\. What genres and top artists have been most influenced by Oceanus Folk?
 
-c.On the converse, how has Oceanus Folk changed with the rise of Sailor Shift? From which genres does it draw most of its contemporary inspiration?
+c\. On the converse, how has Oceanus Folk changed with the rise of Sailor Shift? From which genres does it draw most of its contemporary inspiration?
 
 3.  Use your visualizations to develop a profile of what it means to be a rising star in the music industry.
 
@@ -81,16 +81,20 @@ library(RColorBrewer)
 ```
 
 | **Package** | **Description** |
-|------------------------------------|------------------------------------|
-| **tidyverse** | A meta-package that loads a suite of core data-science tools: ggplot2 for plotting; dplyr for data manipulation; tidyr for reshaping; readr for fast import; purrr for functional programming; stringr for string operations; and more. |
-| **jsonlite** | High-performance JSON parser/generator. Use `fromJSON()` to read nested JSON into R lists or tibbles, and `toJSON()` to write R objects back to JSON. |
-| **igraph** | Core graph/network library offering algorithms for shortest paths, centrality, community detection, edge/node operations, and more. |
-| **tidygraph** | “Tidy” interface to igraph: lets you manipulate graphs with dplyr-style verbs (`activate()`, `filter()`, `mutate()`) while preserving graph structure. |
-| **ggraph** | ggplot2 extension for graph plotting. Supports force-directed, circular, tree, Sankey layouts, and mapping node/edge aesthetics (size, color, shape) in a declarative grammar. |
-| **lubridate** | Simplifies date-time parsing and arithmetic: use `ymd()`, `ymd_hms()`, extract components (year, month), handle time zones, and perform date math with intuitive functions. |
-| **scales** | Formatting helpers for ggplot2 axes and legends: turn numbers into percentages, millions/k, format dates, control breaks and labels. |
-| **visNetwork** | HTML-widget wrapping vis.js for interactive networks: pan, zoom, drag nodes, tooltips, and dynamic styling. Embeddable in RMarkdown or Shiny. |
-| **plotly** | Converts ggplot2 (or raw plotly) graphs into interactive web plots with hover tooltips, zooming, 3D support, and legend toggling—ideal for exploratory analysis. |
+|----|----|
+| **tidyverse** | Core data science suite (includes `ggplot2`, `dplyr`, `tidyr`, `readr`, `purrr`, `stringr`, etc.) for data wrangling, visualization, and manipulation. |
+| **jsonlite** | Fast, flexible JSON parser/generator. Easily read/write JSON as R lists or tibbles with `fromJSON()` and `toJSON()`. |
+| **igraph** | Comprehensive network analysis toolkit—supports graph algorithms, manipulation, visualization, and statistics. |
+| **tidygraph** | Tidyverse-friendly interface to network data; use `dplyr`-like verbs for graph operations while preserving graph structure. |
+| **ggraph** | Powerful graph plotting, built on ggplot2; supports various layouts (force, tree, Sankey) and full aesthetic mapping for nodes/edges. |
+| **lubridate** | Intuitive tools for parsing, manipulating, and computing with dates and times. |
+| **scales** | Format numbers, dates, and legends in plots; customize axis labels, breaks, and color scales (used with ggplot2). |
+| **visNetwork** | Interactive network graphs using `vis.js`; supports drag, zoom, tooltips, and dynamic styling—ideal for web and Shiny apps. |
+| **plotly** | Convert ggplot2 or base plots to interactive web graphics; supports hover, zoom, dynamic legends, and even 3D charts. |
+| **patchwork** | Combine multiple ggplot2 plots into complex layouts with simple, readable syntax. |
+| **SmartEDA** | Automated Exploratory Data Analysis; quickly generate descriptive stats, visual summaries, and profiling reports. |
+| **dplyr** | Grammar of data manipulation: filter, select, mutate, summarise, arrange, and join tabular data efficiently. |
+| **RColorBrewer** | Predefined color palettes for maps and graphics, optimized for clarity and accessibility in visualizations. |
 
 ## 2.2 Data structure
 
@@ -100,7 +104,7 @@ The first step is to load the dataset into our environment and have a quick chec
 
 ```{r data-loading, message=FALSE, warning=FALSE}
 
-# 1. Read in the graph JSON (flatten nested lists into columns)
+# 1. Read in the graph JSON
 graph_data <- fromJSON("MC1_graph.json", flatten = TRUE)
 
 # 2. Quick check
@@ -108,6 +112,8 @@ str(graph_data)
 ```
 
 ### 2.2.2 Basic information generation
+
+We also want to have some basic information of the dataset by applying approppriate EDA methods.
 
 1.  Total nodes and total egdes:
 
@@ -195,6 +201,10 @@ subplot(plot1, plot2, nrows = 2, shareX = FALSE, titleY = TRUE) %>%
   )
 ```
 
+::: callout-note
+The above interactive plot allows us to easily check the number and type of nodes and edges, we can see that the "Person" has the highest number of nodes and "PerfomerOf" is the most popular edge.
+:::
+
 ### 2.2.3 Other information
 
 1.  We are going to explore other information:
@@ -278,7 +288,80 @@ plot_ly(
   )
 ```
 
+### 2.3.4 Creating the knowledge Graph
+
+Based on the kickstarter (https://isss608-ay2024-25apr.netlify.app/th_ex/mc1-kickstarter) published in the class materials, we generate a knowledge graph to investigate the overall nodes and edges connections:
+
+```{r knowledge graph, message=FALSE, warning=FALSE}
+id_map <- tibble(id = nodes_df$id,
+                 index = seq_len(
+                   nrow(nodes_df)))
+
+edges_tbl <- edges_df %>%
+  left_join(id_map, by = c("source" = "id")) %>%
+  rename(from = index) %>%
+  left_join(id_map, by = c("target" = "id")) %>%
+  rename(to = index)
+
+edges_tbl <- edges_tbl %>%
+  filter(!is.na(from), !is.na(to))
+
+graph <- tbl_graph(nodes = nodes_df, 
+                   edges = edges_tbl, 
+                   directed = graph_data$directed)
+
+class(graph)
+
+set.seed(1234)
+
+ggraph(graph, layout = "fr") +
+  geom_edge_link(alpha = 0.3, 
+                 colour = "gray") +
+  geom_node_point(aes(color = `Node Type`), 
+                  size = 4) +
+  geom_node_text(aes(label = name), 
+                 repel = TRUE, 
+                 size = 2.5) +
+  theme_void()
+```
+
+### 2.3.5 Visualising the sub-graph
+
+Always relied on the kickstarter materials, we also generate a sub-graph to investigate the relationship between "Person" and "MusicalGroup" nodes based on the edge type equal to "MemberOf"
+
+```{r knowledge graph 2, message=FALSE, warning=FALSE}
+graph_memberof <- graph %>%
+  activate(edges) %>%
+  filter(`Edge Type` == "MemberOf")
+
+used_node_indices <- graph_memberof %>%
+  activate(edges) %>%
+  as_tibble() %>%
+  select(from, to) %>%
+  unlist() %>%
+  unique()
+
+graph_memberof <- graph_memberof %>%
+  activate(nodes) %>%
+  mutate(row_id = row_number()) %>%
+  filter(row_id %in% used_node_indices) %>%
+  select(-row_id)  # optional cleanup
+
+ggraph(graph_memberof, 
+       layout = "fr") +
+  geom_edge_link(alpha = 0.5, 
+                 colour = "gray") +
+  geom_node_point(aes(color = `Node Type`), 
+                  size = 1) +
+  geom_node_text(aes(label = name), 
+                 repel = TRUE, 
+                 size = 2.5) +
+  theme_void()
+```
+
 # 3 Task 1
+
+In this sector you may find many suggestions for the the Task 1, we are going to show you some useful representation to answer the first 3 question of this mini-challenge.
 
 ::: callout-note
 Design and develop visualizations and visual analytic tools that will allow Silas to explore and understand the profile of Sailor Shift’s career
@@ -299,12 +382,12 @@ a.  Who has she been most influenced by over time?
 To answer the question, let's first find Sailor's ID and all songs performed by her, then construct a kind of influence-edge table for analysis based on the prior influence proxies defined ("InStyleOf","LyricalReferenceTo","InterpolatesFrom","DirectlySamples","CoverOf"):
 
 ```{r task 1.1, message=FALSE, warning=FALSE}
-# 1. Load graph
+# Load graph
 g      <- fromJSON("MC1_graph.json")
 nodes  <- g$nodes
 edges  <- g$links
 
-# 2. Sailor Shift’s songs
+# Sailor Shift’s songs
 sailor_id    <- nodes %>%
   filter(`Node Type`=="Person", name=="Sailor Shift") %>%
   pull(id)
@@ -312,7 +395,7 @@ sailor_songs <- edges %>%
   filter(`Edge Type`=="PerformerOf", source==sailor_id) %>%
   pull(target)
 
-# 3. Build influence‐edges table
+# Build influence‐edges table
 wanted_types <- c("InStyleOf","LyricalReferenceTo",
                   "InterpolatesFrom","DirectlySamples","CoverOf")
 infl_edges <- edges %>%
@@ -343,44 +426,69 @@ infl_edges <- edges %>%
 infl_edges
 ```
 
-Once we have summary of influence type and year, let's define key elements for visualization task, which include node and edges dataframes: 
+Once we have summary of influence type and year, let's define key elements for visualization task, which include node and edges dataframes:
 
 ```{r task 1.2, message=FALSE, warning=FALSE}
 
-# 4. Count per influencer‐year‐type
-evt_all <- infl_edges %>%
-  count(influencer, year, rel_type, name="weight")
+# Count events per influencer-year-relation (weight = number of events)
+evt <- infl_edges %>%
+  count(influencer, year, rel_type, name = "weight")
 
-# 5. Select all years (default)
-selected_years <- sort(unique(evt_all$year))
+# Find all unique influencers
+infs <- sort(unique(evt$influencer))
 
-# 6. Filter events by selected_years
-evt <- evt_all %>%
-  filter(year %in% selected_years)
+# For each influencer, determine their dominant (most frequent) relationship with Sailor Shift
+dominant_rel <- evt %>%
+  group_by(influencer) %>%
+  summarise(
+    rel_type = rel_type[which.max(weight)]
+  ) %>%
+  ungroup()
 
-# 7. Build node_df
-infs    <- sort(unique(evt$influencer))
-node_df <- data.frame(
-  id    = seq_len(length(infs)+1),
-  label = c("Sailor Shift", infs),
-  group = c("Artist", rep("Influencer", length(infs))),
-  stringsAsFactors = FALSE
-)
-
-# 8. Color palette for relation types
-type_cols <- setNames(
-  brewer.pal(length(wanted_types), "Set2"),
+# Prepare color and shape palettes for relationship types
+wanted_types <- unique(evt$rel_type)
+type_cols <- setNames(brewer.pal(length(wanted_types), "Set2"), wanted_types)
+type_shapes <- setNames(
+  c("dot", "triangle", "square", "diamond", "star")[seq_along(wanted_types)],
   wanted_types
 )
 
-# 9. Build edge_df from filtered evt
+# Map dominant relationship to color and shape for each influencer
+inf_rels <- dominant_rel$rel_type[match(infs, dominant_rel$influencer)]
+
+# Build node_df
+node_df <- data.frame(
+  id    = seq_len(length(infs) + 1),
+  label = c("Sailor Shift", infs),
+  group = c("Artist", inf_rels),
+  color = c("#e41a1c", type_cols[inf_rels]),
+  shape = c("star", type_shapes[inf_rels]),
+  title = c(
+    "<b>Sailor Shift</b><br>Type: Artist",
+    paste0("<b>", infs, "</b><br>Dominant Relation: ", inf_rels)
+  ),
+  stringsAsFactors = FALSE
+)
+
+# All relationships for tooltip
+inf_rels_all <- evt %>%
+  group_by(influencer) %>%
+  summarise(
+    rels = paste0(rel_type, " (", weight, ")", collapse = "; ")
+  )
+node_df$title[-1] <- paste0(
+  "<b>", infs, "</b><br>Dominant Relation: ", inf_rels,
+  "<br>All Relations: ", inf_rels_all$rels[match(infs, inf_rels_all$influencer)]
+)
+
+# Build edge_df (edges colored by relation type)
 edge_df <- evt %>%
   rowwise() %>%
   transmute(
     from   = match(influencer, node_df$label),
-    to     = 1,
+    to     = 1,  # All edges point to Sailor Shift
     value  = weight,
-    color  = list(color = type_cols[rel_type]),
+    color  = type_cols[rel_type],
     title  = paste0(
       "<b>Influencer:</b> ", influencer,
       "<br><b>Relation:</b> ", rel_type,
@@ -390,35 +498,31 @@ edge_df <- evt %>%
   ) %>%
   ungroup()
 
+# Node size: Sailor Shift large, all others smaller
+node_df$size <- c(30, rep(12, length(infs)))
+
+# Preview
 node_df
 edge_df
+
 ```
 
-Now we are going to make an interactive to show the relationship between Sailor and her influencer, the interactive function is shown as in the following immagine, so when we filter on a specific influencer and move on the edge, we can see the type of relation and year of influence: 
-![](Immagine 2025-05-22 055035.png)
-Code to plot is the following:
+Now we are going to make an interactive plot to show the relationship between Sailor and her influencer, the interactive function is shown as in the following screenshots, so when we filter on a specific influencer and move on node or edge for the visualization of relationship types and year of influence: ![](Immagine%202025-05-27%20063741.png) ![](Immagine%202025-05-27%20064047.png) Code to plot is the following:
+
 ```{r task 1.3, message=FALSE, warning=FALSE}
 
-# 10. Render interactive network
-visNetwork(node_df, edge_df, height="600px", width="100%") %>%
-  visNodes(shape="dot", size=20, font=list(size=16)) %>%
-  visEdges(arrows="to", scaling=list(min=1, max=10), smooth=FALSE) %>%
+# 8. Visualize with visNetwork
+visNetwork(node_df, edge_df, height = "600px", width = "100%") %>%
+  visNodes(font = list(size = 16)) %>%
+  visEdges(arrows = "to", scaling = list(min = 1, max = 10), smooth = FALSE) %>%
   visOptions(
-    highlightNearest = list(enabled=TRUE, degree=1, hover=TRUE),
+    highlightNearest = list(enabled = TRUE, degree = 1, hover = TRUE),
     nodesIdSelection = TRUE
-  ) %>%
-  visLegend(
-    useGroups = FALSE,
-    addNodes  = data.frame(
-      label = wanted_types,
-      shape = "square",
-      color = type_cols
-    )
   ) %>%
   visLayout(randomSeed = 42)
 ```
 
-To see the influence trend, we can generate an interactive bar chart which include all relation type and year information for a deeper analysis:  
+To see the influence trend, we can generate an interactive bar chart which include all relation type and year information for a deeper analysis:
 
 ```{r task 1.4, message=FALSE, warning=FALSE}
 
@@ -486,74 +590,117 @@ b.  Who has she collaborated with and directly or indirectly influenced?
 
 As required by the question above, we begin by defining collaborators, direct influences, and indirect influences based on the following assumptions:
 
-  - Collaborators: Individuals who contributed to Sailor Shift’s songs in any of the following roles — Performer, Composer, Lyricist, Producer, or Recording Engineer. These are identified through the edge types: "PerformerOf", "ComposerOf", "LyricistOf", "ProducerOf", and "RecordedBy".
+-   Collaborators: Individuals who contributed to Sailor Shift’s songs in any of the following roles — Performer, Composer, Lyricist, Producer, or Recording Engineer. These are identified through the edge types: "PerformerOf", "ComposerOf", "LyricistOf", "ProducerOf", and "RecordedBy".
 
-  - Direct influences: Artists who have been directly influenced by Sailor Shift through specific stylistic or content-based relationships. These are captured using the edge types: "InStyleOf", "InterpolatesFrom", "LyricalReferenceTo", "DirectlySamples", and "CoverOf".
+-   Direct influences: Artists who have been directly influenced by Sailor Shift through specific stylistic or content-based relationships. These are captured using the edge types: "InStyleOf", "InterpolatesFrom", "LyricalReferenceTo", "DirectlySamples", and "CoverOf".
 
-  - Indirect influences: Artists whose songs were influenced by works that were themselves directly influenced by Sailor Shift. This represents a two-hop influence chain, where Sailor’s impact propagates through intermediate songs.
+-   Indirect influences: Artists whose songs were influenced by works that were themselves directly influenced by Sailor Shift. This represents a two-hop influence chain, where Sailor’s impact propagates through intermediate songs.
 
 ```{r task 2.1, message=FALSE, warning=FALSE}
 
-# Collaborators
-collab_types  <- c("PerformerOf","ComposerOf","LyricistOf","ProducerOf","RecordedBy")
-collab_ids    <- edges %>%
-  filter(`Edge Type` %in% collab_types, target %in% sailor_songs) %>%
-  pull(source) %>% unique() %>% setdiff(sailor_id)
-collaborators <- nodes %>%
-  filter(id %in% collab_ids, `Node Type`=="Person") %>%
-  pull(name)
+# Dynamically detect the actual types present in your data:
+actual_edge_types <- unique(edges$`Edge Type`)
+collab_types <- intersect(c("PerformerOf", "ComposerOf", "LyricistOf", "ProducerOf", "RecordedBy"), actual_edge_types)
+influence_types <- intersect(c("InStyleOf", "InterpolatesFrom", "LyricalReferenceTo", "DirectlySamples", "CoverOf"), actual_edge_types)
 
-# Direct influences
-influence_types   <- c("InStyleOf","InterpolatesFrom","LyricalReferenceTo","DirectlySamples","CoverOf")
-direct_song_ids   <- unique(c(
+# --- COLLABORATORS ---
+
+collab_edges <- edges %>%
+  filter(`Edge Type` %in% collab_types, target %in% sailor_songs) %>%
+  filter(source != sailor_id) %>%
+  left_join(
+    nodes %>% filter(`Node Type` == "Person") %>% select(id, name),
+    by = c("source" = "id")
+  ) %>%
+  transmute(
+    collaborator_name = name,
+    detail_type = `Edge Type`,
+    from = match(name, nodes$name),
+    to = match("Sailor Shift", nodes$name)
+  ) %>%
+  filter(!is.na(from) & !is.na(to)) %>%
+  distinct()
+
+collaborators <- unique(collab_edges$collaborator_name)
+
+# --- DIRECT INFLUENCES ---
+
+# Find all direct-influenced songs
+direct_song_ids <- unique(c(
   edges %>% filter(`Edge Type` %in% influence_types, source %in% sailor_songs) %>% pull(target),
   edges %>% filter(`Edge Type` %in% influence_types, target %in% sailor_songs) %>% pull(source)
 ))
-direct_ids        <- edges %>% 
-  filter(`Edge Type`=="PerformerOf", target %in% direct_song_ids) %>% 
-  pull(source) %>% unique() %>% setdiff(sailor_id)
-direct_influenced <- nodes %>% 
-  filter(id %in% direct_ids, `Node Type`=="Person") %>% 
-  pull(name)
 
-# 5) Indirect influences (two‐hop)
-# a) find all two‐hop song links
-second_edges <- edges %>%
-  filter(`Edge Type` %in% influence_types, target %in% direct_song_ids) %>%
-  transmute(indirect_song = source, direct_song = target)
+# Find direct-influenced persons
+direct_edges <- edges %>%
+  filter(`Edge Type` %in% influence_types & (source %in% sailor_songs | target %in% sailor_songs)) %>%
+  mutate(
+    other_song = ifelse(source %in% sailor_songs, target, source)
+  ) %>%
+  left_join(
+    edges %>% filter(`Edge Type` == "PerformerOf") %>%
+      select(song_id = target, person_id = source),
+    by = c("other_song" = "song_id")
+  ) %>%
+  left_join(
+    nodes %>% filter(`Node Type` == "Person") %>% select(id, name),
+    by = c("person_id" = "id")
+  ) %>%
+  filter(!is.na(name) & person_id != sailor_id) %>%
+  transmute(
+    direct_influenced_name = name,
+    detail_type = `Edge Type`,
+    from = match("Sailor Shift", nodes$name),
+    to = match(name, nodes$name)
+  ) %>%
+  filter(!is.na(from) & !is.na(to)) %>%
+  distinct()
 
-# b) map song → performer
+direct_influenced <- unique(direct_edges$direct_influenced_name)
+
+# --- INDIRECT INFLUENCES ---
+
+# Build performer map for use below
 perf_map <- edges %>%
-  filter(`Edge Type`=="PerformerOf") %>%
+  filter(`Edge Type` == "PerformerOf") %>%
   transmute(song_id = target, performer_id = source) %>%
   left_join(
-    nodes %>% filter(`Node Type`=="Person") %>%
+    nodes %>% filter(`Node Type` == "Person") %>%
       transmute(performer_id = id, performer_name = name),
     by = "performer_id"
   )
 
-# c) build indirect links, marking orphans
+# Find two-hop song links, preserve the detailed type from the "second hop"
+second_edges <- edges %>%
+  filter(`Edge Type` %in% influence_types, target %in% direct_song_ids) %>%
+  transmute(
+    indirect_song = source,
+    direct_song = target,
+    detail_type = `Edge Type`
+  )
+
+# Join to get performer names and influence type
 indirect_links <- second_edges %>%
-  # attach direct performer (may be NA)
   left_join(perf_map, by = c("direct_song" = "song_id")) %>%
-  rename(direct_perf_id   = performer_id, 
-         direct_perf_name = performer_name) %>%
-  # attach indirect performer
+  rename(direct_perf_id = performer_id, direct_perf_name = performer_name) %>%
   left_join(perf_map, by = c("indirect_song" = "song_id")) %>%
-  rename(indir_perf_id    = performer_id, 
-         indirect_perf_name = performer_name) %>%
+  rename(indir_perf_id = performer_id, indirect_perf_name = performer_name) %>%
   filter(!is.na(indirect_perf_name) & indirect_perf_name != "Sailor Shift") %>%
   transmute(
-    # if no direct performer, link back to Sailor Shift
-    direct_perf_name   = ifelse(is.na(direct_perf_name), "Sailor Shift", direct_perf_name),
+    direct_perf_name = ifelse(is.na(direct_perf_name), "Sailor Shift", direct_perf_name),
     indirect_perf_name,
-    rel = ifelse(is.na(direct_perf_name),
-                 "Orphan Indirect Influence",
-                 "Indirect Influence")
+    rel = ifelse(is.na(direct_perf_name), "Orphan Indirect Influence", "Indirect Influence"),
+    detail_type,  # this is from the two-hop
+    from = match(direct_perf_name, nodes$name),
+    to = match(indirect_perf_name, nodes$name)
   ) %>%
+  filter(!is.na(from) & !is.na(to)) %>%
   distinct()
 
 indirect_influenced <- unique(indirect_links$indirect_perf_name)
+
+# --- Outputs: collab_edges, direct_edges, indirect_links ---
+
 
 collaborators
 direct_influenced
@@ -564,7 +711,30 @@ Then we construct nodes and edges dataframe, and link influences nodes to Sailor
 
 ```{r task 2.2, message=FALSE, warning=FALSE}
 
-# Build nodes_df
+# 1. Node group settings
+node_groups <- c(
+  "Sailor Shift", "Collaborator", "Direct Influence", "Indirect Influence"
+)
+group_colors <- c(
+  "Sailor Shift" = "#e41a1c",
+  "Collaborator" = "#1f77b4",
+  "Direct Influence" = "#ff7f0e",
+  "Indirect Influence" = "#2ca02c"
+)
+group_shapes <- c(
+  "Sailor Shift" = "star",
+  "Collaborator" = "dot",
+  "Direct Influence" = "triangle",
+  "Indirect Influence" = "square"
+)
+group_sizes <- c(
+  "Sailor Shift" = 30,
+  "Collaborator" = 14,
+  "Direct Influence" = 16,
+  "Indirect Influence" = 12
+)
+
+# 2. Build nodes_df
 labels <- c("Sailor Shift", collaborators, direct_influenced, indirect_influenced)
 groups <- c(
   "Sailor Shift",
@@ -577,87 +747,99 @@ nodes_df <- data.frame(
   label = labels,
   group = groups,
   stringsAsFactors = FALSE
-)
-
-# Build edges_df
-edge_list <- list()
-
-# collaboration → Sailor Shift
-if(length(collaborators)>0) {
-  edge_list$collab <- data.frame(
-    from = match(collaborators,       nodes_df$label),
-    to   = 1,
-    rel  = "Collaboration",
-    stringsAsFactors = FALSE
+) %>%
+  mutate(
+    color = group_colors[group],
+    shape = group_shapes[group],
+    size  = group_sizes[group]
   )
-}
 
-# Sailor Shift → direct influences
-if(length(direct_influenced)>0) {
-  edge_list$direct <- data.frame(
-    from = 1,
-    to   = match(direct_influenced,   nodes_df$label),
-    rel  = "Direct Influence",
-    stringsAsFactors = FALSE
-  )
-}
-
-# direct → indirect (or orphan back to Sailor Shift)
-if(nrow(indirect_links)>0) {
-  edge_list$indirect <- indirect_links %>%
+# 3. Edges: always map to nodes_df$id by label!
+edges_df <- bind_rows(
+  collab_edges %>%
     transmute(
-      from = match(direct_perf_name,   nodes_df$label),
-      to   = match(indirect_perf_name, nodes_df$label),
-      rel
+      from = match(collaborator_name, nodes_df$label),
+      to = match("Sailor Shift", nodes_df$label),
+      rel = "Collaboration",
+      detail_type = detail_type
+    ),
+  direct_edges %>%
+    transmute(
+      from = match("Sailor Shift", nodes_df$label),
+      to = match(direct_influenced_name, nodes_df$label),
+      rel = "Direct Influence",
+      detail_type = detail_type
+    ),
+  indirect_links %>%
+    transmute(
+      from = match(direct_perf_name, nodes_df$label),
+      to = match(indirect_perf_name, nodes_df$label),
+      rel = rel,                    # "Indirect Influence" or "Orphan Indirect Influence"
+      detail_type = detail_type
     )
+) %>% filter(!is.na(from), !is.na(to))  # Remove edges with unmapped nodes
+
+# 4. Palette/colors for actual edge types
+actual_edge_types <- unique(edges_df$detail_type)
+palette <- brewer.pal(max(3, min(length(actual_edge_types), 12)), "Set3")
+if (length(actual_edge_types) > length(palette)) {
+  palette <- rep(palette, length.out = length(actual_edge_types))
 }
+edge_colors <- setNames(palette, actual_edge_types)
+edges_df$color <- edge_colors[edges_df$detail_type]
+edges_df$title <- edges_df$detail_type
 
-edges_df <- bind_rows(edge_list)
+# 5. Node tooltip: show all connected edge types
+nodes_df$title <- sapply(nodes_df$id, function(this_id) {
+  connected_edges <- edges_df %>%
+    filter(from == this_id | to == this_id)
+  detail_types <- unique(connected_edges$detail_type)
+  if (length(detail_types) > 0) {
+    paste0(
+      "<b>", nodes_df$label[nodes_df$id == this_id], "</b><br>",
+      "Connected edge types: <br>",
+      paste(detail_types, collapse = "<br>")
+    )
+  } else {
+    paste0("<b>", nodes_df$label[nodes_df$id == this_id], "</b>")
+  }
+})
 
+# 6. (Optional: ensure shapes/colors again)
+nodes_df <- nodes_df %>%
+  mutate(
+    color = group_colors[group],
+    shape = group_shapes[group],
+    size  = group_sizes[group]
+  )
+
+nodes_df
 edges_df
 ```
 
-We plot then an interactive graph to see all the relationship:
+We plot an interactive graph to see all the relationship:
 
 ```{r task 2.3, message=FALSE, warning=FALSE}
-
-# Assign edge colors + titles
-rel_colors <- c(
-  "Collaboration"             = "#1f78b4",
-  "Direct Influence"          = "#33a02c",
-  "Indirect Influence"        = "#fb9a99",
-  "Orphan Indirect Influence" = "#ff7f00"
-)
-edges_df <- edges_df %>%
-  mutate(
-    color = lapply(rel, function(r) list(color = rel_colors[r])),
-    title = paste0("<b>Relation:</b> ", rel),
-    value = 2
-  )
-
-# Render
-visNetwork(nodes_df, edges_df, height="600px", width="100%") %>%
-  visNodes(shape="dot", size=20, font=list(size=14)) %>%
-  visEdges(arrows="to", smooth=FALSE) %>%
+visNetwork(nodes_df, edges_df, height = "600px", width = "100%") %>%
+  visNodes(font = list(size = 14)) %>%
+  visEdges(arrows = "to", smooth = FALSE) %>%
   visOptions(
-    highlightNearest = list(enabled=TRUE, degree=1, hover=TRUE),
-    nodesIdSelection = TRUE
+    highlightNearest = list(enabled = TRUE, degree = 1, hover = TRUE),
+    nodesIdSelection = FALSE
   ) %>%
   visLegend(
-    useGroups = FALSE,
-    addNodes  = data.frame(
-      label = names(rel_colors),
-      shape = "square",
-      color = unname(rel_colors)
-    )
+    addNodes = data.frame(
+      label = node_groups,
+      color = unname(group_colors[node_groups]),
+      shape = unname(group_shapes[node_groups])
+    ),
+    useGroups = FALSE
   ) %>%
   visLayout(randomSeed = 42)
 ```
 
 ::: callout-note
-
 As shown in the graph produced, Sailor Shift collaborated lots of artists in various roles, including performance, composition, and production. She has directly influenced a substantial group of artists through stylistic, lyrical, and musical relationships, by extending even further indirectly, propagating through intermediate songs and artists, forming a robust second layer of musical reach. An amount of "orphan" nodes appeared in the influence map, where the intermediate link is missing, yet the stylistic footprint of Sailor’s work remains evident. This confirms her central role and far-reaching impact within the musical ecosystem.
-
 :::
 
 ## 3.3 Task 1 (c)
@@ -667,11 +849,12 @@ c.  How has she influenced collaborators of the broader Oceanus Folk community?
 :::
 
 We are going to identify all the collaborators based on the Oceanus Folk songs:
+
 ```{r task 3.1, message=FALSE, warning=FALSE}
 
 # Nodes and Edges to dataframes
-nodes_df <- as_tibble(graph_data$nodes)
-edges_df <- as_tibble(graph_data$links)
+nodes_df <- as_tibble(g$nodes)
+edges_df <- as_tibble(g$links)
 
 # Explicitly check for NA in critical columns
 sum(is.na(nodes_df$id))       # Should be 0
@@ -697,10 +880,13 @@ oceanus_collaborators <- edges_df %>%
 oceanus_collaborators
 ```
 
-Now we wanna identify which collaborators in the Oceanus Folk community have been directly or indirectly influenced by Sailor Shift.
-  - Direct: Sailor's first-level influence targets – songs, people, etc.
-  - Indirect: These are indirectly influenced entities — Sailor influenced X, and X influenced Y.
-  - Collaborators:  These are collaborators Sailor directly influenced within the Oceanus Folk genre.
+Now we want to identify which collaborators in the Oceanus Folk community have been directly or indirectly influenced by Sailor Shift.
+
+-   Direct: Sailor's first-level influence targets – songs, people, etc.
+
+-   Indirect: These are indirectly influenced entities — Sailor influenced X, and X influenced Y.
+
+-   Collaborators: These are collaborators Sailor directly influenced within the Oceanus Folk genre.
 
 ```{r task 3.2, message=FALSE, warning=FALSE}
 
@@ -734,6 +920,7 @@ all_influenced_collabs
 collab_names
 
 ```
+
 Now we generate the interactive plot to see the overall connection:
 
 ```{r task 3.3, message=FALSE, warning=FALSE}
@@ -772,9 +959,6 @@ visNetwork(visual_nodes, visual_edges, width = "100%", height = "600px") %>%
 
 ```
 
-
 ::: callout-note
-
 The graph clearly shows that Sailor Shift has influenced several collaborators within the broader Oceanus Folk community through specific artistic relationships such as Lyrical Reference, Direct Sampling, and Stylistic Inspiration. Artists like Ivy Echos, The Saltwater Weavers, and Drowned Harbor reflect her creative impact, suggesting that Sailor's work helped shape the stylistic and thematic landscape of the genre. "Parallel Memories" is part of the Oceanus Folk genre, but it plays no role in the Sailor Shift influence network based on available data.
-
 :::

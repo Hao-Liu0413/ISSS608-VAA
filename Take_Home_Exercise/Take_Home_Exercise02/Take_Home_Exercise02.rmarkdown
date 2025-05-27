@@ -84,7 +84,7 @@ library(RColorBrewer)
 ```
 
 | **Package** | **Description** |
-|--------------------|----------------------------------------------------|
+|----|----|
 | **tidyverse** | Core data science suite (includes `ggplot2`, `dplyr`, `tidyr`, `readr`, `purrr`, `stringr`, etc.) for data wrangling, visualization, and manipulation. |
 | **jsonlite** | Fast, flexible JSON parser/generator. Easily read/write JSON as R lists or tibbles with `fromJSON()` and `toJSON()`. |
 | **igraph** | Comprehensive network analysis toolkit—supports graph algorithms, manipulation, visualization, and statistics. |
@@ -293,7 +293,7 @@ plot_ly(
 
 ### 2.3.4 Creating the knowledge Graph
 
-Based on the kickstarter (https://isss608-ay2024-25apr.netlify.app/th_ex/mc1-kickstarter) published in the class materials, we generate a knowledge graph to investigate the overall nodes and edges connections:
+Based on the kickstarter (<https://isss608-ay2024-25apr.netlify.app/th_ex/mc1-kickstarter>) published in the class materials, we generate a knowledge graph to investigate the overall nodes and edges connections:
 
 ```{r knowledge graph, message=FALSE, warning=FALSE}
 id_map <- tibble(id = nodes_df$id,

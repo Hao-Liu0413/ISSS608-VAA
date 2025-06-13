@@ -110,7 +110,7 @@ Tasks & Questions:
 ## 2.1 Input & Output Definitions
 
 | Input ID | Widget | Choices / Default | Purpose |
-|----|----|----|----|
+|------------------|------------------|------------------|------------------|
 | `yearRange` | sliderInput | 2010–2040; default c(2010,2040) | Filter by written_date year |
 | `artist1` | selectInput | `nodes_df$name`; default “Sailor Shift” | Choose focal artist |
 
@@ -125,50 +125,99 @@ Before wiring up the Shiny module, we encapsulate our data-manipulation steps in
 
 ```{r}
 library(dplyr)
-library(lubridate)
+library(tidyr)
+library(tibble)
 
-# 1. Join `written_date` into edges from target node (the influenced song)
-edges_labeled <- g_edges_df %>%
-  left_join(
-    g_nodes_df %>% select(id, label, written_date),
-    by = c("to_id" = "id")
-  ) %>%
-  rename(to_label = label)
+g      <- fromJSON("MC1_graph.json")
+nodes  <- g$nodes
+edges  <- g$links
 
-# 2. Define helper function to compute yearly influence counts for a specific artist
-get_influence_over_time <- function(artist = "Sailor Shift", yearRange = c(2010, 2040)) {
-  edges_labeled %>%
-    filter(
-      to_label == artist,
-      !is.na(written_date),
-      between(year(written_date), yearRange[1], yearRange[2])
-    ) %>%
-    count(year = year(written_date), name = "num_influences")
-}
+get_influence_over_time <- function(
+  artist_name,
+  yearRange = c(2010, 2040),
+  nodes_df   = nodes,
+  edges_df   = edges
+) {
+  # 1. Find the artist’s Person‐node ID
+  artist_id <- nodes_df %>%
+    filter(`Node Type` == "Person", name == artist_name) %>%
+    pull(id)
+  if (length(artist_id) == 0) {
+    stop("Artist not found: ", artist_name)
+  }
 
-# 3. Structural test to confirm correct output format
-test_df <- get_influence_over_time()
-stopifnot(
-  tibble::is_tibble(test_df),
-  all(c("year", "num_influences") %in% names(test_df))
-)
+  # 2. Get all the Song IDs they perform
+  artist_songs <- edges_df %>%
+    filter(`Edge Type` == "PerformerOf", source == artist_id) %>%
+    pull(target)
+  if (length(artist_songs) == 0) {
+    warning("No songs found for artist: ", artist_name)
+  }
 
-# 4. Sanity check using a real artist found in the data
-example_artist <- edges_labeled %>%
-  filter(!is.na(written_date)) %>%
-  slice(1) %>%
-  pull(to_label)
-
-if (length(example_artist) > 0) {
-  example_df <- get_influence_over_time(artist = example_artist, yearRange = c(2000, 2050))
-  stopifnot(
-    tibble::is_tibble(example_df),
-    all(c("year", "num_influences") %in% names(example_df))
+  # 3. Build the influence‐edges table (one row per Sailor song → influencer)
+  wanted_types <- c(
+    "InStyleOf", "LyricalReferenceTo",
+    "InterpolatesFrom", "DirectlySamples", "CoverOf"
   )
-}
 
-print(test_df)
-print(example_artist)
+  infl_edges <- edges_df %>%
+    filter(
+      `Edge Type` %in% wanted_types,
+      source         %in% artist_songs
+    ) %>%
+    transmute(
+      song_id   = source,           # Sailor’s song
+      infl_song = target,           # the influencing song
+      rel_type  = `Edge Type`
+    ) %>%
+    # 3a. bring in the Sailor‐song’s release year
+    left_join(
+      nodes_df %>%
+        filter(`Node Type` == "Song") %>%
+        transmute(song_id = id,
+                  year    = as.integer(substr(release_date, 1, 4))),
+      by = "song_id"
+    ) %>%
+    # 3b. bring in the Person‐node who performed the influencing song
+    left_join(
+      edges_df %>%
+        filter(`Edge Type` == "PerformerOf") %>%
+        transmute(infl_song = target,
+                  performer = source),
+      by = "infl_song"
+    ) %>%
+    # 3c. bring in the influencer’s name
+    left_join(
+      nodes_df %>%
+        filter(`Node Type` == "Person") %>%
+        transmute(performer  = id,
+                  influencer = name),
+      by = "performer"
+    ) %>%
+    # 3d. drop any incomplete rows
+    filter(!is.na(influencer), !is.na(year))
+
+  # 4. Count by year
+  counts <- infl_edges %>%
+    count(year, name = "num_influences")
+
+  # 5. Fill zero‐counts for the full slider window
+  full_years <- tibble(year = seq(yearRange[1], yearRange[2]))
+  full_years %>%
+    left_join(counts, by = "year") %>%
+    replace_na(list(num_influences = 0)) %>%
+    arrange(year)
+}
+```
+
+Now we test also Sailor Shift case:
+
+```{r}
+
+# gives you a 31‐row tibble for 2010–2040
+df_sailor <- get_influence_over_time("Sailor Shift", c(2010, 2040))
+print(df_sailor)
+
 ```
 
 ## 2.3 UI Storyboard
@@ -178,14 +227,14 @@ Below is a wireframe for Module 1: Influence Over Time. It shows how users will 
 ### Sidebar
 
 | Input ID | Widget | Choices / Default | Description |
-|----|----|----|----|
+|------------------|------------------|------------------|------------------|
 | yearRange | sliderInput | 2010–2040; default full | Allows user to select a year range for analysis. |
 | artist1 | selectInput | Artist list; default = Sailor Shift | Dropdown menu to choose the focal artist for the analysis. |
 
 ### Main Panel
 
 | Output ID | Render | Description |
-|----|----|----|
+|------------------------|------------------------|------------------------|
 | tsPlot | renderPlotly() | Interactive line chart showing the number of influences per year. Hover for counts; zoom/pan enabled. |
 | tsTable | renderDT() | Data table of `[year, num_influences]`, with sorting, pagination, and search functionality. |
 
@@ -203,6 +252,117 @@ User flow:
 4.  Explore whether influence arrives in bursts (intermittent) or builds gradually over time.
 :::
 
+### Code for UI Dashboard
+
+```{r}
+library(shiny)
+library(plotly)
+library(DT)
+library(dplyr)
+library(lubridate)
+
+# Assume these are already in your global environment:
+# • nodes       – your g_nodes_df or similar with Person nodes
+# • edges_labeled – your preprocessed edge table with to_written_date
+# • get_influence_over_time() – the helper that returns a tibble (year, num_influences)
+
+ui <- fluidPage(
+  titlePanel("Influence Over Time"),
+
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput(
+        inputId = "yearRange",
+        label   = "Year range:",
+        min     = 2010,
+        max     = 2040,
+        value   = c(2010, 2040),
+        sep     = "",
+        step    = 1
+      ),
+
+      selectizeInput(
+        inputId  = "artist1",
+        label    = "Choose artist:",
+        choices  = NULL,            # will be populated server-side
+        options  = list(
+          placeholder = 'Type to search…',
+          maxOptions  = 5000
+        )
+      )
+    ),
+
+    mainPanel(
+      plotlyOutput("tsPlot"),
+      br(),
+      DTOutput("tsTable")
+    )
+  )
+)
+
+server <- function(input, output, session) {
+  # Prepare the list of artists once
+  artist_choices <- sort(
+    unique(
+      nodes %>%
+        filter(`Node Type` == "Person") %>%
+        pull(name)
+    )
+  )
+
+  # Populate the selectize input server-side
+  updateSelectizeInput(
+    session,
+    "artist1",
+    choices = artist_choices,
+    server  = TRUE
+  )
+
+  # Reactive data frame of influence counts
+  influence_df <- reactive({
+    req(input$artist1, input$yearRange)
+    get_influence_over_time(
+      artist     = input$artist1,
+      yearRange  = input$yearRange
+    )
+  })
+
+  # Render the time‐series plot
+  output$tsPlot <- renderPlotly({
+    df <- influence_df()
+    plot_ly(
+      df,
+      x    = ~year,
+      y    = ~num_influences,
+      type = "scatter",
+      mode = "lines+markers",
+      hovertemplate = "%{x}: %{y} influences<extra></extra>"
+    ) %>%
+      layout(
+        title = paste("Influence over time for", input$artist1),
+        xaxis = list(title = "Year"),
+        yaxis = list(title = "Number of influences")
+      )
+  })
+
+  # Render the data table
+  output$tsTable <- renderDT({
+    df <- influence_df()
+    datatable(
+      df,
+      rownames = FALSE,
+      options = list(
+        pageLength   = 10,
+        lengthChange = FALSE,
+        autoWidth    = TRUE
+      )
+    )
+  })
+}
+
+shinyApp(ui, server)
+```
+
 # 3 Module 2: Collaboration Network & Propagation
 
 Tasks & Questions:
@@ -214,13 +374,13 @@ Tasks & Questions:
 ## 3.1 Input & Output Definitions
 
 | Input ID | Widget | Choices / Default | Purpose |
-|----|----|----|----|
+|------------------|------------------|------------------|------------------|
 | `artist2` | selectInput | `nodes_df$label`; default “Sailor Shift” | Choose the focal artist for the network |
 | `relationTypes` | checkboxGroupInput | c("CollaboratorOf", "InfluencedBy") | Select which edge types to include (collaborations vs. influences) |
 | `networkDepth` | sliderInput | 1–3; default 1 | How many hops (degrees of separation) to traverse from the focal artist |
 
 | Output ID | Render | Description |
-|----|----|----|
+|------------------------|------------------------|------------------------|
 | `networkPlot` | renderPlotly() | Interactive network graph showing nodes and edges for the selected artist |
 | `propTable` | renderDT() | Data table listing each connected node, relation type, and shortest path |
 
@@ -229,19 +389,21 @@ Tasks & Questions:
 This section defines how the filtered ego-network is built from the full graph g_all, and how the propagation paths are traced through shortest path calculations:
 
 ```{r}
-# — 1. Build a filtered ego‐network around the chosen artist —
-get_collab_influence_graph <- function(artist    = "Sailor Shift",
-                                       rel_types = c("CollaboratorOf", "InfluencedBy"),
-                                       depth     = 1) {
-  # Ensure the human-readable label exists
-  if (is.null(V(g_all)$label)) {
-    stop("Vertex attribute 'label' is missing from g_all.")
+library(igraph)
+
+# — 1. Build a filtered ego‐network around the chosen artist —————————————
+get_collab_influence_graph <- function(artist = "Sailor Shift",
+                                       rel_types = NULL,
+                                       depth     = 3) {
+  # If no rel_types given, include every edge relation in the graph
+  if (is.null(rel_types)) {
+    rel_types <- E(g_all)$relation %>% unique()
   }
   
   # 1a) Keep only edges of the selected types
   g_filt <- subgraph.edges(
     g_all,
-    E(g_all)[E(g_all)$relation %in% rel_types],
+    E(g_all)[ E(g_all)$relation %in% rel_types ],
     delete.vertices = FALSE
   )
   
@@ -256,14 +418,14 @@ get_collab_influence_graph <- function(artist    = "Sailor Shift",
     graph = g_filt,
     order = depth,
     nodes = vid,
-    mode = "all"
+    mode  = "all"
   )[[1]]
   
   # 1d) Return the induced subgraph
   induced_subgraph(g_filt, vids = vs)
 }
 
-# — 2. Build propagation paths table —
+# — 2. Build propagation paths table ———————————————————————————————
 get_propagation_table <- function(sub_g, artist = "Sailor Shift") {
   # Locate the starting vertex
   vid <- which(V(sub_g)$label == artist)
@@ -280,26 +442,39 @@ get_propagation_table <- function(sub_g, artist = "Sailor Shift") {
   )$vpath
   
   # Build a tibble: target, path length, and the full path string
-  tibble(
+  tibble::tibble(
     target      = sapply(paths, function(p) V(sub_g)$label[tail(p,1)]),
     path_length = sapply(paths, length) - 1,
     path        = sapply(paths, function(p)
                       paste(V(sub_g)$label[p], collapse = " → "))
   )
 }
+```
 
-# — 3. Structural tests — 
-test_graph <- get_collab_influence_graph()
-stopifnot(inherits(test_graph, "igraph"))
-stopifnot("Sailor Shift" %in% V(test_graph)$label)
+Let's test the function:
 
-test_table <- get_propagation_table(test_graph)
-stopifnot(
-  tibble::is_tibble(test_table),
-  all(c("target","path_length","path") %in% names(test_table))
+```{r}
+# 1. Extract the full ego‐network for Sailor Shift using every relation
+full_graph_ss <- get_collab_influence_graph(
+  artist    = "Sailor Shift",
+  rel_types = NULL,
+  depth     = 3
 )
-print(test_graph)
-print(test_table)
+print(full_graph_ss)
+
+# 2. Propagation table for Sailor Shift
+prop_table_ss <- get_propagation_table(full_graph_ss, artist = "Sailor Shift")
+print(prop_table_ss)
+
+# 3. And for another artist, say “Maya Jensen”
+full_graph_mj <- get_collab_influence_graph(
+  artist    = "Maya Jensen",
+  rel_types = NULL,
+  depth     = 2
+)
+prop_table_mj <- get_propagation_table(full_graph_mj, artist = "Maya Jensen")
+print(full_graph_mj)
+print(prop_table_mj)
 ```
 
 ## 3.3 UI Storyboard
@@ -307,7 +482,7 @@ print(test_table)
 ### Left Sidebar – User Controls
 
 | Input ID | Widget | Choices / Default | Description |
-|----|----|----|----|
+|------------------|------------------|------------------|------------------|
 | artist_focus | selectInput | Artist list; default = Sailor Shift | Dropdown to select the focal artist for network exploration (`nodes_df$label`). |
 | edge_types | checkboxGroupInput | CollaboratorOf, InfluencedBy; default = both checked | Checkboxes to include/exclude collaboration and/or influence edges in the network display. |
 | max_depth | sliderInput | 1–3; default = 1 | Slider to control the maximum degrees (“hops”) from the focal artist to traverse in the network. |
@@ -315,7 +490,7 @@ print(test_table)
 ### Main Panel – Outputs
 
 | Output ID | Render | Description |
-|----|----|----|
+|------------------------|------------------------|------------------------|
 | artistGraph | renderPlotly() or visNetworkOutput() | Interactive network graph: nodes represent artists or songs; edges styled by type (dotted = influence, solid = collaboration). Tooltips show name/type. |
 | pathTable | renderDT() | Data table listing each reachable node (Target), the path length from the focal artist, and the full propagation path. |
 
@@ -337,6 +512,87 @@ User flow:
 6.  Use this information to uncover direct vs. indirect influence patterns and how Sailor Shift’s reach spreads across the network.
 :::
 
+### Code for UI Dashboard
+
+```{r}
+library(shiny)
+library(visNetwork)
+library(igraph)    # ← make sure this is loaded
+library(DT)
+library(dplyr)
+
+server <- function(input, output, session) {
+  # 1) populate artist list
+  updateSelectizeInput(
+    session, "artist",
+    choices = sort(V(g_all)$label),
+    server  = TRUE
+  )
+
+  # 2) filtered ego‐network
+  subgraph <- reactive({
+    req(input$artist)
+    get_collab_influence_graph(
+      artist    = input$artist,
+      rel_types = input$rel_types,
+      depth     = input$depth
+    )
+  })
+
+  # 3) *** FIXED *** visNetwork data  
+  vis_data <- reactive({
+    sg <- subgraph()
+
+    # 3a) vertices → data.frame
+    verts <- igraph::as_data_frame(sg, what = "vertices")
+    nodes_df <- verts %>%
+      rename(
+        id    = name,       # igraph stores node IDs in ‘name’
+        title = label       # human‐readable label
+      ) %>%
+      mutate(
+        group = node_type   # use your node_type attr for coloring
+      )
+
+    # 3b) edges → data.frame
+    eds <- igraph::as_data_frame(sg, what = "edges")
+    edges_df <- eds %>%
+      rename(
+        from  = from,      # source vertex id
+        to    = to,        # target vertex id
+        title = relation   # use the relation as the hover text
+      )
+
+    list(nodes = nodes_df, edges = edges_df)
+  })
+
+  # 4) render the network
+  output$networkGraph <- renderVisNetwork({
+    d <- vis_data()
+    visNetwork(d$nodes, d$edges) %>%
+      visOptions(
+        highlightNearest = list(enabled = TRUE, degree = 1),
+        nodesIdSelection = TRUE
+      ) %>%
+      visLegend() %>%
+      visLayout(randomSeed = 42)
+  })
+
+  # 5) propagation table
+  output$propagationTable <- renderDT({
+    sg <- subgraph()
+    df <- get_propagation_table(sg, input$artist)
+    datatable(
+      df,
+      rownames = FALSE,
+      options  = list(pageLength = 10, lengthChange = FALSE, autoWidth = TRUE)
+    )
+  })
+}
+
+shinyApp(ui, server)
+```
+
 # 4 Module 3: Genre-Level Influence Patterns
 
 Tasks & Questions:
@@ -348,13 +604,13 @@ Tasks & Questions:
 ## 4.1 Input & Output Definitions
 
 | Input ID | Widget | Choices / Default | Purpose |
-|----|----|----|----|
+|------------------|------------------|------------------|------------------|
 | `genre_focus` | selectInput | Genre list; default = Oceanus Folk | Choose the genre to analyze (starting with Oceanus Folk) |
 | `influenceDir` | radioButtons | `c("From", "To")` | Direction of influence: from genre to others, or others to this genre |
 | `topN` | numericInput | default = 10 | Limit number of top genres/artists shown in bar chart & table |
 
 | Output ID | Render | Description |
-|----|----|----|
+|------------------------|------------------------|------------------------|
 | `genreBarPlot` | renderPlotly() | Horizontal bar plot of top genres/artists influenced or influencing |
 | `genreTable` | renderDT() | Data table showing genre interactions: target, count, and example artists |
 
@@ -365,6 +621,21 @@ We’ll use edge metadata (like Edge Type = InfluencedBy) and node genres to bui
 ```{r}
 library(dplyr)
 library(tibble)
+
+edges_labeled <- g_edges_df %>%
+  # join the song info on to_id → id
+  left_join(
+    g_nodes_df %>%
+      select(id, label, release_date) %>%
+      rename(
+        to_label        = label,
+        to_release_date = release_date
+      ) %>%
+      mutate(
+        to_release_date = ymd(to_release_date)
+      ),
+    by = c("to_id" = "id")
+  )
 
 # 1) Filter only influence‐type edges
 influence_edges <- edges_labeled %>%
@@ -431,7 +702,7 @@ print(test_from)
 ### Sidebar – User Controls (Inputs)
 
 | UI Element | Type | Description |
-|----|----|----|
+|------------------------|------------------------|------------------------|
 | **Genre Selector** | `selectInput` | Dropdown list of all genres (default: Oceanus Folk). Allows the user to pick a genre as the focal point for analysis. |
 | **Direction Radio** | `radioButtons` | Two choices: “From” (genres/artists influenced by selected genre), “To” (genres/artists that influence selected genre). |
 | **Top N Numeric** | `numericInput` | User sets the number (N) of top genres/artists to show in the outputs (default 10, min 1, max 30). |
@@ -439,7 +710,7 @@ print(test_from)
 ### Main Panel – Outputs
 
 | UI Element | Type | Description |
-|----|----|----|
+|------------------------|------------------------|------------------------|
 | **Genre Bar Plot** | `renderPlotly()` | Interactive horizontal bar chart: shows the top N genres (and, optionally, key artists) most influenced by or influencing the focal genre. |
 | **Genre Table** | `renderDT()` | Data table: shows detailed genre-genre links (genre name, influence count, and example artists), sortable and searchable. |
 
@@ -456,7 +727,134 @@ User flow:
 6.  User scans/sorts the table, quickly identifying which genres and artists are most involved in cross-genre influence with the selected focal genre.
 :::
 
-# References
+### Code for UI Dashboard
+
+```{r}
+library(shiny)
+library(dplyr)
+library(plotly)
+library(DT)
+
+# Assumes you have in your global environment:
+# • g_nodes_df: a data frame with columns `id`, `genre`, `label`, etc.
+# • get_genre_influence_data(): the function you defined above
+
+ui <- fluidPage(
+  titlePanel("Genre-Level Influence Patterns"),
+  
+  sidebarLayout(
+    sidebarPanel(
+      # 1. Genre selector (server‐side selectize for performance)
+      selectizeInput(
+        inputId  = "genre_focus",
+        label    = "Focal genre:",
+        choices  = NULL,    # populated in server
+        options  = list(
+          placeholder = "Type to search…",
+          maxOptions  = 5000
+        )
+      ),
+      
+      # 2. Direction toggle
+      radioButtons(
+        inputId  = "influenceDir",
+        label    = "Direction of influence:",
+        choices  = c("From selected genre" = "From",
+                     "To selected genre"   = "To"),
+        selected = "From"
+      ),
+      
+      # 3. Top N control
+      numericInput(
+        inputId = "topN",
+        label   = "Top N genres/artists:",
+        value   = 10,
+        min     = 1,
+        max     = 50,
+        step    = 1
+      )
+    ),
+    
+    mainPanel(
+      # 4. Bar chart output
+      plotlyOutput("genreBarPlot", height = "400px"),
+      br(),
+      # 5. Data table output
+      DTOutput("genreTable")
+    )
+  )
+)
+
+server <- function(input, output, session) {
+  # Populate the genre list server-side
+  updateSelectizeInput(
+    session, "genre_focus",
+    choices = sort(unique(g_nodes_df$genre)),
+    server  = TRUE
+  )
+  
+  # Reactive summary table based on inputs
+  summary_tbl <- reactive({
+    req(input$genre_focus, input$influenceDir, input$topN)
+    get_genre_influence_data(
+      focus_genre = input$genre_focus,
+      direction   = input$influenceDir,
+      topN        = input$topN
+    )
+  })
+  
+  # Render the horizontal bar chart
+  output$genreBarPlot <- renderPlotly({
+    df <- summary_tbl()
+    plot_ly(
+      df,
+      x = ~influence_count,
+      y = ~reorder(genre, influence_count),
+      type = "bar",
+      orientation = "h",
+      hovertemplate = paste(
+        "<b>%{y}</b><br>",
+        "Count: %{x}<br>",
+        "Examples: %{customdata}",
+        "<extra></extra>"
+      ),
+      customdata = ~example_artists
+    ) %>%
+      layout(
+        title = if (input$influenceDir == "From") {
+          paste("Top", input$topN, "genres influenced by", input$genre_focus)
+        } else {
+          paste("Top", input$topN, "genres influencing", input$genre_focus)
+        },
+        xaxis = list(title = "Influence edges"),
+        yaxis = list(title = "")
+      )
+  })
+  
+  # Render the data table
+  output$genreTable <- renderDT({
+    df <- summary_tbl() %>%
+      rename(
+        Genre            = genre,
+        `Influence Count`= influence_count,
+        `Example Artists`= example_artists
+      )
+    datatable(
+      df,
+      rownames = FALSE,
+      options = list(
+        pageLength = input$topN,
+        lengthChange = FALSE,
+        autoWidth = TRUE
+      )
+    )
+  })
+}
+
+shinyApp(ui, server)
+```
+
+# 5 References
 
 ## References
 

@@ -1,29 +1,59 @@
 ---
-title: "ISSS608-VAA"
+title: "ISSS608 Visual Analytics and Applications"
 format: html
+page-layout: full
 ---
 
-Welcome to the **ISSS608 Visual Analytics and Applications** homepage!\
-Below you’ll find links to each of the subsections (chapters, exercises, or projects) I’ve published:
+<style>
+.home-welcome {
+  font-size: 1.6rem;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  font-weight: 600;
+  color: #336699;
+}
+.section-header {
+  font-size: 1.3rem;
+  margin-top: 2rem;
+  color: #005488;
+}
+.links-list {
+  margin-bottom: 2rem;
+}
+</style>
 
--   [Hands-on_Ex01](Hands-on_Ex\Hands-on_Ex01\Hands-on_Ex01.qmd)
--   [Hands-on_Ex02](Hands-on_Ex\Hands-on_Ex02\Hands-on_Ex02.qmd)
--   [Hands-on_Ex03](Hands-on_Ex\Hands-on_Ex03\Hands-on_Ex03.qmd)
--   [Hands-on_Ex03_part2](Hands-on_Ex\Hands-on_Ex03_part2\Hands-on_Ex03_part2.qmd)
--   [Take-Home Exercise 01](Take_Home_Exercise\Take_Home_Exercise01\Take_Home_Exercise01.qmd)
--   [Hands-on_Ex04](Hands-on_Ex\Hands-on_Ex04\Hands-on_Ex04.qmd)
--   [Hands-on_Ex04_part2](Hands-on_Ex\Hands-on_Ex04_part2\Hands-on_Ex04_part2.qmd)
--   [Hands-on_Ex04_part3](Hands-on_Ex\Hands-on_Ex04_part3\Hands-on_Ex04_part3.qmd)
--   [Hands-on_Ex04_part4](Hands-on_Ex\Hands-on_Ex04_part4\Hands-on_Ex04_part4.qmd)
--   [Take-Home Exercise 01 part2](Take_Home_Exercise\Take_Home_Exercise01_part2\Take_Home_Exercise01_part2.qmd)
--   [Hands-on_Ex05](Hands-on_Ex\Hands-on_Ex05\Hands-on_Ex05.qmd)
--   [In class exercise 3](Take_Home_Exercise\Take_Home_Exercise02\In_class_exercise_3.qmd)
--   [Hands-on_Ex06](Hands-on_Ex\Hands-on_Ex06\Hands-on_Ex06.qmd)
--   [Take-Home Exercise 02](Take_Home_Exercise\Take_Home_Exercise02\Take_Home_Exercise02.qmd)
--   [Hands-on_Ex08](Hands-on_Ex\Hands-on_Ex08\Hands-on_Ex08.qmd)
--   [Hands-on_Ex08_part2](Hands-on_Ex\Hands-on_Ex08_part2\Hands-on_Ex08_part2.qmd)
--   [Hands-on_Ex08_part3](Hands-on_Ex\Hands-on_Ex08_part3\Hands-on_Ex08_part3.qmd)
--   [Take-Home Exercise 02](Take_Home_Exercise\Take_Home_Exercise03\Take_Home_Exercise03.qmd)
+<div class="home-welcome">
+  👋 Welcome to the <b>ISSS608 Visual Analytics and Applications</b> portfolio!
+</div>
 
-Feel free to click any link to jump straight to that section.\
-Happy exploring!
+## 🗂️ Organized Sections
+
+### <span class="section-header">Hands-on Exercises</span>
+<div class="links-list">
+- [Hands-on Exercise 01](Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.qmd)
+- [Hands-on Exercise 02](Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.qmd)
+- [Hands-on Exercise 03](Hands-on_Ex/Hands-on_Ex03/Hands-on_Ex03.qmd)
+- [Hands-on Exercise 03 (Part 2)](Hands-on_Ex/Hands-on_Ex03_part2/Hands-on_Ex03_part2.qmd)
+- [Hands-on Exercise 04](Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04.qmd)
+- [Hands-on Exercise 04 (Part 2)](Hands-on_Ex/Hands-on_Ex04_part2/Hands-on_Ex04_part2.qmd)
+- [Hands-on Exercise 04 (Part 3)](Hands-on_Ex/Hands-on_Ex04_part3/Hands-on_Ex04_part3.qmd)
+- [Hands-on Exercise 04 (Part 4)](Hands-on_Ex/Hands-on_Ex04_part4/Hands-on_Ex04_part4.qmd)
+- [Hands-on Exercise 05](Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.qmd)
+- [Hands-on Exercise 06](Hands-on_Ex/Hands-on_Ex06/Hands-on_Ex06.qmd)
+- [Hands-on Exercise 08](Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.qmd)
+- [Hands-on Exercise 08 (Part 2)](Hands-on_Ex/Hands-on_Ex08_part2/Hands-on_Ex08_part2.qmd)
+- [Hands-on Exercise 08 (Part 3)](Hands-on_Ex/Hands-on_Ex08_part3/Hands-on_Ex08_part3.qmd)
+</div>
+
+### <span class="section-header">Take-Home Exercises & In-Class</span>
+<div class="links-list">
+- [Take-Home Exercise 01](Take_Home_Exercise/Take_Home_Exercise01/Take_Home_Exercise01.qmd)
+- [Take-Home Exercise 01 (Part 2)](Take_Home_Exercise/Take_Home_Exercise01_part2/Take_Home_Exercise01_part2.qmd)
+- [In Class Exercise 3](Take_Home_Exercise/Take_Home_Exercise02/In_class_exercise_3.qmd)
+- [Take-Home Exercise 02](Take_Home_Exercise/Take_Home_Exercise02/Take_Home_Exercise02.qmd)
+- [Take-Home Exercise 03](Take_Home_Exercise/Take_Home_Exercise03/Take_Home_Exercise03.qmd)
+</div>
+
+---
+
+✨ *Feel free to browse each section above. Use the quick jump for fast navigation, or scroll for more context. Happy exploring!*

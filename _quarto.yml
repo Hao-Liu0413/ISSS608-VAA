@@ -41,6 +41,8 @@ website:
             href: "Take_Home_Exercise/Take_Home_Exercise01_part2/Take_Home_Exercise01_part2.html"
           - text: "Take-Home Exercise 2"
             href: "Take_Home_Exercise/Take_Home_Exercise02/Take_Home_Exercise02.html"
+          - text: "Take-Home Exercise 3"
+            href: "Take_Home_Exercise/Take_Home_Exercise03/Take_Home_Exercise03.html"
             
       - text: "In class Exercise"
         menu:

@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Hao Liu">
+<meta name="dcterms.date" content="2025-06-13">
 
-<title>take_home_exercise03 – ISSS608-VAA</title>
+<title>Take-Home Exercise 3: Tracing Influence: A Shiny Dashboard for Music Networks – ISSS608-VAA</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -137,6 +173,14 @@ ul.task-list li input[type="checkbox"] {
     <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html">
  <span class="dropdown-text">Hands-on Exercise 8</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex08_part2/Hands-on_Ex08_part2.html">
+ <span class="dropdown-text">Hands-on Exercise 8 part 2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex08_part3/Hands-on_Ex08_part3.html">
+ <span class="dropdown-text">Hands-on Exercise 8 part 3</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -155,6 +199,10 @@ ul.task-list li input[type="checkbox"] {
         <li>
     <a class="dropdown-item" href="../../Take_Home_Exercise/Take_Home_Exercise02/Take_Home_Exercise02.html">
  <span class="dropdown-text">Take-Home Exercise 2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Take_Home_Exercise/Take_Home_Exercise03/Take_Home_Exercise03.html">
+ <span class="dropdown-text">Take-Home Exercise 3</span></a>
   </li>  
     </ul>
   </li>
@@ -190,17 +238,930 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#packages-check" id="toc-packages-check" class="nav-link active" data-scroll-target="#packages-check">0 Packages check</a></li>
+  <li><a href="#data-preparation-testing" id="toc-data-preparation-testing" class="nav-link" data-scroll-target="#data-preparation-testing">1 Data Preparation &amp; Testing</a></li>
+  <li><a href="#module-1-influence-over-time" id="toc-module-1-influence-over-time" class="nav-link" data-scroll-target="#module-1-influence-over-time">2 Module 1: Influence Over Time</a>
+  <ul class="collapse">
+  <li><a href="#input-output-definitions" id="toc-input-output-definitions" class="nav-link" data-scroll-target="#input-output-definitions">2.1 Input &amp; Output Definitions</a></li>
+  <li><a href="#code-preparation-testing" id="toc-code-preparation-testing" class="nav-link" data-scroll-target="#code-preparation-testing">2.2 Code Preparation &amp; Testing</a></li>
+  <li><a href="#ui-storyboard" id="toc-ui-storyboard" class="nav-link" data-scroll-target="#ui-storyboard">2.3 UI Storyboard</a>
+  <ul class="collapse">
+  <li><a href="#sidebar" id="toc-sidebar" class="nav-link" data-scroll-target="#sidebar">Sidebar</a></li>
+  <li><a href="#main-panel" id="toc-main-panel" class="nav-link" data-scroll-target="#main-panel">Main Panel</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#module-2-collaboration-network-propagation" id="toc-module-2-collaboration-network-propagation" class="nav-link" data-scroll-target="#module-2-collaboration-network-propagation">3 Module 2: Collaboration Network &amp; Propagation</a>
+  <ul class="collapse">
+  <li><a href="#input-output-definitions-1" id="toc-input-output-definitions-1" class="nav-link" data-scroll-target="#input-output-definitions-1">3.1 Input &amp; Output Definitions</a></li>
+  <li><a href="#code-preparation-testing-1" id="toc-code-preparation-testing-1" class="nav-link" data-scroll-target="#code-preparation-testing-1">3.2 Code Preparation &amp; Testing</a></li>
+  <li><a href="#ui-storyboard-1" id="toc-ui-storyboard-1" class="nav-link" data-scroll-target="#ui-storyboard-1">3.3 UI Storyboard</a>
+  <ul class="collapse">
+  <li><a href="#left-sidebar-user-controls" id="toc-left-sidebar-user-controls" class="nav-link" data-scroll-target="#left-sidebar-user-controls">Left Sidebar – User Controls</a></li>
+  <li><a href="#main-panel-outputs" id="toc-main-panel-outputs" class="nav-link" data-scroll-target="#main-panel-outputs">Main Panel – Outputs</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#module-3-genre-level-influence-patterns" id="toc-module-3-genre-level-influence-patterns" class="nav-link" data-scroll-target="#module-3-genre-level-influence-patterns">4 Module 3: Genre-Level Influence Patterns</a>
+  <ul class="collapse">
+  <li><a href="#input-output-definitions-2" id="toc-input-output-definitions-2" class="nav-link" data-scroll-target="#input-output-definitions-2">4.1 Input &amp; Output Definitions</a></li>
+  <li><a href="#code-preparation-testing-2" id="toc-code-preparation-testing-2" class="nav-link" data-scroll-target="#code-preparation-testing-2">4.2 Code Preparation &amp; Testing</a></li>
+  <li><a href="#ui-storyboard-2" id="toc-ui-storyboard-2" class="nav-link" data-scroll-target="#ui-storyboard-2">4.3 UI Storyboard</a>
+  <ul class="collapse">
+  <li><a href="#sidebar-user-controls-inputs" id="toc-sidebar-user-controls-inputs" class="nav-link" data-scroll-target="#sidebar-user-controls-inputs">Sidebar – User Controls (Inputs)</a></li>
+  <li><a href="#main-panel-outputs-1" id="toc-main-panel-outputs-1" class="nav-link" data-scroll-target="#main-panel-outputs-1">Main Panel – Outputs</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a>
+  <ul class="collapse">
+  <li><a href="#references-1" id="toc-references-1" class="nav-link" data-scroll-target="#references-1">References</a></li>
+  <li><a href="#data-source" id="toc-data-source" class="nav-link" data-scroll-target="#data-source">Data Source</a></li>
+  <li><a href="#ai-tools" id="toc-ai-tools" class="nav-link" data-scroll-target="#ai-tools">AI Tools</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Take-Home Exercise 3: Tracing Influence: A Shiny Dashboard for Music Networks</h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Hao Liu </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 13, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
 
 
+</header>
 
+
+<section id="packages-check" class="level1">
+<h1>0 Packages check</h1>
+<p>This section ensures that all required R packages are available for the analysis and interactive modules in this project.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>packages <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"shiny"</span>, <span class="st">"shinydashboard"</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"jsonlite"</span>, <span class="st">"igraph"</span>, <span class="st">"ggraph"</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"dplyr"</span>, <span class="st">"lubridate"</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"plotly"</span>, <span class="st">"visNetwork"</span>, <span class="st">"DT"</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"leaflet"</span>, <span class="st">"ggridges"</span>, <span class="st">"ggmosaic"</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>installed <span class="ot">&lt;-</span> <span class="fu">rownames</span>(<span class="fu">installed.packages</span>())</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (pkg <span class="cf">in</span> packages) {</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span>pkg <span class="sc">%in%</span> installed) <span class="fu">install.packages</span>(pkg)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(pkg, <span class="at">character.only =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="data-preparation-testing" class="level1">
+<h1>1 Data Preparation &amp; Testing</h1>
+<p>We load your knowledge‐graph JSON, clean it into tidy node and edge tables, and build an igraph for global metrics.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(jsonlite)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraph)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Load JSON</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>raw_json <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(<span class="st">"MC1_graph.json"</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Helper: Parse "YYYY" or "YYYY-MM-DD"</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>parse_date <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">as.character</span>(x)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  x[x <span class="sc">==</span> <span class="st">""</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  year_only <span class="ot">&lt;-</span> <span class="sc">!</span><span class="fu">is.na</span>(x) <span class="sc">&amp;</span> <span class="fu">grepl</span>(<span class="st">"^</span><span class="sc">\\</span><span class="st">d{4}$"</span>, x)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  x[year_only] <span class="ot">&lt;-</span> <span class="fu">paste0</span>(x[year_only], <span class="st">"-01-01"</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ymd</span>(x)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Clean nodes</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>g_nodes_df <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(raw_json<span class="sc">$</span>nodes) <span class="sc">%&gt;%</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">id        =</span> id,</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">label     =</span> name,</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">node_type =</span> <span class="st">`</span><span class="at">Node Type</span><span class="st">`</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">id           =</span> <span class="fu">as.character</span>(id),</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">release_date =</span> <span class="fu">parse_date</span>(release_date),</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">written_date =</span> <span class="cf">if</span> (<span class="st">"written_date"</span> <span class="sc">%in%</span> <span class="fu">names</span>(.)) <span class="fu">parse_date</span>(written_date) <span class="cf">else</span> <span class="fu">as.Date</span>(<span class="cn">NA</span>)</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Clean edges</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>g_edges_df <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(raw_json<span class="sc">$</span>links) <span class="sc">%&gt;%</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">from_id  =</span> source,</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">to_id    =</span> target,</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">relation =</span> <span class="st">`</span><span class="at">Edge Type</span><span class="st">`</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">from_id =</span> <span class="fu">as.character</span>(from_id),</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">to_id   =</span> <span class="fu">as.character</span>(to_id)</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Build igraph</span></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>g_all <span class="ot">&lt;-</span> <span class="fu">graph_from_data_frame</span>(</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>  <span class="at">d =</span> g_edges_df <span class="sc">%&gt;%</span></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>    <span class="fu">transmute</span>(<span class="at">from =</span> from_id, <span class="at">to =</span> to_id, relation),</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>  <span class="at">vertices =</span> g_nodes_df <span class="sc">%&gt;%</span></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>    <span class="fu">transmute</span>(<span class="at">name =</span> id, label, node_type),</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>  <span class="at">directed =</span> <span class="cn">TRUE</span></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a><span class="co"># Sanity checks</span></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(</span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nrow</span>(g_nodes_df) <span class="sc">&gt;</span> <span class="dv">0</span>,</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nrow</span>(g_edges_df) <span class="sc">&gt;</span> <span class="dv">0</span>,</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">all</span>(<span class="fu">c</span>(<span class="st">"id"</span>, <span class="st">"label"</span>, <span class="st">"node_type"</span>) <span class="sc">%in%</span> <span class="fu">names</span>(g_nodes_df)),</span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">all</span>(<span class="fu">c</span>(<span class="st">"from_id"</span>, <span class="st">"to_id"</span>, <span class="st">"relation"</span>) <span class="sc">%in%</span> <span class="fu">names</span>(g_edges_df))</span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(g_all)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>IGRAPH bdc2c5d DN-- 17412 37857 -- 
++ attr: name (v/c), label (v/c), node_type (v/c), relation (e/c)
++ edges from bdc2c5d (vertex names):
+ [1] 0 -&gt;1841  0 -&gt;4     1 -&gt;0     1 -&gt;16180 2 -&gt;0     2 -&gt;16180 3 -&gt;0    
+ [8] 5 -&gt;5088  5 -&gt;14332 5 -&gt;11677 5 -&gt;2479  5 -&gt;827   5 -&gt;10417 5 -&gt;14768
+[15] 5 -&gt;13985 5 -&gt;13297 5 -&gt;3387  5 -&gt;9122  5 -&gt;8680  5 -&gt;5928  5 -&gt;9    
+[22] 6 -&gt;5     7 -&gt;16881 7 -&gt;5088  7 -&gt;5     7 -&gt;6231  7 -&gt;6231  7 -&gt;7054 
+[29] 7 -&gt;9808  7 -&gt;9808  7 -&gt;13567 7 -&gt;13567 7 -&gt;14175 7 -&gt;16514 8 -&gt;16881
+[36] 8 -&gt;5     8 -&gt;7054  8 -&gt;13567 10-&gt;14322 10-&gt;14    11-&gt;10    11-&gt;11459
+[43] 11-&gt;14322 12-&gt;10    12-&gt;11459 13-&gt;10    13-&gt;10    13-&gt;11459 13-&gt;11459
+[50] 15-&gt;16367 15-&gt;24    15-&gt;21    16-&gt;15    16-&gt;15    16-&gt;16367 17-&gt;15   
++ ... omitted several edges</code></pre>
+</div>
+</div>
+</section>
+<section id="module-1-influence-over-time" class="level1">
+<h1>2 Module 1: Influence Over Time</h1>
+<p>Tasks &amp; Questions:</p>
+<ul>
+<li><p>Who has Sailor been most influenced by over time?</p></li>
+<li><p>Was influence intermittent or gradual?</p></li>
+</ul>
+<section id="input-output-definitions" class="level2">
+<h2 class="anchored" data-anchor-id="input-output-definitions">2.1 Input &amp; Output Definitions</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Input ID</th>
+<th>Widget</th>
+<th>Choices / Default</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>yearRange</code></td>
+<td>sliderInput</td>
+<td>2010–2040; default c(2010,2040)</td>
+<td>Filter by written_date year</td>
+</tr>
+<tr class="even">
+<td><code>artist1</code></td>
+<td>selectInput</td>
+<td><code>nodes_df$name</code>; default “Sailor Shift”</td>
+<td>Choose focal artist</td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Output ID</th>
+<th>Render</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>tsPlot</code></td>
+<td>renderPlotly()</td>
+<td>Line chart: count per year</td>
+</tr>
+<tr class="even">
+<td><code>tsTable</code></td>
+<td>renderDT()</td>
+<td>Data table of yearly counts</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="code-preparation-testing" class="level2">
+<h2 class="anchored" data-anchor-id="code-preparation-testing">2.2 Code Preparation &amp; Testing</h2>
+<p>Before wiring up the Shiny module, we encapsulate our data-manipulation steps into a reusable function and verify its basic behavior:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Join `written_date` into edges from target node (the influenced song)</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>edges_labeled <span class="ot">&lt;-</span> g_edges_df <span class="sc">%&gt;%</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    g_nodes_df <span class="sc">%&gt;%</span> <span class="fu">select</span>(id, label, written_date),</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"to_id"</span> <span class="ot">=</span> <span class="st">"id"</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">to_label =</span> label)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Define helper function to compute yearly influence counts for a specific artist</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>get_influence_over_time <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">artist =</span> <span class="st">"Sailor Shift"</span>, <span class="at">yearRange =</span> <span class="fu">c</span>(<span class="dv">2010</span>, <span class="dv">2040</span>)) {</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  edges_labeled <span class="sc">%&gt;%</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>      to_label <span class="sc">==</span> artist,</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">is.na</span>(written_date),</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>      <span class="fu">between</span>(<span class="fu">year</span>(written_date), yearRange[<span class="dv">1</span>], yearRange[<span class="dv">2</span>])</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">count</span>(<span class="at">year =</span> <span class="fu">year</span>(written_date), <span class="at">name =</span> <span class="st">"num_influences"</span>)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Structural test to confirm correct output format</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>test_df <span class="ot">&lt;-</span> <span class="fu">get_influence_over_time</span>()</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">is_tibble</span>(test_df),</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">all</span>(<span class="fu">c</span>(<span class="st">"year"</span>, <span class="st">"num_influences"</span>) <span class="sc">%in%</span> <span class="fu">names</span>(test_df))</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Sanity check using a real artist found in the data</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>example_artist <span class="ot">&lt;-</span> edges_labeled <span class="sc">%&gt;%</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(written_date)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(to_label)</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(example_artist) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>  example_df <span class="ot">&lt;-</span> <span class="fu">get_influence_over_time</span>(<span class="at">artist =</span> example_artist, <span class="at">yearRange =</span> <span class="fu">c</span>(<span class="dv">2000</span>, <span class="dv">2050</span>))</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>    tibble<span class="sc">::</span><span class="fu">is_tibble</span>(example_df),</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>    <span class="fu">all</span>(<span class="fu">c</span>(<span class="st">"year"</span>, <span class="st">"num_influences"</span>) <span class="sc">%in%</span> <span class="fu">names</span>(example_df))</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(test_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 0 × 2
+# ℹ 2 variables: year &lt;dbl&gt;, num_influences &lt;int&gt;</code></pre>
+</div>
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(example_artist)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Echoes of a Lonely Gaze"</code></pre>
+</div>
+</div>
+</section>
+<section id="ui-storyboard" class="level2">
+<h2 class="anchored" data-anchor-id="ui-storyboard">2.3 UI Storyboard</h2>
+<p>Below is a wireframe for Module 1: Influence Over Time. It shows how users will interact with the controls and view the results:</p>
+<section id="sidebar" class="level3">
+<h3 class="anchored" data-anchor-id="sidebar">Sidebar</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Input ID</th>
+<th>Widget</th>
+<th>Choices / Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>yearRange</td>
+<td>sliderInput</td>
+<td>2010–2040; default full</td>
+<td>Allows user to select a year range for analysis.</td>
+</tr>
+<tr class="even">
+<td>artist1</td>
+<td>selectInput</td>
+<td>Artist list; default = Sailor Shift</td>
+<td>Dropdown menu to choose the focal artist for the analysis.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="main-panel" class="level3">
+<h3 class="anchored" data-anchor-id="main-panel">Main Panel</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Output ID</th>
+<th>Render</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>tsPlot</td>
+<td>renderPlotly()</td>
+<td>Interactive line chart showing the number of influences per year. Hover for counts; zoom/pan enabled.</td>
+</tr>
+<tr class="even">
+<td>tsTable</td>
+<td>renderDT()</td>
+<td>Data table of <code>[year, num_influences]</code>, with sorting, pagination, and search functionality.</td>
+</tr>
+</tbody>
+</table>
+<p><img src="image1.jpg" class="img-fluid"></p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>User flow:</p>
+<ol type="1">
+<li><p>Pick a subset of years via the slider.</p></li>
+<li><p>Select an artist to focus on.</p></li>
+<li><p>Instantly see how many influence-edges point to them each year, both in chart and table form.</p></li>
+<li><p>Explore whether influence arrives in bursts (intermittent) or builds gradually over time.</p></li>
+</ol>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="module-2-collaboration-network-propagation" class="level1">
+<h1>3 Module 2: Collaboration Network &amp; Propagation</h1>
+<p>Tasks &amp; Questions:</p>
+<ul>
+<li><p>Who has Sailor collaborated with, and whom has she influenced (directly/indirectly)?</p></li>
+<li><p>How has influence propagate through her songs and collaborators?</p></li>
+</ul>
+<section id="input-output-definitions-1" class="level2">
+<h2 class="anchored" data-anchor-id="input-output-definitions-1">3.1 Input &amp; Output Definitions</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Input ID</th>
+<th>Widget</th>
+<th>Choices / Default</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>artist2</code></td>
+<td>selectInput</td>
+<td><code>nodes_df$label</code>; default “Sailor Shift”</td>
+<td>Choose the focal artist for the network</td>
+</tr>
+<tr class="even">
+<td><code>relationTypes</code></td>
+<td>checkboxGroupInput</td>
+<td>c(“CollaboratorOf”, “InfluencedBy”)</td>
+<td>Select which edge types to include (collaborations vs.&nbsp;influences)</td>
+</tr>
+<tr class="odd">
+<td><code>networkDepth</code></td>
+<td>sliderInput</td>
+<td>1–3; default 1</td>
+<td>How many hops (degrees of separation) to traverse from the focal artist</td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Output ID</th>
+<th>Render</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>networkPlot</code></td>
+<td>renderPlotly()</td>
+<td>Interactive network graph showing nodes and edges for the selected artist</td>
+</tr>
+<tr class="even">
+<td><code>propTable</code></td>
+<td>renderDT()</td>
+<td>Data table listing each connected node, relation type, and shortest path</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="code-preparation-testing-1" class="level2">
+<h2 class="anchored" data-anchor-id="code-preparation-testing-1">3.2 Code Preparation &amp; Testing</h2>
+<p>This section defines how the filtered ego-network is built from the full graph g_all, and how the propagation paths are traced through shortest path calculations:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># — 1. Build a filtered ego‐network around the chosen artist —</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>get_collab_influence_graph <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">artist    =</span> <span class="st">"Sailor Shift"</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">rel_types =</span> <span class="fu">c</span>(<span class="st">"CollaboratorOf"</span>, <span class="st">"InfluencedBy"</span>),</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">depth     =</span> <span class="dv">1</span>) {</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Ensure the human-readable label exists</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.null</span>(<span class="fu">V</span>(g_all)<span class="sc">$</span>label)) {</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"Vertex attribute 'label' is missing from g_all."</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 1a) Keep only edges of the selected types</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  g_filt <span class="ot">&lt;-</span> <span class="fu">subgraph.edges</span>(</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    g_all,</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">E</span>(g_all)[<span class="fu">E</span>(g_all)<span class="sc">$</span>relation <span class="sc">%in%</span> rel_types],</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">delete.vertices =</span> <span class="cn">FALSE</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 1b) Find the vertex index of the focal artist</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  vid <span class="ot">&lt;-</span> <span class="fu">which</span>(<span class="fu">V</span>(g_filt)<span class="sc">$</span>label <span class="sc">==</span> artist)</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(vid) <span class="sc">==</span> <span class="dv">0</span>) {</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="fu">sprintf</span>(<span class="st">"Artist '%s' not found in the graph."</span>, artist))</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 1c) Gather all vertices within `depth` hops</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>  vs <span class="ot">&lt;-</span> <span class="fu">ego</span>(</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">graph =</span> g_filt,</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">order =</span> depth,</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">nodes =</span> vid,</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">"all"</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>  )[[<span class="dv">1</span>]]</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 1d) Return the induced subgraph</span></span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">induced_subgraph</span>(g_filt, <span class="at">vids =</span> vs)</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a><span class="co"># — 2. Build propagation paths table —</span></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>get_propagation_table <span class="ot">&lt;-</span> <span class="cf">function</span>(sub_g, <span class="at">artist =</span> <span class="st">"Sailor Shift"</span>) {</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Locate the starting vertex</span></span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>  vid <span class="ot">&lt;-</span> <span class="fu">which</span>(<span class="fu">V</span>(sub_g)<span class="sc">$</span>label <span class="sc">==</span> artist)</span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(vid) <span class="sc">==</span> <span class="dv">0</span>) {</span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="fu">sprintf</span>(<span class="st">"Artist '%s' not in the subgraph."</span>, artist))</span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Compute shortest paths from the artist to every node</span></span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>  paths <span class="ot">&lt;-</span> <span class="fu">shortest_paths</span>(</span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">graph =</span> sub_g,</span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">from  =</span> vid,</span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">to    =</span> <span class="fu">V</span>(sub_g),</span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">mode  =</span> <span class="st">"all"</span></span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a>  )<span class="sc">$</span>vpath</span>
+<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Build a tibble: target, path length, and the full path string</span></span>
+<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb8-53"><a href="#cb8-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">target      =</span> <span class="fu">sapply</span>(paths, <span class="cf">function</span>(p) <span class="fu">V</span>(sub_g)<span class="sc">$</span>label[<span class="fu">tail</span>(p,<span class="dv">1</span>)]),</span>
+<span id="cb8-54"><a href="#cb8-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">path_length =</span> <span class="fu">sapply</span>(paths, length) <span class="sc">-</span> <span class="dv">1</span>,</span>
+<span id="cb8-55"><a href="#cb8-55" aria-hidden="true" tabindex="-1"></a>    <span class="at">path        =</span> <span class="fu">sapply</span>(paths, <span class="cf">function</span>(p)</span>
+<span id="cb8-56"><a href="#cb8-56" aria-hidden="true" tabindex="-1"></a>                      <span class="fu">paste</span>(<span class="fu">V</span>(sub_g)<span class="sc">$</span>label[p], <span class="at">collapse =</span> <span class="st">" → "</span>))</span>
+<span id="cb8-57"><a href="#cb8-57" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb8-58"><a href="#cb8-58" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-59"><a href="#cb8-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-60"><a href="#cb8-60" aria-hidden="true" tabindex="-1"></a><span class="co"># — 3. Structural tests — </span></span>
+<span id="cb8-61"><a href="#cb8-61" aria-hidden="true" tabindex="-1"></a>test_graph <span class="ot">&lt;-</span> <span class="fu">get_collab_influence_graph</span>()</span>
+<span id="cb8-62"><a href="#cb8-62" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">inherits</span>(test_graph, <span class="st">"igraph"</span>))</span>
+<span id="cb8-63"><a href="#cb8-63" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="st">"Sailor Shift"</span> <span class="sc">%in%</span> <span class="fu">V</span>(test_graph)<span class="sc">$</span>label)</span>
+<span id="cb8-64"><a href="#cb8-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-65"><a href="#cb8-65" aria-hidden="true" tabindex="-1"></a>test_table <span class="ot">&lt;-</span> <span class="fu">get_propagation_table</span>(test_graph)</span>
+<span id="cb8-66"><a href="#cb8-66" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(</span>
+<span id="cb8-67"><a href="#cb8-67" aria-hidden="true" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">is_tibble</span>(test_table),</span>
+<span id="cb8-68"><a href="#cb8-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">all</span>(<span class="fu">c</span>(<span class="st">"target"</span>,<span class="st">"path_length"</span>,<span class="st">"path"</span>) <span class="sc">%in%</span> <span class="fu">names</span>(test_table))</span>
+<span id="cb8-69"><a href="#cb8-69" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-70"><a href="#cb8-70" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(test_graph)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>IGRAPH be01fd6 DN-- 1 0 -- 
++ attr: name (v/c), label (v/c), node_type (v/c), relation (e/c)
++ edges from be01fd6 (vertex names):</code></pre>
+</div>
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(test_table)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  target       path_length path        
+  &lt;chr&gt;              &lt;dbl&gt; &lt;chr&gt;       
+1 Sailor Shift           0 Sailor Shift</code></pre>
+</div>
+</div>
+</section>
+<section id="ui-storyboard-1" class="level2">
+<h2 class="anchored" data-anchor-id="ui-storyboard-1">3.3 UI Storyboard</h2>
+<section id="left-sidebar-user-controls" class="level3">
+<h3 class="anchored" data-anchor-id="left-sidebar-user-controls">Left Sidebar – User Controls</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Input ID</th>
+<th>Widget</th>
+<th>Choices / Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>artist_focus</td>
+<td>selectInput</td>
+<td>Artist list; default = Sailor Shift</td>
+<td>Dropdown to select the focal artist for network exploration (<code>nodes_df$label</code>).</td>
+</tr>
+<tr class="even">
+<td>edge_types</td>
+<td>checkboxGroupInput</td>
+<td>CollaboratorOf, InfluencedBy; default = both checked</td>
+<td>Checkboxes to include/exclude collaboration and/or influence edges in the network display.</td>
+</tr>
+<tr class="odd">
+<td>max_depth</td>
+<td>sliderInput</td>
+<td>1–3; default = 1</td>
+<td>Slider to control the maximum degrees (“hops”) from the focal artist to traverse in the network.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="main-panel-outputs" class="level3">
+<h3 class="anchored" data-anchor-id="main-panel-outputs">Main Panel – Outputs</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Output ID</th>
+<th>Render</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>artistGraph</td>
+<td>renderPlotly() or visNetworkOutput()</td>
+<td>Interactive network graph: nodes represent artists or songs; edges styled by type (dotted = influence, solid = collaboration). Tooltips show name/type.</td>
+</tr>
+<tr class="even">
+<td>pathTable</td>
+<td>renderDT()</td>
+<td>Data table listing each reachable node (Target), the path length from the focal artist, and the full propagation path.</td>
+</tr>
+</tbody>
+</table>
+<p><img src="image2.jpg" class="img-fluid"></p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>User flow:</p>
+<ol type="1">
+<li><p>Select a focal artist from the dropdown list.</p></li>
+<li><p>Choose the type(s) of relationships to explore: collaboration, influence, or both.</p></li>
+<li><p>Adjust the network depth slider to reveal 1–3 degrees of connections.</p></li>
+<li><p>Instantly view an interactive graph of connected artists and songs.</p></li>
+<li><p>Examine the data table to trace influence and collaboration paths, including how far and through whom influence propagates.</p></li>
+<li><p>Use this information to uncover direct vs.&nbsp;indirect influence patterns and how Sailor Shift’s reach spreads across the network.</p></li>
+</ol>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="module-3-genre-level-influence-patterns" class="level1">
+<h1>4 Module 3: Genre-Level Influence Patterns</h1>
+<p>Tasks &amp; Questions:</p>
+<ul>
+<li><p>Which genres and top artists have been most influenced by Oceanus Folk?</p></li>
+<li><p>Which genres or artists has Oceanus Folk drawn inspiration from?</p></li>
+</ul>
+<section id="input-output-definitions-2" class="level2">
+<h2 class="anchored" data-anchor-id="input-output-definitions-2">4.1 Input &amp; Output Definitions</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Input ID</th>
+<th>Widget</th>
+<th>Choices / Default</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>genre_focus</code></td>
+<td>selectInput</td>
+<td>Genre list; default = Oceanus Folk</td>
+<td>Choose the genre to analyze (starting with Oceanus Folk)</td>
+</tr>
+<tr class="even">
+<td><code>influenceDir</code></td>
+<td>radioButtons</td>
+<td><code>c("From", "To")</code></td>
+<td>Direction of influence: from genre to others, or others to this genre</td>
+</tr>
+<tr class="odd">
+<td><code>topN</code></td>
+<td>numericInput</td>
+<td>default = 10</td>
+<td>Limit number of top genres/artists shown in bar chart &amp; table</td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Output ID</th>
+<th>Render</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>genreBarPlot</code></td>
+<td>renderPlotly()</td>
+<td>Horizontal bar plot of top genres/artists influenced or influencing</td>
+</tr>
+<tr class="even">
+<td><code>genreTable</code></td>
+<td>renderDT()</td>
+<td>Data table showing genre interactions: target, count, and example artists</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="code-preparation-testing-2" class="level2">
+<h2 class="anchored" data-anchor-id="code-preparation-testing-2">4.2 Code Preparation &amp; Testing</h2>
+<p>We’ll use edge metadata (like Edge Type = InfluencedBy) and node genres to build an influence matrix between genres. Here’s a proposed structure for this:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) Filter only influence‐type edges</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>influence_edges <span class="ot">&lt;-</span> edges_labeled <span class="sc">%&gt;%</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(relation <span class="sc">%in%</span> <span class="fu">c</span>(</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"InStyleOf"</span>, <span class="st">"LyricalReferenceTo"</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"InterpolatesFrom"</span>, <span class="st">"DirectlySamples"</span>, <span class="st">"CoverOf"</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) Attach genres for source and target nodes</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>infl_ext <span class="ot">&lt;-</span> influence_edges <span class="sc">%&gt;%</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    g_nodes_df <span class="sc">%&gt;%</span> <span class="fu">select</span>(id, genre) <span class="sc">%&gt;%</span> <span class="fu">rename</span>(<span class="at">source_genre =</span> genre),</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"from_id"</span> <span class="ot">=</span> <span class="st">"id"</span>)</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    g_nodes_df <span class="sc">%&gt;%</span> <span class="fu">select</span>(id, genre) <span class="sc">%&gt;%</span> <span class="fu">rename</span>(<span class="at">target_genre =</span> genre),</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"to_id"</span> <span class="ot">=</span> <span class="st">"id"</span>)</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) Compute summary by focus_genre and direction</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>get_genre_influence_data <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">focus_genre =</span> <span class="st">"Oceanus Folk"</span>,</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">direction   =</span> <span class="st">"From"</span>,</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">topN        =</span> <span class="dv">10</span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>) {</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Choose source vs. target based on direction</span></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (direction <span class="sc">==</span> <span class="st">"From"</span>) {</span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>    df <span class="ot">&lt;-</span> infl_ext <span class="sc">%&gt;%</span> <span class="fu">filter</span>(source_genre <span class="sc">==</span> focus_genre)</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>    group_col <span class="ot">&lt;-</span> <span class="fu">sym</span>(<span class="st">"target_genre"</span>)</span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>    artist_col <span class="ot">&lt;-</span> <span class="fu">sym</span>(<span class="st">"to_id"</span>)</span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>    df <span class="ot">&lt;-</span> infl_ext <span class="sc">%&gt;%</span> <span class="fu">filter</span>(target_genre <span class="sc">==</span> focus_genre)</span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>    group_col <span class="ot">&lt;-</span> <span class="fu">sym</span>(<span class="st">"source_genre"</span>)</span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>    artist_col <span class="ot">&lt;-</span> <span class="fu">sym</span>(<span class="st">"from_id"</span>)</span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">%&gt;%</span></span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(<span class="sc">!!</span>group_col)) <span class="sc">%&gt;%</span></span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(<span class="at">genre =</span> <span class="sc">!!</span>group_col) <span class="sc">%&gt;%</span></span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>      <span class="at">influence_count =</span> <span class="fu">n</span>(),</span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a>      <span class="at">example_artists =</span> <span class="fu">paste</span>(</span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a>        <span class="fu">unique</span>(g_nodes_df<span class="sc">$</span>label[<span class="fu">match</span>(<span class="sc">!!</span>artist_col, g_nodes_df<span class="sc">$</span>id)])[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>],</span>
+<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a>        <span class="at">collapse =</span> <span class="st">"; "</span></span>
+<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a>      ),</span>
+<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a>      <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="fu">desc</span>(influence_count)) <span class="sc">%&gt;%</span></span>
+<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a>    <span class="fu">slice_head</span>(<span class="at">n =</span> topN)</span>
+<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a><span class="co"># 4) Sanity check</span></span>
+<span id="cb12-55"><a href="#cb12-55" aria-hidden="true" tabindex="-1"></a>test_from <span class="ot">&lt;-</span> <span class="fu">get_genre_influence_data</span>(<span class="st">"Oceanus Folk"</span>, <span class="st">"From"</span>, <span class="dv">5</span>)</span>
+<span id="cb12-56"><a href="#cb12-56" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(</span>
+<span id="cb12-57"><a href="#cb12-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nrow</span>(test_from) <span class="sc">&lt;=</span> <span class="dv">5</span>,</span>
+<span id="cb12-58"><a href="#cb12-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">all</span>(<span class="fu">c</span>(<span class="st">"genre"</span>, <span class="st">"influence_count"</span>, <span class="st">"example_artists"</span>) <span class="sc">%in%</span> <span class="fu">names</span>(test_from))</span>
+<span id="cb12-59"><a href="#cb12-59" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-60"><a href="#cb12-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-61"><a href="#cb12-61" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(test_from)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 3
+  genre        influence_count example_artists                                  
+  &lt;chr&gt;                  &lt;int&gt; &lt;chr&gt;                                            
+1 Oceanus Folk             147 Fragments of Consciousness; Clocktower Cadence; …
+2 Indie Folk               100 Ripples and Whispers; Sing Song Swing; Sunlight …
+3 Synthwave                 19 Voices of the Frontier; The Last Horizon; Echoes…
+4 Dream Pop                 15 The Last Sweet Moment; Harmonious Compromise; Tr…
+5 Doom Metal                14 Mercy's Endless Tide; Whispers of Finality; Sunb…</code></pre>
+</div>
+</div>
+</section>
+<section id="ui-storyboard-2" class="level2">
+<h2 class="anchored" data-anchor-id="ui-storyboard-2">4.3 UI Storyboard</h2>
+<section id="sidebar-user-controls-inputs" class="level3">
+<h3 class="anchored" data-anchor-id="sidebar-user-controls-inputs">Sidebar – User Controls (Inputs)</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>UI Element</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Genre Selector</strong></td>
+<td><code>selectInput</code></td>
+<td>Dropdown list of all genres (default: Oceanus Folk). Allows the user to pick a genre as the focal point for analysis.</td>
+</tr>
+<tr class="even">
+<td><strong>Direction Radio</strong></td>
+<td><code>radioButtons</code></td>
+<td>Two choices: “From” (genres/artists influenced by selected genre), “To” (genres/artists that influence selected genre).</td>
+</tr>
+<tr class="odd">
+<td><strong>Top N Numeric</strong></td>
+<td><code>numericInput</code></td>
+<td>User sets the number (N) of top genres/artists to show in the outputs (default 10, min 1, max 30).</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="main-panel-outputs-1" class="level3">
+<h3 class="anchored" data-anchor-id="main-panel-outputs-1">Main Panel – Outputs</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>UI Element</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Genre Bar Plot</strong></td>
+<td><code>renderPlotly()</code></td>
+<td>Interactive horizontal bar chart: shows the top N genres (and, optionally, key artists) most influenced by or influencing the focal genre.</td>
+</tr>
+<tr class="even">
+<td><strong>Genre Table</strong></td>
+<td><code>renderDT()</code></td>
+<td>Data table: shows detailed genre-genre links (genre name, influence count, and example artists), sortable and searchable.</td>
+</tr>
+</tbody>
+</table>
+<p><img src="image3.png" class="img-fluid"></p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>User flow:</p>
+<ol type="1">
+<li>User opens the module. By default, Oceanus Folk is selected as the focal genre, “From” direction is chosen, and the top 10 results are displayed.</li>
+<li>User changes the genre to “Electro Pop.” The bar plot and table instantly update to show genres influenced by Electro Pop (or that influence Electro Pop, depending on direction).</li>
+<li>User toggles direction from “From” to “To,” revealing genres that have influenced the currently selected genre.</li>
+<li>User adjusts the Top N to 20, revealing more connections in both the bar plot and the data table.</li>
+<li>User explores the bar plot, hovering over bars to view example artists.</li>
+<li>User scans/sorts the table, quickly identifying which genres and artists are most involved in cross-genre influence with the selected focal genre.</li>
+</ol>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="references" class="level1">
+<h1>References</h1>
+<section id="references-1" class="level2">
+<h2 class="anchored" data-anchor-id="references-1">References</h2>
+<ul>
+<li><p>Chang, W., Cheng, J., Allaire, J., Xie, Y., &amp; McPherson, J. (2023). shiny: Web Application Framework for R. R package version 1.8.0. https://CRAN.R-project.org/package=shiny</p></li>
+<li><p>Wickham, H., François, R., Henry, L., &amp; Müller, K. (2023). dplyr: A Grammar of Data Manipulation. R package version 1.1.4. https://CRAN.R-project.org/package=dplyr</p></li>
+<li><p>Sievert, C. (2020). plotly: Create Interactive Web Graphics via ‘plotly.js’. R package version 4.10.3. https://CRAN.R-project.org/package=plotly</p></li>
+<li><p>Xie, Y., Cheng, J., &amp; Tan, X. (2023). DT: A Wrapper of the JavaScript Library ‘DataTables’. R package version 0.31. https://CRAN.R-project.org/package=DT</p></li>
+</ul>
+</section>
+<section id="data-source" class="level2">
+<h2 class="anchored" data-anchor-id="data-source">Data Source</h2>
+<ul>
+<li>Project dataset: MC1_graph.json (provided as part of ISSS608 course materials, 2025).</li>
+</ul>
+</section>
+<section id="ai-tools" class="level2">
+<h2 class="anchored" data-anchor-id="ai-tools">AI Tools</h2>
+<ul>
+<li>OpenAI. (2024–2025). ChatGPT (GPT-4o model) for code explanation, report drafting, and technical writing assistance.</li>
+</ul>
+
+
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

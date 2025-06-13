@@ -1,7 +1,8 @@
 ---
 title: "ISSS608 Visual Analytics and Applications"
-format: html
-page-layout: full
+format:
+  html:
+    page-layout: full
 ---
 
 <style>
@@ -55,5 +56,3 @@ page-layout: full
 </div>
 
 ---
-
-✨ *Feel free to browse each section above. Use the quick jump for fast navigation, or scroll for more context. Happy exploring!*

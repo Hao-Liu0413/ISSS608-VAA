@@ -613,7 +613,7 @@
     "href": "Take_Home_Exercise/Take_Home_Exercise02/In_class_exercise_3.html",
     "title": "In_class_Exercise 3",
     "section": "",
-    "text": "Loading necessary packages:\n\n# Load libraries\npacman::p_load(tidyverse,jsonlite,\n               SmartEDA,tidygraph,\n               ggraph)\n\n\n\nUse fromJSON to import data:\n\nkg &lt;- fromJSON(\"MC1_graph.json\")\n\n\n\nInspect structure:\n\nstr(kg, max.level=1)\n\nList of 5\n $ directed  : logi TRUE\n $ multigraph: logi TRUE\n $ graph     :List of 2\n $ nodes     :'data.frame': 17412 obs. of  10 variables:\n $ links     :'data.frame': 37857 obs. of  4 variables:\n\n\n\n\nExtract and Inspect:\n\nnodes_tbl &lt;- as_tibble(kg$nodes)\nedges_tbl &lt;- as_tibble(kg$links)\n\n\n\nInitial EDA:\n\nggplot(data = edges_tbl,\n       aes(y = `Edge Type`)) +\n  geom_bar()\n\n\n\n\n\n\n\n\n\n\nstep 1: mapping from node id to row index\n\nid_map &lt;- tibble(id = nodes_tbl$id,\n                 index = seq_len(\n                   nrow(nodes_tbl)))\n\n\n\nstep 2: Ma source and target ids to row indices\n\nedges_tbl &lt;- edges_tbl %&gt;%\n  left_join(id_map, by = c(\"source\" = \"id\")) %&gt;%\n  rename(from = index) %&gt;%\n  left_join(id_map, by = c(\"target\" = \"id\")) %&gt;%\n  rename(to = index)\n\n\ngraph &lt;- tbl_graph(nodes = nodes_tbl,\n                   edges = edges_tbl,\n                   directed = kg$directed)\n\n\nset.seed(1234)\n\n\nggraph(graph, layout = \"fr\") +\n  geom_edge_link(alpha = 0.3, colour = \"gray\") +\n  geom_node_point(aes(color = `Node Type`), size = 4) +\n  geom_node_text(aes(label = name),\n                 repel = TRUE,      # R’s logical constant\n                 size = 2.5) +\n  theme_void()\n\n\n\n\n\n\n\n\n\nlibrary(tidygraph)\nlibrary(ggraph)\nlibrary(ggrepel)\nlibrary(dplyr)\n\ngraph_memberof &lt;- tbl_graph(\n  nodes    = nodes_tbl,\n  edges    = edges_tbl,\n  directed = FALSE\n)\n\n\nused_node_indices &lt;- graph_memberof %&gt;%\n  activate(edges) %&gt;%\n  as_tibble() %&gt;%\n  select(from, to) %&gt;%\n  unlist(use.names = FALSE) %&gt;%\n  unique()\n\n\nfiltered_graph &lt;- graph_memberof %&gt;%\n  activate(nodes) %&gt;%\n  filter(row_number() %in% used_node_indices)\n\n\nggraph(filtered_graph, layout = \"fr\") +\n  geom_edge_link(alpha = 0.5, colour = \"gray\") +\n  geom_node_point(aes(color = `Node Type`), size = 3) +\n  geom_node_text(aes(label = name),\n                 repel = TRUE,\n                 size = 3) +\n  theme_void()"
+    "text": "# Load libraries\npacman::p_load(tidyverse,jsonlite,\n               SmartEDA,tidygraph,\n               ggraph)"
   },
   {
     "objectID": "Hands-on_Ex/Hands-on_Ex06/Hands-on_Ex06.html",
@@ -957,5 +957,68 @@
     "title": "ISSS608 Visual Analytics and Applications",
     "section": "🗂️ Organized Sections",
     "text": "🗂️ Organized Sections\n\nHands-on Exercises\n\n\nHands-on Exercise 01\nHands-on Exercise 02\nHands-on Exercise 03\nHands-on Exercise 03 (Part 2)\nHands-on Exercise 04\nHands-on Exercise 04 (Part 2)\nHands-on Exercise 04 (Part 3)\nHands-on Exercise 04 (Part 4)\nHands-on Exercise 05\nHands-on Exercise 06\nHands-on Exercise 08\nHands-on Exercise 08 (Part 2)\nHands-on Exercise 08 (Part 3)\n\n\n\n\nTake-Home Exercises & In-Class\n\n\nTake-Home Exercise 01\nTake-Home Exercise 01 (Part 2)\nIn Class Exercise 3\nTake-Home Exercise 02\nTake-Home Exercise 03"
+  },
+  {
+    "objectID": "Take_Home_Exercise/Take_Home_Exercise02/In_class_exercise_3.html#step-1-mapping-from-node-id-to-row-index",
+    "href": "Take_Home_Exercise/Take_Home_Exercise02/In_class_exercise_3.html#step-1-mapping-from-node-id-to-row-index",
+    "title": "In_class_Exercise 3",
+    "section": "step 1: mapping from node id to row index",
+    "text": "step 1: mapping from node id to row index\n\nid_map &lt;- tibble(id = nodes_tbl$id,\n                 index = seq_len(\n                   nrow(nodes_tbl)))"
+  },
+  {
+    "objectID": "Take_Home_Exercise/Take_Home_Exercise02/In_class_exercise_3.html#step-2-map-source-and-target-ids-to-row-indices",
+    "href": "Take_Home_Exercise/Take_Home_Exercise02/In_class_exercise_3.html#step-2-map-source-and-target-ids-to-row-indices",
+    "title": "In_class_Exercise 3",
+    "section": "step 2: Map source and target ids to row indices",
+    "text": "step 2: Map source and target ids to row indices\n\nedges_tbl &lt;- edges_tbl %&gt;%\n  left_join(id_map, by = c(\"source\" = \"id\")) %&gt;%\n  rename(from = index) %&gt;%\n  left_join(id_map, by = c(\"target\" = \"id\")) %&gt;%\n  rename(to = index)"
+  },
+  {
+    "objectID": "Take_Home_Exercise/Take_Home_Exercise02/In_class_exercise_3.html#step-3-creating-the-graph",
+    "href": "Take_Home_Exercise/Take_Home_Exercise02/In_class_exercise_3.html#step-3-creating-the-graph",
+    "title": "In_class_Exercise 3",
+    "section": "step 3: Creating the Graph",
+    "text": "step 3: Creating the Graph\n\ngraph &lt;- tbl_graph(nodes = nodes_tbl,\n                   edges = edges_tbl,\n                   directed = kg$directed)"
+  },
+  {
+    "objectID": "Take_Home_Exercise/Take_Home_Exercise02/In_class_exercise_3.html#step-4-visualising-the-knowledge-graph",
+    "href": "Take_Home_Exercise/Take_Home_Exercise02/In_class_exercise_3.html#step-4-visualising-the-knowledge-graph",
+    "title": "In_class_Exercise 3",
+    "section": "step 4: Visualising the Knowledge Graph",
+    "text": "step 4: Visualising the Knowledge Graph\n\nset.seed(1234)\n\n\nggraph(graph, layout = \"fr\") +\n  geom_edge_link(alpha = 0.3, colour = \"gray\") +\n  geom_node_point(aes(color = `Node Type`), size = 4) +\n  geom_node_text(aes(label = name),\n                 repel = TRUE,      # R’s logical constant\n                 size = 2.5) +\n  theme_void()"
+  },
+  {
+    "objectID": "Take_Home_Exercise/Take_Home_Exercise02/In_class_exercise_3.html#filter-edges-to-only-memberof",
+    "href": "Take_Home_Exercise/Take_Home_Exercise02/In_class_exercise_3.html#filter-edges-to-only-memberof",
+    "title": "In_class_Exercise 3",
+    "section": "Filter Edges to only “MemberOf”",
+    "text": "Filter Edges to only “MemberOf”\n\ngraph_memberof &lt;- graph %&gt;%\n  activate(edges) %&gt;%\n  filter(`Edge Type` == \"MemberOf\")"
+  },
+  {
+    "objectID": "Take_Home_Exercise/Take_Home_Exercise02/In_class_exercise_3.html#extract-only-connected-nodes-i.e.-used-in-these-edges",
+    "href": "Take_Home_Exercise/Take_Home_Exercise02/In_class_exercise_3.html#extract-only-connected-nodes-i.e.-used-in-these-edges",
+    "title": "In_class_Exercise 3",
+    "section": "Extract only connected nodes (i.e., used in these edges)",
+    "text": "Extract only connected nodes (i.e., used in these edges)\n\nused_node_indices &lt;- graph_memberof %&gt;%\n  activate(edges) %&gt;%\n  as_tibble() %&gt;%\n  select(from, to) %&gt;%\n  unlist() %&gt;%\n  unique"
+  },
+  {
+    "objectID": "Take_Home_Exercise/Take_Home_Exercise02/In_class_exercise_3.html#keep-only-those-nodes",
+    "href": "Take_Home_Exercise/Take_Home_Exercise02/In_class_exercise_3.html#keep-only-those-nodes",
+    "title": "In_class_Exercise 3",
+    "section": "Keep only those nodes",
+    "text": "Keep only those nodes\n\ngraph_memberof &lt;- graph_memberof %&gt;%\n  activate(nodes) %&gt;%\n  mutate(row_id = row_number()) %&gt;%\n  filter(row_id %in% used_node_indices) %&gt;%\n  select(-row_id) #optional cleanup"
+  },
+  {
+    "objectID": "Take_Home_Exercise/Take_Home_Exercise02/In_class_exercise_3.html#plot-the-subgraph",
+    "href": "Take_Home_Exercise/Take_Home_Exercise02/In_class_exercise_3.html#plot-the-subgraph",
+    "title": "In_class_Exercise 3",
+    "section": "Plot the subgraph",
+    "text": "Plot the subgraph\n\nggraph(graph_memberof,\n       layout = \"fr\") + \n  geom_edge_link(alpha = 0.5,\n                 colour = \"gray\") +\n  geom_node_point(aes(color = `Node Type`),\n                  size = 1) + \n  geom_node_text(aes(label = name),\n                 repel = TRUE,\n                 size = 2.5) +\n  theme_void()"
+  },
+  {
+    "objectID": "In_class_Exercise/In_class_Exercise08/MPSZ-2019.html",
+    "href": "In_class_Exercise/In_class_Exercise08/MPSZ-2019.html",
+    "title": "ISSS608-VAA",
+    "section": "",
+    "text": "&lt;!DOCTYPE qgis PUBLIC ‘http://mrcc.com/qgis.dtd’ ‘SYSTEM’&gt;     dataset\n\n\n        0 0     false"
   }
 ]

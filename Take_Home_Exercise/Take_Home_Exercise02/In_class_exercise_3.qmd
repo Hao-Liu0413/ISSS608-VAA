@@ -48,7 +48,9 @@ ggplot(data = edges_tbl,
   geom_bar()
 ```
 
-# step 1: mapping from node id to row index
+# Creating Knowledge Graph
+
+## step 1: mapping from node id to row index
 
 ```{r id_map, message=FALSE, warning=FALSE}
 id_map <- tibble(id = nodes_tbl$id,
@@ -56,7 +58,7 @@ id_map <- tibble(id = nodes_tbl$id,
                    nrow(nodes_tbl)))
 ```
 
-# step 2: Ma source and target ids to row indices
+## step 2: Map source and target ids to row indices
 
 ```{r 1, message=FALSE, warning=FALSE}
 edges_tbl <- edges_tbl %>%
@@ -64,15 +66,16 @@ edges_tbl <- edges_tbl %>%
   rename(from = index) %>%
   left_join(id_map, by = c("target" = "id")) %>%
   rename(to = index)
-
 ```
 
+## step 3: Creating the Graph
 ```{r 2, message=FALSE, warning=FALSE}
 graph <- tbl_graph(nodes = nodes_tbl,
                    edges = edges_tbl,
                    directed = kg$directed)
 ```
 
+## step 4: Visualising the Knowledge Graph
 ```{r 3, message=FALSE, warning=FALSE}
 set.seed(1234)
 ```
@@ -87,43 +90,43 @@ ggraph(graph, layout = "fr") +
   theme_void()
 ```
 
+# Cleaning up
+
+## Filter Edges to only “MemberOf”
+
 ```{r 5, message=FALSE, warning=FALSE}
-library(tidygraph)
-library(ggraph)
-library(ggrepel)
-library(dplyr)
-
-graph_memberof <- tbl_graph(
-  nodes    = nodes_tbl,
-  edges    = edges_tbl,
-  directed = FALSE
-)
+graph_memberof <- graph %>%
+  activate(edges) %>%
+  filter(`Edge Type` == "MemberOf")
 ```
-
+## Extract only connected nodes (i.e., used in these edges)
 ```{r 6, message=FALSE, warning=FALSE}
 used_node_indices <- graph_memberof %>%
   activate(edges) %>%
   as_tibble() %>%
   select(from, to) %>%
-  unlist(use.names = FALSE) %>%
-  unique()
+  unlist() %>%
+  unique
 ```
-
+## Keep only those nodes
 ```{r 7, message=FALSE, warning=FALSE}
-
-filtered_graph <- graph_memberof %>%
+graph_memberof <- graph_memberof %>%
   activate(nodes) %>%
-  filter(row_number() %in% used_node_indices)
+  mutate(row_id = row_number()) %>%
+  filter(row_id %in% used_node_indices) %>%
+  select(-row_id) #optional cleanup
 ```
-
+## Plot the subgraph
 ```{r 8, message=FALSE, warning=FALSE}
 
-ggraph(filtered_graph, layout = "fr") +
-  geom_edge_link(alpha = 0.5, colour = "gray") +
-  geom_node_point(aes(color = `Node Type`), size = 3) +
+ggraph(graph_memberof,
+       layout = "fr") + 
+  geom_edge_link(alpha = 0.5,
+                 colour = "gray") +
+  geom_node_point(aes(color = `Node Type`),
+                  size = 1) + 
   geom_node_text(aes(label = name),
                  repel = TRUE,
-                 size = 3) +
+                 size = 2.5) +
   theme_void()
-
 ```

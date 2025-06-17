@@ -44,6 +44,12 @@ format:
 - [Hands-on Exercise 08](Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.qmd)
 - [Hands-on Exercise 08 (Part 2)](Hands-on_Ex/Hands-on_Ex08_part2/Hands-on_Ex08_part2.qmd)
 - [Hands-on Exercise 08 (Part 3)](Hands-on_Ex/Hands-on_Ex08_part3/Hands-on_Ex08_part3.qmd)
+- [Hands-on Exercise 09](Hands-on_Ex/Hands-on_Ex09/Hands-on_Ex09.qmd)
+- [Hands-on Exercise 09 (Part 2)](Hands-on_Ex/Hands-on_Ex09_part2/Hands-on_Ex09_part2.qmd)
+- [Hands-on Exercise 09 (Part 3)](Hands-on_Ex/Hands-on_Ex09_part3/Hands-on_Ex09_part3.qmd)
+- [Hands-on Exercise 09 (Part 4)](Hands-on_Ex/Hands-on_Ex09_part4/Hands-on_Ex09_part4.qmd)
+- [Hands-on Exercise 09 (Part 5)](Hands-on_Ex/Hands-on_Ex09_part5/Hands-on_Ex09_part5.qmd)
+- [Hands-on Exercise 10](Hands-on_Ex/Hands-on_Ex10/Hands-on_Ex10.qmd)
 </div>
 
 ### <span class="section-header">Take-Home Exercises & In-Class</span>

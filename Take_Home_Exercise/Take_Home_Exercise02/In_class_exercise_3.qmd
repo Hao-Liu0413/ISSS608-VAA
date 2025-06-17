@@ -69,6 +69,7 @@ edges_tbl <- edges_tbl %>%
 ```
 
 ## step 3: Creating the Graph
+
 ```{r 2, message=FALSE, warning=FALSE}
 graph <- tbl_graph(nodes = nodes_tbl,
                    edges = edges_tbl,
@@ -76,6 +77,7 @@ graph <- tbl_graph(nodes = nodes_tbl,
 ```
 
 ## step 4: Visualising the Knowledge Graph
+
 ```{r 3, message=FALSE, warning=FALSE}
 set.seed(1234)
 ```
@@ -94,13 +96,15 @@ ggraph(graph, layout = "fr") +
 
 ## Filter Edges to only “MemberOf”
 
-```{r 5, message=FALSE, warning=FALSE}
+```{r}
 graph_memberof <- graph %>%
   activate(edges) %>%
   filter(`Edge Type` == "MemberOf")
 ```
+
 ## Extract only connected nodes (i.e., used in these edges)
-```{r 6, message=FALSE, warning=FALSE}
+
+```{r}
 used_node_indices <- graph_memberof %>%
   activate(edges) %>%
   as_tibble() %>%
@@ -108,16 +112,20 @@ used_node_indices <- graph_memberof %>%
   unlist() %>%
   unique
 ```
+
 ## Keep only those nodes
-```{r 7, message=FALSE, warning=FALSE}
+
+```{r}
 graph_memberof <- graph_memberof %>%
   activate(nodes) %>%
   mutate(row_id = row_number()) %>%
   filter(row_id %in% used_node_indices) %>%
   select(-row_id) #optional cleanup
 ```
+
 ## Plot the subgraph
-```{r 8, message=FALSE, warning=FALSE}
+
+```{r}
 
 ggraph(graph_memberof,
        layout = "fr") + 

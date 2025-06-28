@@ -59,6 +59,7 @@ format:
 - [In Class Exercise 3](Take_Home_Exercise/Take_Home_Exercise02/In_class_exercise_3.qmd)
 - [Take-Home Exercise 02](Take_Home_Exercise/Take_Home_Exercise02/Take_Home_Exercise02.qmd)
 - [Take-Home Exercise 03](Take_Home_Exercise/Take_Home_Exercise03/Take_Home_Exercise03.qmd)
+- [In Class Exercise 10](In_class_Exercise/In_class_Exercise10/In_class_Exercise10.qmd)
 </div>
 
 ---

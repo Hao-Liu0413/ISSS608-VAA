@@ -5,6 +5,7 @@ format:
     page-layout: full
 ---
 
+```{=html}
 <style>
 .home-welcome {
   font-size: 1.6rem;
@@ -22,44 +23,47 @@ format:
   margin-bottom: 2rem;
 }
 </style>
+```
 
-<div class="home-welcome">
-  👋 Welcome to the <b>ISSS608 Visual Analytics and Applications</b> portfolio!
-</div>
+::: home-welcome
+👋 Welcome to the <b>ISSS608 Visual Analytics and Applications</b> portfolio!
+:::
 
 ## 🗂️ Organized Sections
 
-### <span class="section-header">Hands-on Exercises</span>
-<div class="links-list">
-- [Hands-on Exercise 01](Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.qmd)
-- [Hands-on Exercise 02](Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.qmd)
-- [Hands-on Exercise 03](Hands-on_Ex/Hands-on_Ex03/Hands-on_Ex03.qmd)
-- [Hands-on Exercise 03 (Part 2)](Hands-on_Ex/Hands-on_Ex03_part2/Hands-on_Ex03_part2.qmd)
-- [Hands-on Exercise 04](Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04.qmd)
-- [Hands-on Exercise 04 (Part 2)](Hands-on_Ex/Hands-on_Ex04_part2/Hands-on_Ex04_part2.qmd)
-- [Hands-on Exercise 04 (Part 3)](Hands-on_Ex/Hands-on_Ex04_part3/Hands-on_Ex04_part3.qmd)
-- [Hands-on Exercise 04 (Part 4)](Hands-on_Ex/Hands-on_Ex04_part4/Hands-on_Ex04_part4.qmd)
-- [Hands-on Exercise 05](Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.qmd)
-- [Hands-on Exercise 06](Hands-on_Ex/Hands-on_Ex06/Hands-on_Ex06.qmd)
-- [Hands-on Exercise 08](Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.qmd)
-- [Hands-on Exercise 08 (Part 2)](Hands-on_Ex/Hands-on_Ex08_part2/Hands-on_Ex08_part2.qmd)
-- [Hands-on Exercise 08 (Part 3)](Hands-on_Ex/Hands-on_Ex08_part3/Hands-on_Ex08_part3.qmd)
-- [Hands-on Exercise 09](Hands-on_Ex/Hands-on_Ex09/Hands-on_Ex09.qmd)
-- [Hands-on Exercise 09 (Part 2)](Hands-on_Ex/Hands-on_Ex09_part2/Hands-on_Ex09_part2.qmd)
-- [Hands-on Exercise 09 (Part 3)](Hands-on_Ex/Hands-on_Ex09_part3/Hands-on_Ex09_part3.qmd)
-- [Hands-on Exercise 09 (Part 4)](Hands-on_Ex/Hands-on_Ex09_part4/Hands-on_Ex09_part4.qmd)
-- [Hands-on Exercise 09 (Part 5)](Hands-on_Ex/Hands-on_Ex09_part5/Hands-on_Ex09_part5.qmd)
-- [Hands-on Exercise 10](Hands-on_Ex/Hands-on_Ex10/Hands-on_Ex10.qmd)
-</div>
+### [Hands-on Exercises]{.section-header}
 
-### <span class="section-header">Take-Home Exercises & In-Class</span>
-<div class="links-list">
-- [Take-Home Exercise 01](Take_Home_Exercise/Take_Home_Exercise01/Take_Home_Exercise01.qmd)
-- [Take-Home Exercise 01 (Part 2)](Take_Home_Exercise/Take_Home_Exercise01_part2/Take_Home_Exercise01_part2.qmd)
-- [In Class Exercise 3](Take_Home_Exercise/Take_Home_Exercise02/In_class_exercise_3.qmd)
-- [Take-Home Exercise 02](Take_Home_Exercise/Take_Home_Exercise02/Take_Home_Exercise02.qmd)
-- [Take-Home Exercise 03](Take_Home_Exercise/Take_Home_Exercise03/Take_Home_Exercise03.qmd)
-- [In Class Exercise 10](In_class_Exercise/In_class_Exercise10/In_class_Exercise10.qmd)
-</div>
+::: links-list
+-   [Hands-on Exercise 01](Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.qmd)
+-   [Hands-on Exercise 02](Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.qmd)
+-   [Hands-on Exercise 03](Hands-on_Ex/Hands-on_Ex03/Hands-on_Ex03.qmd)
+-   [Hands-on Exercise 03 (Part 2)](Hands-on_Ex/Hands-on_Ex03_part2/Hands-on_Ex03_part2.qmd)
+-   [Hands-on Exercise 04](Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04.qmd)
+-   [Hands-on Exercise 04 (Part 2)](Hands-on_Ex/Hands-on_Ex04_part2/Hands-on_Ex04_part2.qmd)
+-   [Hands-on Exercise 04 (Part 3)](Hands-on_Ex/Hands-on_Ex04_part3/Hands-on_Ex04_part3.qmd)
+-   [Hands-on Exercise 04 (Part 4)](Hands-on_Ex/Hands-on_Ex04_part4/Hands-on_Ex04_part4.qmd)
+-   [Hands-on Exercise 05](Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.qmd)
+-   [Hands-on Exercise 06](Hands-on_Ex/Hands-on_Ex06/Hands-on_Ex06.qmd)
+-   [Hands-on Exercise 08](Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.qmd)
+-   [Hands-on Exercise 08 (Part 2)](Hands-on_Ex/Hands-on_Ex08_part2/Hands-on_Ex08_part2.qmd)
+-   [Hands-on Exercise 08 (Part 3)](Hands-on_Ex/Hands-on_Ex08_part3/Hands-on_Ex08_part3.qmd)
+-   [Hands-on Exercise 09](Hands-on_Ex/Hands-on_Ex09/Hands-on_Ex09.qmd)
+-   [Hands-on Exercise 09 (Part 2)](Hands-on_Ex/Hands-on_Ex09_part2/Hands-on_Ex09_part2.qmd)
+-   [Hands-on Exercise 09 (Part 3)](Hands-on_Ex/Hands-on_Ex09_part3/Hands-on_Ex09_part3.qmd)
+-   [Hands-on Exercise 09 (Part 4)](Hands-on_Ex/Hands-on_Ex09_part4/Hands-on_Ex09_part4.qmd)
+-   [Hands-on Exercise 09 (Part 5)](Hands-on_Ex/Hands-on_Ex09_part5/Hands-on_Ex09_part5.qmd)
+-   [Hands-on Exercise 10](Hands-on_Ex/Hands-on_Ex10/Hands-on_Ex10.qmd)
+:::
 
----
+### [Take-Home Exercises & In-Class]{.section-header}
+
+::: links-list
+-   [Take-Home Exercise 01](Take_Home_Exercise/Take_Home_Exercise01/Take_Home_Exercise01.qmd)
+-   [Take-Home Exercise 01 (Part 2)](Take_Home_Exercise/Take_Home_Exercise01_part2/Take_Home_Exercise01_part2.qmd)
+-   [In Class Exercise 3](Take_Home_Exercise/Take_Home_Exercise02/In_class_exercise_3.qmd)
+-   [Take-Home Exercise 02](Take_Home_Exercise/Take_Home_Exercise02/Take_Home_Exercise02.qmd)
+-   [Take-Home Exercise 03](Take_Home_Exercise/Take_Home_Exercise03/Take_Home_Exercise03.qmd)
+-   [In Class Exercise 10](In_class_Exercise/In_class_Exercise10/In_class_Exercise10.qmd)
+:::
+
+------------------------------------------------------------------------
